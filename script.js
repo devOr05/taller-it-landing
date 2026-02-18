@@ -36,8 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         'vision': {
             title: 'Visión Artificial',
-            desc: 'Utilizamos tecnología de vanguardia para procesar imágenes. Desde reconocimiento de objetos hasta análisis de patrones complejos, crearemos aplicaciones simples que resuelvan necesidades específicas de inspección o conteo.',
-            icon: '👁️'
+            desc: 'Utilizamos tecnología de vanguardia para procesar imágenes. Nuestra app **Visión IT** es un ejemplo real que detecta objetos en tiempo real, facilitando inventarios y controles automáticos.',
+            icon: '👁️',
+            link: 'https://vision-it-phi.vercel.app' // User should replace this with their actual deployed URL
         }
     };
 
@@ -54,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         card.addEventListener('click', () => {
             const data = serviceData[key];
-            modalBody.innerHTML = `
+            let content = `
                 <span style="font-size: 4rem; display: block; margin-bottom: 1rem;">${data.icon}</span>
                 <h2>${data.title}</h2>
                 <div class="modal-image-placeholder">
@@ -62,6 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <p>${data.desc}</p>
             `;
+
+            if (data.link) {
+                content += `<a href="${data.link}" target="_blank" class="btn-primary" style="display:inline-block; margin-top:1.5rem; text-decoration:none;">Ver App en Vivo</a>`;
+            }
+
+            modalBody.innerHTML = content;
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         });

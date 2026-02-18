@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Taller IT | Eficiencia a través del software</title>
-    <meta name="description" content="Taller IT desarrolla mini aplicaciones personalizadas para optimizar tu trabajo diario. Digitalización, sistemas de gestión, chatbots y visión artificial.">
+    <meta name="description"
+        content="Taller IT desarrolla mini aplicaciones personalizadas para optimizar tu trabajo diario. Digitalización, sistemas de gestión, chatbots y visión artificial.">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
@@ -22,7 +25,8 @@
     <main class="container">
         <section class="hero">
             <h1>Software <span>Hecho a Medida</span> para tu Negocio</h1>
-            <p>En el Taller IT transformamos procesos manuales en herramientas digitales eficientes. Mini aplicaciones que resuelven problemas reales.</p>
+            <p>En el Taller IT transformamos procesos manuales en herramientas digitales eficientes. Mini aplicaciones
+                que resuelven problemas reales.</p>
         </section>
 
         <section id="servicios" class="sections-grid">
@@ -62,11 +66,11 @@
         <section id="contacto" class="footer reveal">
             <h2>Hablemos de tu proyecto</h2>
             <p>Cuéntanos tu idea y la haremos realidad.</p>
-            
+
             <div class="contact-info">
-                <a href="tel:+549123456789" id="phone-link" class="contact-link">
-                    <div class="icon">📞</div>
-                    <span>Llamar ahora</span>
+                <a href="https://wa.me/5491100000000" id="whatsapp-link" class="contact-link whatsapp" target="_blank">
+                    <div class="icon">💬</div>
+                    <span>WhatsApp</span>
                 </a>
                 <a href="mailto:hola@tallerit.com" id="email-link" class="contact-link">
                     <div class="icon">✉️</div>
@@ -76,6 +80,17 @@
         </section>
     </main>
 
+    <!-- Modal Container -->
+    <div class="modal-overlay" id="service-modal">
+        <div class="modal-content">
+            <button class="close-modal" id="close-modal">&times;</button>
+            <div class="modal-body" id="modal-body">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
+
 </html>

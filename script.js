@@ -41,8 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
             link: 'https://vision-it-phi.vercel.app'
         },
         'pilates': {
-            title: 'Gestión VN Pilates',
-            desc: 'La solución definitiva para la **gestión de alumnos y finanzas**. Mediante una carga masiva ultra-rápida desde archivos Excel/CSV, el sistema automatiza el seguimiento de pagos, cálculo de honorarios y generación de reportes detallados.',
+            title: 'Optimización de Gestión',
+            desc: 'La solución definitiva para la **gestión de alumnos y finanzas** (Caso: VN Pilates). Mediante una carga masiva ultra-rápida desde archivos Excel/CSV, el sistema automatiza el seguimiento de pagos, cálculo de honorarios y generación de reportes detallados.',
             icon: '🧘',
             link: 'https://vn-pilates.vercel.app'
         }

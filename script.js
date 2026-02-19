@@ -35,10 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
             icon: '🤖'
         },
         'vision': {
-            title: 'Visión Artificial y Astral',
-            desc: 'Utilizamos tecnología de vanguardia para procesar imágenes. **Visión IT** detecta objetos en tiempo real, mientras que **Visión Astral** analiza rasgos faciales para generar perfiles personalizados automáticos.',
+            title: 'Visión Artificial',
+            desc: 'Utilizamos tecnología de vanguardia para procesar imágenes. **Visión IT** es un ejemplo real que detecta objetos en tiempo real, facilitando inventarios y controles automáticos.',
             icon: '👁️',
-            link: 'https://vision-astral.vercel.app'
+            link: 'https://vision-it-phi.vercel.app'
         },
         'pilates': {
             title: 'Gestión VN Pilates',
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     cards.forEach((card, index) => {
         card.style.cursor = 'pointer';
-        const keys = ['digitalizacion', 'gestion', 'chatbot', 'vision', 'pilates'];
+        const keys = ['digitalizacion', 'pilates', 'gestion', 'vision', 'chatbot'];
         const key = keys[index];
 
         card.addEventListener('click', () => {

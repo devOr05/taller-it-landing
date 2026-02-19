@@ -38,7 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
             title: 'Visión Artificial',
             desc: 'Utilizamos tecnología de vanguardia para procesar imágenes. Nuestra app **Visión IT** es un ejemplo real que detecta objetos en tiempo real, facilitando inventarios y controles automáticos.',
             icon: '👁️',
-            link: 'https://vision-it-phi.vercel.app' // User should replace this with their actual deployed URL
+            link: 'https://vision-it-phi.vercel.app'
+        },
+        'pilates': {
+            title: 'Gestión VN Pilates',
+            desc: 'Este proyecto es la solución definitiva para la **gestión de alumnos y finanzas**. Mediante una carga masiva ultra-rápida desde archivos Excel/CSV, el sistema automatiza el seguimiento de pagos, cálculo de honorarios y generación de reportes detallados, permitiendo una visión clara de la rentabilidad del negocio.',
+            icon: '🧘',
+            link: 'https://vn-pilates.vercel.app'
         }
     };
 
@@ -50,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     cards.forEach((card, index) => {
         card.style.cursor = 'pointer';
-        const keys = ['digitalizacion', 'gestion', 'chatbot', 'vision'];
+        const keys = ['digitalizacion', 'gestion', 'chatbot', 'vision', 'pilates'];
         const key = keys[index];
 
         card.addEventListener('click', () => {

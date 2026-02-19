@@ -110,6 +110,7 @@ nav {
 .hero h1 span {
     background: linear-gradient(to right, var(--primary), var(--secondary));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -123,16 +124,13 @@ nav {
 /* Grid Sections */
 .sections-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
+    grid-template-columns: 1fr;
+    gap: 3rem;
     margin-top: 4rem;
     margin-bottom: 8rem;
-}
-
-@media (max-width: 900px) {
-    .sections-grid {
-        grid-template-columns: 1fr;
-    }
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .card {

@@ -77,24 +77,55 @@
             <p>Cuéntanos tu idea y la haremos realidad.</p>
 
             <div class="contact-info">
-                <a href="https://wa.me/5491100000000" id="whatsapp-link" class="contact-link whatsapp" target="_blank">
+                <a href="https://wa.me/542235928978" id="whatsapp-link" class="contact-link whatsapp" target="_blank">
                     <div class="icon">💬</div>
                     <span>WhatsApp</span>
                 </a>
-                <a href="mailto:hola@tallerit.com" id="email-link" class="contact-link">
+                <a href="#" id="email-trigger" class="contact-link">
                     <div class="icon">✉️</div>
                     <span>Enviar correo</span>
+                </a>
+                <a href="#" class="contact-link instagram" id="instagram-link">
+                    <div class="icon">📸</div>
+                    <span>Instagram</span>
                 </a>
             </div>
         </section>
     </main>
 
-    <!-- Modal Container -->
+    <!-- Service Modal Container -->
     <div class="modal-overlay" id="service-modal">
         <div class="modal-content">
             <button class="close-modal" id="close-modal">&times;</button>
             <div class="modal-body" id="modal-body">
                 <!-- Content injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div class="modal-overlay" id="contact-modal">
+        <div class="modal-content contact-modal-content">
+            <button class="close-modal" id="close-contact-modal">&times;</button>
+            <div class="modal-body">
+                <h2>Hablemos de tu proyecto</h2>
+                <p>Completa este breve formulario y me pondré en contacto contigo a la brevedad.</p>
+                <form id="contact-form" class="contact-form">
+                    <div class="form-group">
+                        <input type="text" placeholder="Tu Nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="Tu Email" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea placeholder="Cuéntame sobre tu idea o problema a resolver..." rows="4"
+                            required></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary"
+                        style="width: 100%; border: none; cursor: pointer; padding: 1rem; border-radius: 12px; font-weight: 600;">
+                        Enviar Mensaje
+                    </button>
+                </form>
             </div>
         </div>
     </div>

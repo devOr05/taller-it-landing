@@ -35,14 +35,14 @@ document.addEventListener('DOMContentLoaded', () => {
             icon: '🤖'
         },
         'vision': {
-            title: 'Visión Artificial',
-            desc: 'Utilizamos tecnología de vanguardia para procesar imágenes. Nuestra app **Visión IT** es un ejemplo real que detecta objetos en tiempo real, facilitando inventarios y controles automáticos.',
+            title: 'Visión Artificial y Astral',
+            desc: 'Utilizamos tecnología de vanguardia para procesar imágenes. **Visión IT** detecta objetos en tiempo real, mientras que **Visión Astral** analiza rasgos faciales para generar perfiles personalizados automáticos.',
             icon: '👁️',
-            link: 'https://vision-it-phi.vercel.app'
+            link: 'https://vision-astral.vercel.app'
         },
         'pilates': {
             title: 'Gestión VN Pilates',
-            desc: 'Este proyecto es la solución definitiva para la **gestión de alumnos y finanzas**. Mediante una carga masiva ultra-rápida desde archivos Excel/CSV, el sistema automatiza el seguimiento de pagos, cálculo de honorarios y generación de reportes detallados, permitiendo una visión clara de la rentabilidad del negocio.',
+            desc: 'La solución definitiva para la **gestión de alumnos y finanzas**. Mediante una carga masiva ultra-rápida desde archivos Excel/CSV, el sistema automatiza el seguimiento de pagos, cálculo de honorarios y generación de reportes detallados.',
             icon: '🧘',
             link: 'https://vn-pilates.vercel.app'
         }
@@ -65,13 +65,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span style="font-size: 4rem; display: block; margin-bottom: 1rem;">${data.icon}</span>
                 <h2>${data.title}</h2>
                 <div class="modal-image-placeholder">
-                    <p style="color: var(--text-muted)">Imagen del ejemplo: ${data.title}</p>
+                    <p style="color: var(--text-muted)">Caso de estudio: ${data.title}</p>
                 </div>
                 <p>${data.desc}</p>
             `;
 
             if (data.link) {
-                content += `<a href="${data.link}" target="_blank" class="btn-primary" style="display:inline-block; margin-top:1.5rem; text-decoration:none;">Ver App en Vivo</a>`;
+                content += `<a href="${data.link}" target="_blank" class="btn-primary" style="display:inline-block; margin-top:1.5rem; text-decoration:none; padding: 0.8rem 1.5rem; border-radius: 12px; font-weight: 600;">Ver Aplicación en Vivo</a>`;
             }
 
             modalBody.innerHTML = content;
@@ -88,6 +88,49 @@ document.addEventListener('DOMContentLoaded', () => {
     closeBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => {
         if (e.target === modal) closeModal();
+    });
+
+    // Contact Modal Logic
+    const contactModal = document.getElementById('contact-modal');
+    const emailTrigger = document.getElementById('email-trigger');
+    const closeContactBtn = document.getElementById('close-contact-modal');
+    const contactForm = document.getElementById('contact-form');
+
+    emailTrigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        contactModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+
+    const closeContactModal = () => {
+        contactModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    };
+
+    closeContactBtn.addEventListener('click', closeContactModal);
+    contactModal.addEventListener('click', (e) => {
+        if (e.target === contactModal) closeContactModal();
+    });
+
+    contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const btn = contactForm.querySelector('button');
+        const originalText = btn.innerText;
+        btn.innerText = 'Enviando...';
+        btn.disabled = true;
+
+        // Simulated sending
+        setTimeout(() => {
+            btn.innerText = '¡Mensaje Enviado!';
+            btn.style.background = '#22c55e';
+            setTimeout(() => {
+                closeContactModal();
+                contactForm.reset();
+                btn.innerText = originalText;
+                btn.style.background = '';
+                btn.disabled = false;
+            }, 2000);
+        }, 1500);
     });
 
     // Background Blobs

@@ -20,9 +20,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // Content for Modals
     const serviceData = {
         'digitalizacion': {
-            title: 'Digitalización de Planillas',
-            desc: 'Transformamos procesos manuales en aplicaciones digitales eficientes. Por ejemplo, nuestra aplicación de **Podología** permite gestionar turnos, historias clínicas y fichas de pacientes de forma digital, eliminando el papel y los errores de transcripción.',
-            icon: '📋'
+            title: '🚀 Podal Fix: Gestión Podológica de Precisión',
+            desc: `Esta plataforma redefine la administración de servicios de podología y salud animal. Diseñada para profesionales que buscan un control riguroso, Podal Fix elimina la carga administrativa manual, permitiendo un seguimiento técnico exhaustivo.<br><br>
+            <strong>💎 Funcionalidades Actuales (MVP Beta)</strong><br>
+            • <b>Dashboard Inteligente</b>: Panel de control con métricas clave y acceso rápido.<br>
+            • <b>Gestión de Pacientes y Rodeos</b>: Clasificación detallada por caravanas y establecimientos.<br>
+            • <b>Agenda Profesional</b>: Sistema de turnos optimizado para el trabajo en campo.<br>
+            • <b>Historias Clínicas Digitales</b>: Registro de patologías, tratamientos y notas técnicas.<br>
+            • <b>Control Multi-Establecimiento</b>: Gestiona diferentes locaciones desde una interfaz central.<br>
+            • <b>Notificaciones de Rechequeo</b>: Alertas para el seguimiento de casos pendientes.<br>
+            • <b>Interfaz Mobile-Responsive</b>: Adaptada para tablets y celulares.<br><br>
+            <strong>🔮 Visión de Futuro: El Nexo Digital (Próximas Mejoras)</strong><br>
+            • <b>Sincronización Offline</b>: Capacidad de trabajar sin conexión a internet.<br>
+            • <b>Reportes Técnicos Automatizados</b>: Generación de informes profesionales con un clic.<br>
+            • <b>Galería de Imágenes Clínicas</b>: Guardado de fotos del estado directamente en la ficha.<br>
+            • <b>Portal del Cliente</b>: Acceso para dueños de establecimientos.<br>
+            • <b>Integración de Voz</b>: Dictado de notas mientras se realiza el trabajo manual.`,
+            icon: '📋',
+            image: 'assets/podal_fix_dashboard.png',
+            link: 'https://podalfix.vercel.app/'
         },
         'gestion': {
             title: 'Sistemas de Gestión',
@@ -41,10 +57,26 @@ document.addEventListener('DOMContentLoaded', () => {
             link: 'https://vision-it-phi.vercel.app'
         },
         'pilates': {
-            title: 'Optimización de Gestión',
-            desc: 'La solución definitiva para la **gestión de alumnos y finanzas** (Caso: VN Pilates). Mediante una carga masiva ultra-rápida desde archivos Excel/CSV, el sistema automatiza el seguimiento de pagos, cálculo de honorarios y generación de reportes detallados.',
+            title: '🚀 VN Pilates: Gestión Inteligente',
+            desc: `Esta app no es solo un software de administración; es una herramienta de precisión diseñada para potenciar la rentabilidad de los centros de bienestar y fitness. Nuestra plataforma permite a quien emprende delegar las tareas administrativas pesadas para enfocarse en lo que realmente importa: sus alumnos.<br><br>
+            <strong>💎 Funcionalidades Actuales (MVP Beta)</strong><br>
+            • <b>Gestión Centralizada de Alumnos</b>: Registro detallado, control de asistencias y seguimiento de actividad en tiempo real.<br>
+            • <b>Inteligencia Financiera</b>: Panel de control con cálculo automático de ingresos, gastos operativos y balances de ganancia neta.<br>
+            • <b>Cálculo Automatizado de Honorarios</b>: Sistema inteligente de liquidación para profesores basado en horas trabajadas y valores variables.<br>
+            • <b>Reportes de Gestión "One-Click"</b>: Generación instantánea de reportes generales y detallados.<br>
+            • <b>Exportación Profesional</b>: Soporte completo para exportación de datos a Excel y PDF.<br>
+            • <b>Sincronización Híbrida</b>: Importación desde CSV y sincronización mediante enlaces dinámicos.<br>
+            • <b>Experiencia Mobile-First</b>: Interfaz 100% responsiva para celular y computadora.<br><br>
+            <strong>🔮 Visión de Futuro: El Nexo Digital (Próximas Mejoras)</strong><br>
+            • <b>Ecosystem Online (Nube)</b>: Migración a bases de datos en tiempo real.<br>
+            • <b>Portal de Autenticación</b>: Logueo seguro para administradores, profesores y alumnos.<br>
+            • <b>Ficha Médica Digital</b>: Seguimiento clínico avanzado de los alumnos.<br>
+            • <b>Notificaciones Inteligentes</b>: Alertas vía WhatsApp/Email para vencimientos y recordatorios.<br>
+            • <b>Agenda Dinámica</b>: Motor de citas con sugerencias de horarios óptimos.<br>
+            • <b>Plataforma de E-Learning</b>: Integración de cursos y videos exclusivos.`,
             icon: '🧘',
-            link: 'https://vn-pilates.vercel.app'
+            image: 'assets/vn_pilates_dashboard.png',
+            link: 'https://vn-pilates.vercel.app/'
         }
     };
 
@@ -64,9 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
             let content = `
                 <span style="font-size: 4rem; display: block; margin-bottom: 1rem;">${data.icon}</span>
                 <h2>${data.title}</h2>
+                ${data.image ? `<img src="${data.image}" alt="${data.title}" style="width: 100%; border-radius: 20px; margin: 1.5rem 0; border: 1px solid var(--glass-border);">` : `
                 <div class="modal-image-placeholder">
                     <p style="color: var(--text-muted)">Caso de estudio: ${data.title}</p>
-                </div>
+                </div>`}
                 <p>${data.desc}</p>
             `;
 

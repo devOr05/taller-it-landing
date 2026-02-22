@@ -166,6 +166,7 @@ nav {
     color: var(--text-muted);
     font-size: 0.95rem;
     margin-bottom: 1.5rem;
+    text-align: justify;
 }
 
 .example-tag {
@@ -353,6 +354,7 @@ nav {
     font-size: 1.1rem;
     color: var(--text-muted);
     line-height: 1.8;
+    text-align: justify;
 }
 
 /* Animations */

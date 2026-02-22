@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             link: 'https://podalfix.vercel.app/'
         },
         'gestion': {
-            title: 'Sistemas de Gestión',
+            title: 'Toca tocar: Sistemas de Gestión',
             desc: `Toca Tocar no es solo una agenda para músicos; es el nexo digital definitivo para la cultura de las Jam Sessions. Diseñada para coordinar el caos creativo, nuestra plataforma permite a organizadores y músicos gestionar cada aspecto de un evento en vivo: desde la propuesta de temas hasta la gestión de instrumentos y chat en tiempo real, todo bajo una estética de Jazz Cub premium.<br><br>
             <strong>💎 Funcionalidades Actuales</strong><br>
             • Gestión de Jams Dinámica: Creación de eventos con códigos de acceso únicos para una organización impecable.<br>
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
             icon: '🤖'
         },
         'vision': {
-            title: 'Desarrollo: Visión IT',
+            title: 'Visión IT: Visión Artificial',
             desc: `Visión IT no es solo una cámara; es un sistema de inspección inteligente que utiliza redes neuronales avanzadas para ver y entender el entorno de producción. Diseñada para la industria y el control de calidad, nuestra IA permite automatizar el conteo y la clasificación de objetos con precisión quirúrgica, eliminando el error humano y acelerando los reportes de planta.<br><br>
             <strong>💎 Funcionalidades Actuales</strong><br>
             • Detección Multi-Objeto: Identificación inmediata de múltiples categorías estándar mediante modelos COCO-SSD optimizados para web.<br>
@@ -79,25 +79,25 @@ document.addEventListener('DOMContentLoaded', () => {
             link: 'https://vision-it-six.vercel.app/'
         },
         'pilates': {
-            title: 'Desarrollo: VN Pilates',
-            desc: `Esta app no es solo un software de administración; es una herramienta de precisión diseñada para potenciar la rentabilidad de los centros de bienestar y fitness. Nuestra plataforma permite a quien emprende delegar las tareas administrativas pesadas para enfocarse en lo que realmente importa: sus alumnos.<br><br>
-            <strong>💎 Funcionalidades Actuales</strong><br>
-            Nuestra versión actual ya está transformando la dinámica diaria del estudio con herramientas robustas:<br><br>
+            title: 'VN Pilates: Gestión Inteligente',
+            desc: `Esta app no es solo un software de administración; es una herramienta de precisión diseñada para potenciar la gestión de del estudio VN pilates. La plataforma permite a quien emprende delegar las tareas administrativas pesadas para enfocarse en lo que realmente importa: sus alumnos.<br><br>
+            <strong>💎 Funcionalidades Actuales (MVP Beta)</strong><br>
+            La versión actual permite transformar la dinámica diaria del estudio con herramientas robustas:<br><br>
             • Gestión Centralizada de Alumnos: Registro detallado, control de asistencias y seguimiento de actividad en tiempo real.<br>
             • Inteligencia Financiera: Panel de control con cálculo automático de ingresos, gastos operativos y balances de ganancia neta.<br>
             • Cálculo Automatizado de Honorarios: Sistema inteligente de liquidación para profesores basado en horas trabajadas y valores variables, eliminando errores manuales.<br>
             • Reportes de Gestión "One-Click": Generación instantánea de reportes generales y detallados listos para la toma de decisiones.<br>
-            • Exportación Profesional: Soporte completo para exportación de datos a Excel y PDF, ideal para auditorías o con la toma de decisiones manuales.<br>
+            • Exportación Profesional: Soporte completo para exportación de datos a Excel y PDF, ideal para auditorías o copias de seguridad físicas.<br>
             • Sincronización Híbrida: Capacidad de importar datos desde planillas externas (CSV) y sincronización mediante enlaces dinámicos.<br>
             • Experiencia Mobile-First: Interfaz 100% responsiva diseñada para ser utilizada desde el celular con la misma fluidez que en una computadora.<br><br>
             <strong>🔮 Visión de Futuro: El Nexo Digital (Próximas Mejoras)</strong><br>
-            Estamos evolucionando para convertirnos en un ecosistema completo de salud y educación. Nuestras próximas actualizaciones llevarán el negocio al siguiente nivel:<br><br>
-            • Ecosystem Online (Nube): Migración a bases de datos en tiempo real para sincronización multidispositivo instantánea.<br>
+            Podría evolucionar para convertirse en un ecosistema completo de salud y educación de bienestar:<br><br>
+            • Ecosystem Online (Nube): Migración a bases de datos en tiempo real para sincronización multidispositivo instantánea y seguridad de grado bancario.<br>
             • Portal de Autenticación: Logueo seguro para administradores, profesores y alumnos con perfiles personalizados.<br>
-            • Ficha Médica Digital: Seguimiento clínico avanzado de los alumnos.<br>
-            • Notificaciones Inteligentes: Sistema de alertas para vencimientos de cuotas y recordatorios de citas.<br>
-            • Agenda Dinámica: Motor de citas inteligente.<br>
-            • Plataforma de E-Learning: Integración de cursos y videos exclusivos.`,
+            • Ficha Médica Digital: Seguimiento clínico avanzado de los alumnos, permitiendo a los instructores consultar patologías o notas médicas antes de cada clase.<br>
+            • Notificaciones Inteligentes: Sistema de alertas vía WhatsApp/Email para vencimientos de cuotas, recordatorios de citas y avisos del estudio.<br>
+            • Agenda Dinámica con Sugerencias: Un motor de citas que sugiere horarios óptimos basándose en el flujo de alumnos y disponibilidad de camas.<br>
+            • Plataforma de E-Learning: Integración de cursos y videos exclusivos directamente en la app para que los alumnos puedan entrenar o capacitarse de forma remota.`,
             icon: '🧘',
             image: 'assets/vn_pilates_dashboard.png',
             link: 'https://vn-pilates.vercel.app/'

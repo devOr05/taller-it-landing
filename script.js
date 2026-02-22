@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Content for Modals
     const serviceData = {
         'digitalizacion': {
-            title: 'Desarrollo: Podal Fix',
+            title: 'Podal Fix: Gestión Podológica',
             desc: `Esta plataforma redefine la administración de servicios de podología y salud animal. Diseñada para profesionales que buscan un control riguroso, Podal Fix elimina la carga administrativa manual, permitiendo un seguimiento técnico exhaustivo y una organización impecable de la jornada de trabajo.<br><br>
             <strong>💎 Funcionalidades Actuales</strong><br>
             • Dashboard Inteligente: Panel de control con métricas clave y acceso rápido a los establecimientos activos.<br>

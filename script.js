@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Content for Modals
     const serviceData = {
         'digitalizacion': {
-            title: '🚀 Desarrollo: Podal Fix',
+            title: 'Desarrollo: Podal Fix',
             desc: `Esta plataforma redefine la administración de servicios de podología y salud animal. Diseñada para profesionales que buscan un control riguroso, Podal Fix elimina la carga administrativa manual, permitiendo un seguimiento técnico exhaustivo y una organización impecable de la jornada de trabajo.<br><br>
             <strong>💎 Funcionalidades Actuales</strong><br>
             • Dashboard Inteligente: Panel de control con métricas clave y acceso rápido a los establecimientos activos.<br>
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             link: 'https://podalfix.vercel.app/'
         },
         'gestion': {
-            title: '🚀 Desarrollo: Toca Tocar',
+            title: 'Sistemas de Gestión',
             desc: `Toca Tocar no es solo una agenda para músicos; es el nexo digital definitivo para la cultura de las Jam Sessions. Diseñada para coordinar el caos creativo, nuestra plataforma permite a organizadores y músicos gestionar cada aspecto de un evento en vivo: desde la propuesta de temas hasta la gestión de instrumentos y chat en tiempo real, todo bajo una estética de Jazz Cub premium.<br><br>
             <strong>💎 Funcionalidades Actuales</strong><br>
             • Gestión de Jams Dinámica: Creación de eventos con códigos de acceso únicos para una organización impecable.<br>
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             • Chat en Vivo por Tema: Comunicación fluida para que los grupos que suben al escenario estén siempre en sintonía.`,
             image: 'assets/toca_tocar_dashboard.png',
             link: 'https://toca-tocar.vercel.app/',
-            icon: '🎸'
+            icon: '⚙️'
         },
         'chatbot': {
             title: 'Chat Bots Inteligentes',
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
             icon: '🤖'
         },
         'vision': {
-            title: '🚀 Desarrollo: Visión IT',
+            title: 'Desarrollo: Visión IT',
             desc: `Visión IT no es solo una cámara; es un sistema de inspección inteligente que utiliza redes neuronales avanzadas para ver y entender el entorno de producción. Diseñada para la industria y el control de calidad, nuestra IA permite automatizar el conteo y la clasificación de objetos con precisión quirúrgica, eliminando el error humano y acelerando los reportes de planta.<br><br>
             <strong>💎 Funcionalidades Actuales</strong><br>
             • Detección Multi-Objeto: Identificación inmediata de múltiples categorías estándar mediante modelos COCO-SSD optimizados para web.<br>
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
             link: 'https://vision-it-six.vercel.app/'
         },
         'pilates': {
-            title: '🚀 Desarrollo: VN Pilates',
+            title: 'Desarrollo: VN Pilates',
             desc: `Esta app no es solo un software de administración; es una herramienta de precisión diseñada para potenciar la rentabilidad de los centros de bienestar y fitness. Nuestra plataforma permite a quien emprende delegar las tareas administrativas pesadas para enfocarse en lo que realmente importa: sus alumnos.<br><br>
             <strong>💎 Funcionalidades Actuales</strong><br>
             Nuestra versión actual ya está transformando la dinámica diaria del estudio con herramientas robustas:<br><br>

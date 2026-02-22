@@ -41,9 +41,18 @@ document.addEventListener('DOMContentLoaded', () => {
             link: 'https://podalfix.vercel.app/'
         },
         'gestion': {
-            title: 'Sistemas de Gestión',
-            desc: 'Desarrollamos herramientas a medida para el control de tu negocio. **Taller IT** es un ejemplo de cómo una interfaz intuitiva puede facilitar la coordinación de tareas, inventarios y flujos de trabajo complejos.',
-            icon: '⚙️'
+            title: '🚀 Desarrollo: Toca Tocar',
+            desc: `Toca Tocar no es solo una agenda para músicos; es el nexo digital definitivo para la cultura de las Jam Sessions. Diseñada para coordinar el caos creativo, nuestra plataforma permite a organizadores y músicos gestionar cada aspecto de un evento en vivo: desde la propuesta de temas hasta la gestión de instrumentos y chat en tiempo real, todo bajo una estética de Jazz Cub premium.<br><br>
+            <strong>💎 Funcionalidades Actuales</strong><br>
+            • Gestión de Jams Dinámica: Creación de eventos con códigos de acceso únicos para una organización impecable.<br>
+            • Dashboard de Participantes: Visualización en tiempo real de los músicos anotados y sus instrumentos (Sax, Piano, Contrabajo, etc.).<br>
+            • Base de Datos de Standards: Integración con librerías de Jazz y soporte para visualización de partituras PDF directamente en la app.<br>
+            • Propuesta de Temas y Foro: Sistema interactivo para proponer qué tocar y coordinar detalles logísticos entre los músicos.<br>
+            • Galería Multimedia Directa: Espacio dedicado para que los asistentes suban fotos y videos que se agrupan automáticamente por evento.<br>
+            • Chat en Vivo por Tema: Comunicación fluida para que los grupos que suben al escenario estén siempre en sintonía.`,
+            image: 'assets/toca_tocar_dashboard.png',
+            link: 'https://toca-tocar.vercel.app/',
+            icon: '🎸'
         },
         'chatbot': {
             title: 'Chat Bots Inteligentes',

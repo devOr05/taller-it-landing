@@ -57,7 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'chatbot': {
             title: 'Chat Bots Inteligentes',
             desc: 'Automatizamos la comunicación con tus clientes. Estamos trabajando en soluciones que integran IA para responder consultas frecuentes, agendar citas y procesar pedidos de forma autónoma 24/7.',
-            icon: '🤖'
+            icon: '🤖',
+            image: 'assets/chatbot_dashboard.png'
         },
         'vision': {
             title: 'Visión IT: Visión Artificial',

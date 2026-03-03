@@ -80,28 +80,24 @@ document.addEventListener('DOMContentLoaded', () => {
             link: 'https://vision-it-six.vercel.app/'
         },
         'pilates': {
-            title: 'VN Pilates: Gestión Inteligente',
-            desc: `Esta app no es solo un software de administración; es una herramienta de precisión diseñada para potenciar la gestión de del estudio VN pilates. La plataforma permite a quien emprende delegar las tareas administrativas pesadas para enfocarse en lo que realmente importa: sus alumnos.<br><br>
-            <strong>💎 Funcionalidades Actuales (MVP Beta)</strong><br>
-            La versión actual permite transformar la dinámica diaria del estudio con herramientas robustas:<br><br>
-            • Gestión Centralizada de Alumnos: Registro detallado, control de asistencias y seguimiento de actividad en tiempo real.<br>
-            • Inteligencia Financiera: Panel de control con cálculo automático de ingresos, gastos operativos y balances de ganancia neta.<br>
-            • Cálculo Automatizado de Honorarios: Sistema inteligente de liquidación para profesores basado en horas trabajadas y valores variables, eliminando errores manuales.<br>
-            • Reportes de Gestión "One-Click": Generación instantánea de reportes generales y detallados listos para la toma de decisiones.<br>
-            • Exportación Profesional: Soporte completo para exportación de datos a Excel y PDF, ideal para auditorías o copias de seguridad físicas.<br>
-            • Sincronización Híbrida: Capacidad de importar datos desde planillas externas (CSV) y sincronización mediante enlaces dinámicos.<br>
-            • Experiencia Mobile-First: Interfaz 100% responsiva diseñada para ser utilizada desde el celular con la misma fluidez que en una computadora.<br><br>
-            <strong>🔮 Visión de Futuro: El Nexo Digital (Próximas Mejoras)</strong><br>
-            Podría evolucionar para convertirse en un ecosistema completo de salud y educación de bienestar:<br><br>
-            • Ecosystem Online (Nube): Migración a bases de datos en tiempo real para sincronización multidispositivo instantánea y seguridad de grado bancario.<br>
-            • Portal de Autenticación: Logueo seguro para administradores, profesores y alumnos con perfiles personalizados.<br>
-            • Ficha Médica Digital: Seguimiento clínico avanzado de los alumnos, permitiendo a los instructores consultar patologías o notas médicas antes de cada clase.<br>
-            • Notificaciones Inteligentes: Sistema de alertas vía WhatsApp/Email para vencimientos de cuotas, recordatorios de citas y avisos del estudio.<br>
-            • Agenda Dinámica con Sugerencias: Un motor de citas que sugiere horarios óptimos basándose en el flujo de alumnos y disponibilidad de camas.<br>
-            • Plataforma de E-Learning: Integración de cursos y videos exclusivos directamente en la app para que los alumnos puedan entrenar o capacitarse de forma remota.`,
+            title: 'Gestión Flex: Sistema Inteligente',
+            desc: `Esta app no es solo un software de administración; es una herramienta de precisión diseñada para potenciar la gestión de estudios, gimnasios y centros de bienestar. La plataforma permite delegar las tareas administrativas pesadas para enfocarse en lo que realmente importa: los alumnos y el equipo de trabajo.<br><br>
+            <strong>💎 Funcionalidades Actuales (Beta Abierta)</strong><br>
+            La versión actual transforma la dinámica diaria de cualquier centro con herramientas robustas:<br><br>
+            • Gestión Centralizada: Registro detallado de alumnos, control de pagos y seguimiento de disciplinas.<br>
+            • Portal Profesional Independiente: Acceso exclusivo para los profesores/personal, donde pueden ver sus propios alumnos, horarios asignados, horas trabajadas y su ganancia mensual estimada.<br>
+            • Agenda Semanal Dinámica: Cuadrícula visual de todos los horarios programados del establecimiento, con exportación generativa a PDF.<br>
+            • Inteligencia Financiera: Panel completo con cruce de ingresos, gastos operativos, honorarios de los profesores y ganancia neta.<br>
+            • Personalización de Marca: Configuración del nombre del espacio y del tipo de clientes (Alumnos o Pacientes) para que la app se adapte a tu negocio.<br>
+            • Reportes "One-Click": Generador interno para exportar planillas de alumnos a PDF y planillas generales de Excel con solo un click.<br>
+            • Experiencia Mobile-First: Interfaz 100% responsiva, súper veloz y diseñada directamente para operar en celulares como en una tablet o PC.<br><br>
+            <strong>🔮 Visión de Futuro (Próximas Mejoras)</strong><br>
+            • Autenticación Segura (Logins privados de base de datos).<br>
+            • Integraciones con calendarios para autogestión de turnos de los clientes.<br>
+            • Sincronización en la Nube Multi-Dispositivo y Respaldos automáticos.`,
             icon: '🧘',
-            image: 'assets/vn_pilates_dashboard.png',
-            link: 'https://vn-pilates.vercel.app/'
+            image: 'assets/vn_pilates_dashboard.png', // Por ahora lo conservamos hasta la nueva foto
+            link: 'https://gestion-flex.vercel.app/'
         }
     };
 

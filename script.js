@@ -37,7 +37,13 @@ document.addEventListener('DOMContentLoaded', () => {
             • Portal del Cliente: Acceso restringido para que los dueños de establecimientos vean el estado de su rodeo.<br>
             • Integración de Voz: Capacidad de dictar notas clínicas mientras se realiza el trabajo manual.`,
             icon: '📋',
-            image: 'assets/podal_fix_dashboard.png',
+            images: [
+                'assets/media__1773181533552.png',
+                'assets/media__1773181411391.png',
+                'assets/media__1773181373052.png',
+                'assets/media__1773179169321.png',
+                'assets/podal_fix_dashboard.png'
+            ],
             link: 'https://podalfix.vercel.app/'
         },
         'gestion': {
@@ -96,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
             • Integraciones con calendarios para autogestión de turnos de los clientes.<br>
             • Sincronización en la Nube Multi-Dispositivo y Respaldos automáticos.`,
             icon: '🧘',
-            image: 'assets/vn_pilates_dashboard.png', // Por ahora lo conservamos hasta la nueva foto
+            image: 'assets/gestion_flex_dashboard.png', // Imagen de captura Pila Workspace
             link: 'https://gestion-flex.vercel.app/'
         }
     };
@@ -117,7 +123,14 @@ document.addEventListener('DOMContentLoaded', () => {
             let content = `
                 <span style="font-size: 4rem; display: block; margin-bottom: 1rem;">${data.icon}</span>
                 <h2>${data.title}</h2>
-                ${data.image ? `<img src="${data.image}" alt="${data.title}" style="width: 100%; border-radius: 20px; margin: 1.5rem 0; border: 1px solid var(--glass-border);">` : `
+                ${data.images ? `
+                <div style="margin: 1.5rem 0;">
+                    <p style="text-align: right; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">Desliza para ver más ➔</p>
+                    <div style="display: flex; gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin; padding-bottom: 1rem; border-radius: 20px;">
+                        ${data.images.map(img => `<img src="${img}" alt="${data.title}" style="scroll-snap-align: center; flex: 0 0 100%; width: 100%; border-radius: 20px; border: 1px solid var(--glass-border); object-fit: contain; max-height: 400px; background: #f8fafc;">`).join('')}
+                    </div>
+                </div>
+                ` : data.image ? `<img src="${data.image}" alt="${data.title}" style="width: 100%; border-radius: 20px; margin: 1.5rem 0; border: 1px solid var(--glass-border);">` : `
                 <div class="modal-image-placeholder">
                     <p style="color: var(--text-muted)">Caso de estudio: ${data.title}</p>
                 </div>`}

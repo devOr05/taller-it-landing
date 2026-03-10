@@ -122,11 +122,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span style="font-size: 4rem; display: block; margin-bottom: 1rem;">${data.icon}</span>
                 <h2>${data.title}</h2>
                 ${data.images ? `
-                <div style="margin: 1.5rem 0;">
-                    <p style="text-align: right; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">Desliza para ver más ➔</p>
-                    <div style="display: flex; gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin; padding-bottom: 1rem; border-radius: 20px;">
-                        ${data.images.map(img => `<img src="${img}" alt="${data.title}" style="scroll-snap-align: center; flex: 0 0 100%; width: 100%; border-radius: 20px; border: 1px solid var(--glass-border); object-fit: contain; max-height: 400px; background: #f8fafc;">`).join('')}
+                <div style="position: relative; margin: 1.5rem 0; width: 100%; border-radius: 20px; overflow: hidden; background: #f8fafc; border: 1px solid var(--glass-border);">
+                    <button class="carousel-btn prev-btn" onclick="javascript:this.nextElementSibling.scrollBy({left: -300, behavior: 'smooth'})">❮</button>
+                    <div class="carousel-container" style="display: flex; gap: 0; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none;">
+                        ${data.images.map(img => `<img src="${img}" alt="${data.title}" style="scroll-snap-align: center; flex: 0 0 100%; width: 100%; object-fit: contain; max-height: 400px; display: block;">`).join('')}
                     </div>
+                    <button class="carousel-btn next-btn" onclick="javascript:this.previousElementSibling.scrollBy({left: 300, behavior: 'smooth'})">❯</button>
                 </div>
                 ` : data.image ? `<img src="${data.image}" alt="${data.title}" style="width: 100%; border-radius: 20px; margin: 1.5rem 0; border: 1px solid var(--glass-border);">` : `
                 <div class="modal-image-placeholder">

@@ -357,6 +357,46 @@ nav {
     text-align: justify;
 }
 
+/* Carousel Buttons */
+.carousel-container::-webkit-scrollbar {
+    display: none;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #fff;
+    font-size: 1.4rem;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.25s ease, transform 0.2s ease, border-color 0.25s ease;
+    line-height: 1;
+}
+
+.carousel-btn:hover {
+    background: rgba(56, 189, 248, 0.35);
+    border-color: rgba(56, 189, 248, 0.6);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-btn.prev-btn {
+    left: 12px;
+}
+
+.carousel-btn.next-btn {
+    right: 12px;
+}
+
 /* Animations */
 .reveal {
     opacity: 0;

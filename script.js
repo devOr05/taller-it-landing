@@ -38,11 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
             • Integración de Voz: Capacidad de dictar notas clínicas mientras se realiza el trabajo manual.`,
             icon: '📋',
             images: [
-                'assets/media__1773181533552.png',
-                'assets/media__1773181411391.png',
                 'assets/media__1773181373052.png',
-                'assets/media__1773179169321.png',
-                'assets/podal_fix_dashboard.png'
+                'assets/media__1773181411391.png',
+                'assets/media__1773181533552.png'
             ],
             link: 'https://podalfix.vercel.app/'
         },

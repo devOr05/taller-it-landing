@@ -66,21 +66,20 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         'vision': {
             title: 'Visión IT: Visión Artificial',
-            desc: `Visión IT no es solo una cámara; es un sistema de inspección inteligente que utiliza redes neuronales avanzadas para ver y entender el entorno de producción. Diseñada para la industria y el control de calidad, nuestra IA permite automatizar el conteo y la clasificación de objetos con precisión quirúrgica, eliminando el error humano y acelerando los reportes de planta.<br><br>
+            desc: `Visión IT (Versión Demo) no es solo una cámara; es un sistema de inspección inteligente que utiliza redes neuronales avanzadas para ver y entender el entorno. Esta versión de demostración está configurada para la detección de celulares en tiempo real, demostrando cómo nuestra IA automatiza el conteo y la clasificación de objetos con precisión quirúrgica.<br><br>
             <strong>💎 Funcionalidades Actuales</strong><br>
-            • Detección Multi-Objeto: Identificación inmediata de múltiples categorías estándar mediante modelos COCO-SSD optimizados para web.<br>
-            • Entrenamiento Custom (KNN Classifier): Capacidad de "enseñar" a la app a reconocer objetos específicos de tu negocio con solo unos segundos de captura.<br>
-            • Modo de Conteo por Cuadrícula: Sistema de segmentación de imagen para realizar auditorías visuales y conteos masivos en tiempo real.<br>
-            • Generación de Reportes PDF: Creación instantánea de informes de producción detallados con fecha, lote y desglose de detecciones.<br>
-            • Sintetizador de Voz Inteligente: Confirmación auditiva de las detecciones para permitir un flujo de trabajo "manos libres".<br>
+            • Detección de Celulares (Demo): Identificación inmediata de dispositivos móviles mediante modelos optimizados para web.<br>
+            • Alertas vía Telegram: Envío automático de notificaciones en tiempo real a Telegram cada vez que se detecta un celular.<br>
             • Panel de Control de Sensibilidad: Ajuste fino del umbral de confianza para adaptarse a diferentes condiciones de iluminación y entorno.<br><br>
             <strong>🔮 Visión de Futuro: El Nexo Digital (Próximas Mejoras)</strong><br>
+            • Modo de Conteo por Cuadrícula: Análisis avanzado para auditorías visuales y conteos masivos.<br>
+            • Sintetizador de Voz Inteligente: Confirmación auditiva de las detecciones para flujos de trabajo manos libres.<br>
             • Integración de Edge Computing: Procesamiento aún más veloz directamente en el dispositivo para una respuesta de milisegundos.<br>
             • Detección de Anomalías: Entrenamiento automático para identificar productos defectuosos que no cumplen con el patrón visual estándar.<br>
             • Dashboard Cloud de Producción: Visualización de métricas de múltiples cámaras en una consola centralizada para supervisores.<br>
             • Alertas Críticas vía Webhook: Envío de señales a otros sistemas o maquinaria al detectar eventos específicos en la línea de visión.`,
             icon: '👁️',
-            image: 'assets/vision_it_dashboard.png',
+            image: 'assets/vision_it_dashboard_v2.png',
             link: 'https://vision-it-six.vercel.app/'
         },
         'pilates': {

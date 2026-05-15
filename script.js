@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div style="position: relative; margin: 1.5rem 0; width: 100%; border-radius: 20px; overflow: hidden; background: #f8fafc; border: 1px solid var(--glass-border);">
                     <button class="carousel-btn prev-btn" onclick="javascript:this.nextElementSibling.scrollBy({left: -300, behavior: 'smooth'})">❮</button>
                     <div class="carousel-container" style="display: flex; gap: 0; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none;">
-                        ${data.images.map(img => `<img src="${img}" alt="${data.title}" style="scroll-snap-align: center; flex: 0 0 100%; width: 100%; object-fit: contain; max-height: 400px; display: block;">`).join('')}
+                        ${data.images.map(img => `<img src="${img}" alt="${data.title}" style="scroll-snap-align: center; flex: 0 0 100%; width: 100%; object-fit: contain; max-height: 400px; display: block; transform: scale(1.05);">`).join('')}
                     </div>
                     <button class="carousel-btn next-btn" onclick="javascript:this.previousElementSibling.scrollBy({left: 300, behavior: 'smooth'})">❯</button>
                 </div>

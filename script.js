@@ -21,26 +21,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const serviceData = {
         'digitalizacion': {
             title: 'Podal Fix: Gestión Podológica',
-            desc: `Esta plataforma redefine la administración de servicios de podología y salud animal. Diseñada para profesionales que buscan un control riguroso, Podal Fix elimina la carga administrativa manual, permitiendo un seguimiento técnico exhaustivo y una organización impecable de la jornada de trabajo.<br><br>
-            <strong>💎 Funcionalidades Actuales</strong><br>
-            • Dashboard Inteligente: Panel de control con métricas clave y acceso rápido a los establecimientos activos.<br>
-            • Gestión de Pacientes y Rodeos: Clasificación detallada por caravanas, establecimientos y categorías con búsqueda instantánea.<br>
-            • Agenda Profesional: Sistema de turnos y programación de visitas optimizado para el trabajo en campo.<br>
-            • Historias Clínicas Digitales: Registro exhaustivo de patologías, tratamientos y notas técnicas por cada animal.<br>
-            • Control Multi-Establecimiento: Capacidad de gestionar diferentes clientes o locaciones desde una única interfaz centralizada.<br>
-            • Notificaciones de Rechequeo: Sistema de alertas para el seguimiento de casos pendientes.<br>
-            • Interfaz Mobile-Responsive: Perfectamente adaptada para su uso en tablets y celulares durante las inspecciones técnicas.<br><br>
-            <strong>🔮 Visión de Futuro: El Nexo Digital (Próximas Mejoras)</strong><br>
-            • Sincronización Offline: Capacidad de trabajar sin conexión a internet y sincronizar datos automáticamente al recuperar señal.<br>
-            • Reportes Técnicos Automatizados: Generación de informes profesionales para clientes con un solo clic.<br>
-            • Galería de Imágenes Clínicas: Adjuntar fotos del estado de las pezuñas o lesiones directamente a la ficha clínica.<br>
-            • Portal del Cliente: Acceso restringido para que los dueños de establecimientos vean el estado de su rodeo.<br>
-            • Integración de Voz: Capacidad de dictar notas clínicas mientras se realiza el trabajo manual.`,
+            desc: `Podal Fix es la herramienta definitiva para la gestión de salud podal bovina. Diseñada para transformar el trabajo de campo en una experiencia digital fluida, permite un seguimiento quirúrgico de cada animal, centralizando la información técnica y administrativa en un solo lugar.<br><br>
+            <strong>💎 Funcionalidades Clave</strong><br>
+            • <b>Dashboard de Analytics:</b> Métricas críticas sobre el estado del rodeo y eficacia de tratamientos en tiempo real.<br>
+            • <b>Mapa Clínico Interactivo:</b> Registro visual y detallado de patologías por pezuña con interfaz táctil avanzada.<br>
+            • <b>Gestión Multi-Establecimiento:</b> Control centralizado de múltiples rodeos, clientes y locaciones geográficas.<br>
+            • <b>Historias Clínicas 360°:</b> Acceso instantáneo al historial completo, tratamientos previos y evolución de cada animal.<br>
+            • <b>Operatividad Total:</b> Interfaz diseñada para máxima velocidad en tablets y celulares durante las inspecciones.<br><br>
+            <strong>🔮 Visión de Futuro: El Nexo Digital</strong><br>
+            • Sincronización Offline inteligente para zonas sin cobertura.<br>
+            • Reportes Automáticos exportables para dueños de establecimientos.<br>
+            • Galería de Imágenes Clínicas integrada en cada ficha de animal.`,
             icon: '📋',
             images: [
-                'assets/media__1773181373052.png',
-                'assets/media__1773181411391.png',
-                'assets/media__1773181533552.png'
+                'assets/podal_1.jpg',
+                'assets/podal_2.jpg',
+                'assets/podal_3.jpg',
+                'assets/podal_4.jpg',
+                'assets/podal_5.jpg'
             ],
             link: 'https://podalfix.vercel.app/'
         },

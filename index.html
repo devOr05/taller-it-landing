@@ -4,134 +4,364 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taller IT | Eficiencia a través del software</title>
+    <title>Taller IT | Experiencias Digitales y Software a Medida</title>
     <meta name="description"
-        content="Taller IT desarrolla mini aplicaciones personalizadas para optimizar tu trabajo diario. Digitalización, sistemas de gestión, chatbots y visión artificial.">
+        content="Taller IT desarrolla soluciones digitales de alta gama: sistemas de gestión a medida, visión artificial y automatización de procesos para marcas y empresas.">
+
+    <!-- Google Fonts: Space Grotesk & Syncopate -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Syncopate:wght@700&display=swap"
+        rel="stylesheet">
+
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
+    <!-- 3D WebGL Background Canvas -->
+    <canvas id="webgl-canvas"></canvas>
 
-    <nav>
-        <div class="logo">Taller IT</div>
-        <div class="nav-links">
-            <a href="#servicios">Servicios</a>
-            <a href="#contacto">Contacto</a>
+    <!-- Grain / Ambient Overlay -->
+    <div class="cosmos-overlay"></div>
+
+    <!-- Top Minimalist HUD Navigation -->
+    <header class="hud-header">
+        <div class="hud-brand">
+            <a href="#" class="logo-link">
+                <span class="brand-symbol">✦</span>
+                <span class="brand-text">TALLER <strong>IT</strong></span>
+            </a>
         </div>
-    </nav>
 
-    <main class="container">
-        <section class="hero">
-            <h1>Software <span>Hecho a Medida</span> para tu Trabajo</h1>
-            <p>En el Taller IT transformamos procesos manuales en herramientas digitales eficientes. Aplicaciones a
-                medida
-                que resuelven problemas reales.</p>
+        <nav class="hud-nav">
+            <a href="#hero" class="nav-item active" data-shape="0">Inicio</a>
+            <a href="#servicios" class="nav-item" data-shape="1">Soluciones</a>
+            <a href="#vision-ia" class="nav-item" data-shape="2">Visión IA</a>
+            <a href="#contacto" class="nav-item" data-shape="3">Contacto</a>
+        </nav>
+
+        <div class="hud-actions">
+            <a href="https://wa.me/542235928978" target="_blank" class="hud-cta-btn">
+                <span>Hablemos</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M7 17L17 7M17 7H7M17 7V17" />
+                </svg>
+            </a>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Abrir Menú">
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Floating HUD Elements -->
+    <div class="hud-status-badge">
+        <span class="status-indicator"></span>
+        <span class="status-label">3D ENGINE ACTIVE</span>
+        <span class="status-sep">•</span>
+        <span class="shape-indicator" id="current-shape-name">COHETE / DESPEGUE</span>
+    </div>
+
+    <!-- Scroll Progress Rail -->
+    <div class="hud-scroll-rail">
+        <div class="hud-scroll-bar" id="scroll-bar"></div>
+        <div class="rail-marker active" data-target="0">01</div>
+        <div class="rail-marker" data-target="1">02</div>
+        <div class="rail-marker" data-target="2">03</div>
+        <div class="rail-marker" data-target="3">04</div>
+    </div>
+
+    <!-- Interactive Custom Cursor follower -->
+    <div class="custom-cursor" id="cursor"></div>
+    <div class="cursor-trail" id="cursor-trail"></div>
+
+    <!-- Main Content Flow (Full-viewport Storytelling) -->
+    <main class="page-container">
+
+        <!-- SECTION 1: HERO -->
+        <section id="hero" class="scene-section hero-scene" data-index="0">
+            <div class="scene-content">
+                <div class="section-tag-hud">
+                    <span class="dot-beacon"></span>
+                    <span class="tag-title">DESARROLLO DE SOFTWARE & PRECISION DIGITAL</span>
+                </div>
+
+                <h1 class="main-headline">
+                    <span class="stroke-word">IMPULSA</span>
+                    <span class="glow-word">TU NEGOCIO</span>
+                </h1>
+
+                <p class="hero-statement">
+                    Creamos <span class="highlight">experiencias digitales</span> en la intersección entre
+                    <span class="highlight">diseño</span> y <span class="highlight">tecnología de alta gama</span>,
+                    ayudando a nuestros clientes a <span class="highlight">construir el futuro</span>, hoy.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="#servicios" class="btn-cosmic-primary">
+                        <span>Explorar Soluciones</span>
+                        <span class="arrow">↓</span>
+                    </a>
+                    <a href="#contacto" class="btn-cosmic-ghost">
+                        <span>Iniciar Proyecto</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="scroll-hint">
+                <span class="mouse-icon">
+                    <span class="wheel"></span>
+                </span>
+                <span class="hint-text">SCROLL PARA EXPLORAR</span>
+            </div>
         </section>
 
-        <section id="servicios" class="sections-grid">
-            <!-- Digitalización -->
-            <div class="card reveal">
-                <span class="icon">📋</span>
-                <h3>Podal Fix: Gestión Podológica</h3>
-                <p>Transformamos la gestión de salud animal con aplicaciones de alta precisión. Centraliza diagnósticos, tratamientos y analíticas en tiempo real.</p>
-                <div class="example-tag">Desarrollo: Podal Fix</div>
-            </div>
+        <!-- SECTION 2: SOLUTIONS & CASE STUDIES -->
+        <section id="servicios" class="scene-section solutions-scene" data-index="1">
+            <div class="scene-content wide">
+                <div class="section-header-compact">
+                    <div class="section-tag-hud">
+                        <span class="dot-beacon"></span>
+                        <span class="tag-title">ARQUITECTURA DE SOFTWARE A MEDIDA</span>
+                    </div>
+                    <h2 class="section-headline">
+                        <span class="stroke-word">SOLUCIONES</span>
+                        <span class="glow-word">Y CASOS DE ÉXITO</span>
+                    </h2>
+                    <p class="section-subtext">
+                        Sistemas que eliminan el caos operativo, digitalizan procesos manuales y escalan tu rentabilidad.
+                    </p>
+                </div>
 
-            <!-- Gestión Flex - Case Study -->
-            <div class="card reveal" id="case-study-pilates">
-                <span class="icon">🧘</span>
-                <h3>Gestión Flex: Sistema Inteligente</h3>
-                <p>Digitalización de gestión: Control centralizado de alumnos, horarios y finanzas operativas en un
-                    click.</p>
-                <div class="example-tag">Desarrollo: Gestión Flex</div>
-            </div>
+                <!-- Showcase Glass Grid -->
+                <div class="hud-showcase-grid">
+                    <!-- Podal Fix -->
+                    <div class="hud-card" data-key="digitalizacion">
+                        <div class="card-glow"></div>
+                        <div class="card-meta">
+                            <span class="card-num">01</span>
+                            <span class="card-category">Salud Animal & Agro</span>
+                        </div>
+                        <div class="card-icon-wrap">📋</div>
+                        <h3 class="card-title">Podal Fix</h3>
+                        <p class="card-desc">
+                            Gestión podológica y salud de precisión. Historias clínicas 360°, mapas patológicos por pezuña y analítica en tiempo real.
+                        </p>
+                        <div class="card-footer">
+                            <span class="card-link-action">Ver caso de estudio <span>→</span></span>
+                            <span class="card-pill">En Producción</span>
+                        </div>
+                    </div>
 
-            <!-- Sistema de Gestión -->
-            <div class="card reveal">
-                <span class="icon">⚙️</span>
-                <h3>Toca tocar: Sistemas de Gestión</h3>
-                <p>Control total de tu operativa diaria con interfaces intuitivas y reportes en tiempo real.</p>
-                <div class="example-tag">Desarrollo: Toca Tocar</div>
-            </div>
+                    <!-- Gestión Flex (Pilates) -->
+                    <div class="hud-card featured" data-key="pilates">
+                        <div class="card-glow"></div>
+                        <div class="card-meta">
+                            <span class="card-num">02</span>
+                            <span class="card-category">Estudios & Bienestar</span>
+                        </div>
+                        <div class="card-icon-wrap">🧘</div>
+                        <h3 class="card-title">Gestión Flex</h3>
+                        <p class="card-desc">
+                            Digitalización para centros de pilates y fitness: control integral de alumnos, turnos dinámicos, finanzas operativas y reportes en 1 click.
+                        </p>
+                        <div class="card-footer">
+                            <span class="card-link-action">Ver caso de estudio <span>→</span></span>
+                            <span class="card-pill live">Beta Abierta</span>
+                        </div>
+                    </div>
 
-            <!-- Visión Artificial -->
-            <div class="card reveal">
-                <span class="icon">👁️</span>
-                <h3>Visión IT: Visión Artificial</h3>
-                <p>Análisis de imágenes y videos para automatizar inspecciones o reconocimiento de patrones.</p>
-                <div class="example-tag">Desarrollo: Visión IT</div>
-            </div>
+                    <!-- Toca Tocar -->
+                    <div class="hud-card" data-key="gestion">
+                        <div class="card-glow"></div>
+                        <div class="card-meta">
+                            <span class="card-num">03</span>
+                            <span class="card-category">Eventos & Cultura</span>
+                        </div>
+                        <div class="card-icon-wrap">⚙️</div>
+                        <h3 class="card-title">Toca Tocar</h3>
+                        <p class="card-desc">
+                            Plataforma integral para Jam Sessions y eventos en vivo. Coordinación de repertorio, músicos e instrumentos en tiempo real.
+                        </p>
+                        <div class="card-footer">
+                            <span class="card-link-action">Ver caso de estudio <span>→</span></span>
+                            <span class="card-pill">En Producción</span>
+                        </div>
+                    </div>
 
-            <!-- Chat Bot -->
-            <div class="card reveal coming-soon">
-                <span class="icon">🤖</span>
-                <h3>Chat Bots Inteligentes</h3>
-                <p>Automatización de atención al cliente y procesos internos mediante chats conversacionales.</p>
-                <div class="example-tag">Desarrollo: Próximamente</div>
+                    <!-- Chatbots Inteligentes -->
+                    <div class="hud-card" data-key="chatbot">
+                        <div class="card-glow"></div>
+                        <div class="card-meta">
+                            <span class="card-num">04</span>
+                            <span class="card-category">IA Conversacional</span>
+                        </div>
+                        <div class="card-icon-wrap">🤖</div>
+                        <h3 class="card-title">Chatbots IA</h3>
+                        <p class="card-desc">
+                            Agentes inteligentes para atención 24/7, calificación de leads y procesamiento autónomo de solicitudes directo a WhatsApp.
+                        </p>
+                        <div class="card-footer">
+                            <span class="card-link-action">Conocer más <span>→</span></span>
+                            <span class="card-pill coming">Próximamente</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <section id="contacto" class="footer reveal">
-            <h2>Hablemos de tu proyecto</h2>
-            <p>Cuéntanos tu idea y la haremos realidad.</p>
+        <!-- SECTION 3: VISION ARTIFICIAL & AI -->
+        <section id="vision-ia" class="scene-section vision-scene" data-index="2">
+            <div class="scene-content">
+                <div class="section-tag-hud">
+                    <span class="dot-beacon"></span>
+                    <span class="tag-title">COMPUTER VISION & DEEP LEARNING</span>
+                </div>
 
-            <div class="contact-info">
-                <a href="https://wa.me/542235928978" id="whatsapp-link" class="contact-link whatsapp" target="_blank">
-                    <div class="icon">💬</div>
-                    <span>WhatsApp</span>
-                </a>
-                <a href="#" id="email-trigger" class="contact-link">
-                    <div class="icon">✉️</div>
-                    <span>Enviar correo</span>
-                </a>
-                <a href="https://www.instagram.com/taller_it_?igsh=MXh5Zm5heW0wajdubA==" class="contact-link instagram"
-                    id="instagram-link" target="_blank">
-                    <div class="icon">📸</div>
-                    <span>Instagram</span>
-                </a>
+                <h2 class="main-headline">
+                    <span class="stroke-word">VISIÓN</span>
+                    <span class="glow-word">ARTIFICIAL</span>
+                </h2>
+
+                <p class="hero-statement">
+                    Sistemas de inspección inteligente con <span class="highlight">redes neuronales en tiempo real</span>.
+                    Automatizamos conteos masivos, control de calidad y detección de anomalías con precisión milimétrica.
+                </p>
+
+                <div class="vision-highlight-box" data-key="vision">
+                    <div class="vision-box-header">
+                        <div class="vision-badge">
+                            <span class="live-dot"></span> DEMO EN VIVO
+                        </div>
+                        <span class="vision-name">Visión IT: Detector Neuronal Web</span>
+                    </div>
+                    <p class="vision-box-desc">
+                        Identificación óptica instantánea de objetos y dispositivos con alertas automatizadas vía Telegram y ajuste fino de umbral de confianza en milisegundos.
+                    </p>
+                    <div class="vision-actions">
+                        <button class="btn-cosmic-primary" id="open-vision-case">
+                            <span>Abrir Ficha Técnica</span>
+                            <span>→</span>
+                        </button>
+                        <a href="https://vision-it-six.vercel.app/" target="_blank" class="btn-cosmic-ghost">
+                            <span>Probar Demo en Vivo ↗</span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </section>
+
+        <!-- SECTION 4: CONTACT / COSMIC GREETING -->
+        <section id="contacto" class="scene-section contact-scene" data-index="3">
+            <div class="scene-content wide">
+                <div class="contact-hero-wrap">
+                    <div class="section-tag-hud">
+                        <span class="dot-beacon"></span>
+                        <span class="tag-title">INICIA TU TRANSFORMACIÓN DIGITAL</span>
+                    </div>
+
+                    <h2 class="contact-giant-title">
+                        <span class="stroke-word">HABLEMOS</span>
+                        <span class="glow-word">DE TU IDEA</span>
+                    </h2>
+
+                    <div class="contact-interactive-email">
+                        <a href="#" id="email-trigger" class="cosmic-email-link">
+                            hola@tallerit.com
+                            <span class="email-click-hint">Click para enviar mensaje ✉</span>
+                        </a>
+                    </div>
+
+                    <div class="hud-contact-grid">
+                        <a href="https://wa.me/542235928978" target="_blank" class="hud-contact-card whatsapp">
+                            <div class="hud-contact-icon">💬</div>
+                            <div class="hud-contact-info">
+                                <span class="contact-card-label">WhatsApp Directo</span>
+                                <span class="contact-card-val">+54 223 592-8978</span>
+                            </div>
+                            <span class="contact-arrow">↗</span>
+                        </a>
+
+                        <a href="https://www.instagram.com/taller_it_?igsh=MXh5Zm5heW0wajdubA==" target="_blank" class="hud-contact-card instagram">
+                            <div class="hud-contact-icon">📸</div>
+                            <div class="hud-contact-info">
+                                <span class="contact-card-label">Instagram Oficial</span>
+                                <span class="contact-card-val">@taller_it_</span>
+                            </div>
+                            <span class="contact-arrow">↗</span>
+                        </a>
+
+                        <div class="hud-contact-card fast-response">
+                            <div class="hud-contact-icon">⚡</div>
+                            <div class="hud-contact-info">
+                                <span class="contact-card-label">Tiempo de Respuesta</span>
+                                <span class="contact-card-val">Menos de 24 hs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <footer class="hud-footer-bottom">
+                    <div class="footer-copy">
+                        © 2026 Taller IT. Todos los derechos reservados. Eficiencia a través del software.
+                    </div>
+                    <div class="footer-badges">
+                        <span>✦ 3D EXPERIMENTAL EXPERIENCE</span>
+                    </div>
+                </footer>
+            </div>
+        </section>
+
     </main>
 
     <!-- Service Modal Container -->
     <div class="modal-overlay" id="service-modal">
         <div class="modal-content">
-            <button class="close-modal" id="close-modal">&times;</button>
+            <button class="close-modal" id="close-modal" aria-label="Cerrar modal">&times;</button>
             <div class="modal-body" id="modal-body">
-                <!-- Content injected via JS -->
+                <!-- Content dynamically injected via JS -->
             </div>
         </div>
     </div>
 
-    <!-- Contact Modal -->
+    <!-- Contact Form Modal -->
     <div class="modal-overlay" id="contact-modal">
         <div class="modal-content contact-modal-content">
-            <button class="close-modal" id="close-contact-modal">&times;</button>
+            <button class="close-modal" id="close-contact-modal" aria-label="Cerrar modal">&times;</button>
             <div class="modal-body">
+                <div class="section-tag-hud" style="margin-bottom: 0.8rem;">
+                    <span class="dot-beacon"></span>
+                    <span class="tag-title">CANAL DIRECTO</span>
+                </div>
                 <h2>Hablemos de tu proyecto</h2>
-                <p>Completa este breve formulario y me pondré en contacto contigo a la brevedad.</p>
+                <p>Cuéntanos sobre tu idea o requerimiento y coordinamos una demo técnica sin compromiso.</p>
                 <form id="contact-form" class="contact-form">
                     <div class="form-group">
-                        <input type="text" placeholder="Tu Nombre" required>
+                        <label>Nombre o Empresa</label>
+                        <input type="text" placeholder="Ej: Roberto Gómez" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" placeholder="Tu Email" required>
+                        <label>Correo Electrónico</label>
+                        <input type="email" placeholder="roberto@empresa.com" required>
                     </div>
                     <div class="form-group">
-                        <textarea placeholder="Cuéntame sobre tu idea o problema a resolver..." rows="4"
-                            required></textarea>
+                        <label>Detalle del Proyecto</label>
+                        <textarea placeholder="¿Qué proceso te gustaría digitalizar o automatizar?" rows="4" required></textarea>
                     </div>
-                    <button type="submit" class="btn-primary"
-                        style="width: 100%; border: none; cursor: pointer; padding: 1rem; border-radius: 12px; font-weight: 600;">
-                        Enviar Mensaje
+                    <button type="submit" class="btn-cosmic-primary full-width">
+                        <span>Enviar Mensaje</span>
+                        <span>→</span>
                     </button>
                 </form>
             </div>
         </div>
     </div>
 
+    <!-- Application Script -->
     <script src="script.js"></script>
 </body>
 

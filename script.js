@@ -484,6 +484,23 @@ document.addEventListener('DOMContentLoaded', () => {
             icon: '🧘',
             link: 'https://gestion-flex.vercel.app/'
         },
+        'moai': {
+            title: 'Moai Eco Adventure: Plataforma de Turismo & B2B',
+            desc: `Moai Eco Adventure es una plataforma integral de ecoturismo y eventos vivenciales para particulares y corporaciones, desarrollada para inspirar la conexión con la naturaleza a través del deporte y la aventura.<br><br>
+            <strong>💎 Funcionalidades Clave</strong><br>
+            • <b>Marketplace de Aventuras:</b> Catálogo interactivo de experiencias (Parapente, Mountain Bike, Surf, Trekking) con filtros dinámicos por categoría, fecha y tipo de público.<br>
+            • <b>Módulo Corporativo B2B:</b> Solución dedicada a retiros de empresas, team building y jornadas al aire libre con cotizador inteligente de eventos.<br>
+            • <b>Club Moai & Beneficios:</b> Sistema de membresía y fidelización con acceso preferencial a salidas grupales.<br>
+            • <b>Consola Administrativa Central:</b> Gestión completa de reservas, leads comerciales, postulaciones de instructores y catálogo de actividades.<br>
+            • <b>Rendimiento Ultra Veloz:</b> Construido sobre stack moderno (React + Vite), optimizado para carga inmediata y máxima conversión en dispositivos móviles.`,
+            icon: '🗿',
+            images: [
+                'assets/moai_1.jpg',
+                'assets/moai_2.jpg',
+                'assets/moai_3.jpg'
+            ],
+            link: 'https://moai-eco-adventure.vercel.app/'
+        },
         'gestion': {
             title: 'Toca Tocar: Plataforma de Eventos',
             desc: `Toca Tocar es el nexo digital definitivo para coordinar Jam Sessions y eventos musicales en vivo. Diseñada para ordenar el caos creativo, permite gestionar repertorios compartidos, instrumentos y line-ups en tiempo real.<br><br>

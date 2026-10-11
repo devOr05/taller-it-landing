@@ -487,17 +487,32 @@ body {
     width: 100%;
 }
 
-/* Fila Superior: 2 Proyectos Destacados (3 columnas cada uno) */
+/* Fila Superior: 2 Proyectos Destacados (3 columnas cada uno en desktop) */
 .hud-showcase-grid .hud-card:nth-child(1),
 .hud-showcase-grid .hud-card:nth-child(2) {
     grid-column: span 3;
 }
 
-/* Fila Inferior: 3 Proyectos (2 columnas cada uno) */
+/* Fila Inferior: 4 Proyectos (3 columnas / 2 columnas adaptativo) */
 .hud-showcase-grid .hud-card:nth-child(3),
-.hud-showcase-grid .hud-card:nth-child(4),
-.hud-showcase-grid .hud-card:nth-child(5) {
-    grid-column: span 2;
+.hud-showcase-grid .hud-card:nth-child(4) {
+    grid-column: span 3;
+}
+
+.hud-showcase-grid .hud-card:nth-child(5),
+.hud-showcase-grid .hud-card:nth-child(6) {
+    grid-column: span 3;
+}
+
+.hud-card.web3-glow {
+    border-color: rgba(56, 189, 248, 0.35);
+    background: linear-gradient(135deg, rgba(6, 11, 26, 0.75) 0%, rgba(13, 27, 42, 0.65) 100%);
+    box-shadow: 0 8px 32px rgba(56, 189, 248, 0.12);
+}
+
+.hud-card.web3-glow:hover {
+    border-color: #38bdf8;
+    box-shadow: 0 16px 40px rgba(56, 189, 248, 0.28);
 }
 
 .hud-card {

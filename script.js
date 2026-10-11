@@ -91,27 +91,40 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.add(starField);
 
     // -------------------------------------------------------------------------
-    // Main Interactive 3D Morphing Particle System
-    // Shapes: 0 = Rocket, 1 = Satellite, 2 = Neural Orb, 3 = Astronaut
+    // Advanced 3D Morphing Particle Engine: Continuous Cosmic Matter
+    // Shapes: 0 = Rocket, 1 = Satellite, 2 = Neural Eye, 3 = Astronaut
     // -------------------------------------------------------------------------
-    const PARTICLE_COUNT = 3200;
+    const PARTICLE_COUNT = 4500;
     const shapes = [[], [], [], []];
     const particleColors = new Float32Array(PARTICLE_COUNT * 3);
+    const particleDispersions = new Float32Array(PARTICLE_COUNT * 3); // Vortex dispersion trajectory per particle
 
-    // Color Palettes: Gold Amber & Electric Cyan
+    // Color Palettes
     const COLOR_GOLD = new THREE.Color('#fbbf24');
     const COLOR_AMBER = new THREE.Color('#f59e0b');
     const COLOR_CYAN = new THREE.Color('#38bdf8');
     const COLOR_WHITE = new THREE.Color('#ffffff');
-    const COLOR_ICE = new THREE.Color('#67e8f9');
+    const COLOR_ICE = new THREE.Color('#bae6fd');
+    const COLOR_DEEP_CYAN = new THREE.Color('#0284c7');
 
-    // Helper random in sphere
-    function rndSphere(radius) {
+    // Helper: Surface point on a cylinder
+    function cylinderShell(radius, height) {
+        const theta = Math.random() * Math.PI * 2;
+        const h = (Math.random() - 0.5) * height;
+        return {
+            x: Math.cos(theta) * radius,
+            y: h,
+            z: Math.sin(theta) * radius
+        };
+    }
+
+    // Helper: Point on sphere shell
+    function sphereShell(radius, thickness = 0.8) {
         const u = Math.random();
         const v = Math.random();
         const theta = u * 2.0 * Math.PI;
         const phi = Math.acos(2.0 * v - 1.0);
-        const r = Math.cbrt(Math.random()) * radius;
+        const r = radius - Math.random() * thickness;
         return {
             x: r * Math.sin(phi) * Math.cos(theta),
             y: r * Math.sin(phi) * Math.sin(theta),
@@ -119,162 +132,227 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
+    // Generate random swirling dispersion vectors for matter transitions
     for (let i = 0; i < PARTICLE_COUNT; i++) {
-        // --- SHAPE 0: ROCKET (Aligned diagonally ~45° like in the reference video) ---
+        const i3 = i * 3;
+        const ang = Math.random() * Math.PI * 2;
+        const dist = 30 + Math.random() * 60;
+        particleDispersions[i3] = Math.cos(ang) * dist + (Math.random() - 0.5) * 20;
+        particleDispersions[i3 + 1] = (Math.random() - 0.5) * 80;
+        particleDispersions[i3 + 2] = Math.sin(ang) * dist + (Math.random() - 0.5) * 35;
+    }
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const ratio = i / PARTICLE_COUNT;
+
+        // =====================================================================
+        // SHAPE 0: HIGH-DEFINITION ROCKET (Aligned 45° launch angle)
+        // =====================================================================
         let rX, rY, rZ;
-        const rocketPart = i / PARTICLE_COUNT;
-
-        if (rocketPart < 0.45) {
-            // Fuselage & Cabin (Cylinder to Cone)
-            const t = Math.random(); // 0 to 1 along length
-            const rad = Math.sin(t * Math.PI * 0.85) * (8 * (1 - t * 0.6));
-            const angle = Math.random() * Math.PI * 2;
-            const len = (t - 0.5) * 36;
-
-            rX = len + (Math.random() - 0.5) * 1.5;
-            rY = Math.cos(angle) * rad;
-            rZ = Math.sin(angle) * rad;
-
-            // Rotate fuselage ~45 deg to point upwards-right
-            const rotA = 0.65;
-            const rx2 = rX * Math.cos(rotA) - rY * Math.sin(rotA) + 8;
-            const ry2 = rX * Math.sin(rotA) + rY * Math.cos(rotA) + 2;
-            rX = rx2; rY = ry2;
-        } else if (rocketPart < 0.65) {
-            // Stabilizer Wings / Fins
-            const wingSide = (i % 2 === 0) ? 1 : -1;
-            const wingT = Math.random();
-            const wingSpan = wingT * 14 * wingSide;
-            const wingLen = -10 + (Math.random() - 0.5) * 8;
-
-            rX = wingLen;
-            rY = wingSpan;
-            rZ = (Math.random() - 0.5) * 2;
-
-            const rotA = 0.65;
-            const rx2 = rX * Math.cos(rotA) - rY * Math.sin(rotA) + 8;
-            const ry2 = rX * Math.sin(rotA) + rY * Math.cos(rotA) + 2;
-            rX = rx2; rY = ry2;
+        if (ratio < 0.35) {
+            // Main Fuselage (Tapered Shell)
+            const t = Math.random();
+            const rad = 6.8 * Math.sin(t * Math.PI * 0.9) * (1 - t * 0.45);
+            const ang = Math.random() * Math.PI * 2;
+            const len = (t - 0.45) * 38;
+            rX = len;
+            rY = Math.cos(ang) * rad;
+            rZ = Math.sin(ang) * rad;
+        } else if (ratio < 0.50) {
+            // Cabin Glass / Visor Ring
+            const ringAng = Math.random() * Math.PI * 2;
+            const ringR = 5.2 + Math.random() * 0.8;
+            rX = 6 + (Math.random() - 0.5) * 2;
+            rY = Math.cos(ringAng) * ringR;
+            rZ = Math.sin(ringAng) * ringR;
+        } else if (ratio < 0.70) {
+            // 3 Triangular Wings / Fins
+            const finIdx = i % 3;
+            const finBaseAng = (finIdx * Math.PI * 2) / 3;
+            const finT = Math.random();
+            const finSpan = 6 + finT * 12;
+            const finLen = -10 - finT * 8 + (Math.random() - 0.5) * 2;
+            rX = finLen;
+            rY = Math.cos(finBaseAng) * finSpan + (Math.random() - 0.5) * 0.8;
+            rZ = Math.sin(finBaseAng) * finSpan + (Math.random() - 0.5) * 0.8;
         } else {
-            // Thruster Jet Fire & Particle Smoke Trail (Vibrant Amber/Gold)
-            const flameT = Math.random();
-            const spread = flameT * 12;
-            const flameLen = -12 - flameT * 28 - Math.random() * 8;
-            const fAngle = Math.random() * Math.PI * 2;
-
+            // Thruster Exhaust Cone & High-Energy Plasma Trail
+            const tFlame = Math.random();
+            const flameLen = -14 - Math.pow(tFlame, 1.4) * 36;
+            const spread = 2.5 + tFlame * 10;
+            const fAng = Math.random() * Math.PI * 2;
             rX = flameLen;
-            rY = Math.cos(fAngle) * (Math.random() * spread);
-            rZ = Math.sin(fAngle) * (Math.random() * spread);
-
-            const rotA = 0.65;
-            const rx2 = rX * Math.cos(rotA) - rY * Math.sin(rotA) + 8;
-            const ry2 = rX * Math.sin(rotA) + rY * Math.cos(rotA) + 2;
-            rX = rx2; rY = ry2;
+            rY = Math.cos(fAng) * (Math.random() * spread);
+            rZ = Math.sin(fAng) * (Math.random() * spread);
         }
-        shapes[0].push(rX, rY, rZ);
+        // Rotate 45 deg to point upwards-right
+        const rRot = 0.72;
+        const rxRot = rX * Math.cos(rRot) - rY * Math.sin(rRot) + 8;
+        const ryRot = rX * Math.sin(rRot) + rY * Math.cos(rRot) + 2;
+        shapes[0].push(rxRot, ryRot, rZ);
 
-        // --- SHAPE 1: SATELLITE & NETWORK NODES ---
+        // =====================================================================
+        // SHAPE 1: HIGH-DEFINITION SATELLITE (Central Core + Solar Wings + Dish)
+        // =====================================================================
         let sX, sY, sZ;
-        const satPart = i / PARTICLE_COUNT;
-
-        if (satPart < 0.35) {
-            // Central Satellite Module & Antenna Dish
-            const p = rndSphere(9);
-            sX = p.x;
-            sY = p.y;
-            sZ = p.z;
-        } else if (satPart < 0.75) {
-            // Solar Panels (Dual Wings on Left & Right)
+        if (ratio < 0.28) {
+            // Cubical / Cylindrical Main Body
+            const cyl = cylinderShell(7.5, 12);
+            sX = cyl.x;
+            sY = cyl.y;
+            sZ = cyl.z;
+        } else if (ratio < 0.68) {
+            // Solar Panel Arrays (Left & Right Grids)
             const side = (i % 2 === 0) ? 1 : -1;
-            const panelX = side * (12 + Math.random() * 18);
-            const panelY = (Math.random() - 0.5) * 14;
-            const panelZ = (Math.random() - 0.5) * 2.5;
-            sX = panelX;
-            sY = panelY;
-            sZ = panelZ;
+            const panelW = 12 + Math.random() * 22; // Extended wing span
+            const panelH = (Math.random() - 0.5) * 11;
+            const panelThick = (Math.random() - 0.5) * 0.8;
+            sX = side * panelW;
+            sY = panelH;
+            sZ = panelThick;
+        } else if (ratio < 0.82) {
+            // Parabolic High-Gain Dish Antenna
+            const dishAng = Math.random() * Math.PI * 2;
+            const dishRad = Math.random() * 8.5;
+            const dishCurve = Math.pow(dishRad / 8.5, 2) * 4;
+            sX = Math.cos(dishAng) * dishRad;
+            sY = 9 + dishCurve + (Math.random() - 0.5) * 0.8;
+            sZ = Math.sin(dishAng) * dishRad;
         } else {
-            // Orbiting Communication Rings / Signal Waves
-            const ringAngle = Math.random() * Math.PI * 2;
-            const ringRad = 24 + Math.random() * 6;
-            sX = Math.cos(ringAngle) * ringRad;
-            sY = Math.sin(ringAngle) * ringRad * 0.45;
-            sZ = (Math.random() - 0.5) * 5;
+            // Communication Beacon Rings
+            const bAng = Math.random() * Math.PI * 2;
+            const bRad = 24 + Math.random() * 5;
+            sX = Math.cos(bAng) * bRad;
+            sY = Math.sin(bAng) * (bRad * 0.35);
+            sZ = (Math.random() - 0.5) * 3;
         }
         shapes[1].push(sX + 8, sY, sZ);
 
-        // --- SHAPE 2: NEURAL ORB / CYBER EYE (VISIÓN IA) ---
+        // =====================================================================
+        // SHAPE 2: HIGH-DEFINITION CYBER EYE / NEURAL ORB
+        // =====================================================================
         let oX, oY, oZ;
-        const orbPart = i / PARTICLE_COUNT;
-
-        if (orbPart < 0.4) {
-            // Core Dense Nucleus / Iris
-            const p = rndSphere(11);
-            oX = p.x;
-            oY = p.y;
-            oZ = p.z;
-        } else if (orbPart < 0.75) {
-            // Inclined Data Planetary Ring 1
-            const rAng = Math.random() * Math.PI * 2;
-            const rRad = 22 + Math.random() * 7;
-            const rx = Math.cos(rAng) * rRad;
-            const ry = Math.sin(rAng) * rRad;
-            // Tilt ~35 deg
+        if (ratio < 0.35) {
+            // Concentric Iris & Dense Pupil
+            const irisAng = Math.random() * Math.PI * 2;
+            const irisRad = Math.random() * 9.5;
+            oX = Math.cos(irisAng) * irisRad;
+            oY = Math.sin(irisAng) * irisRad;
+            oZ = Math.sqrt(Math.max(0, 100 - (oX * oX + oY * oY))) * 0.45;
+        } else if (ratio < 0.70) {
+            // Primary Orbital Sensor Ring
+            const ringAng = Math.random() * Math.PI * 2;
+            const ringR = 21 + Math.random() * 3.5;
+            const rx = Math.cos(ringAng) * ringR;
+            const ry = Math.sin(ringAng) * ringR;
+            // 40° inclination
             oX = rx;
-            oY = ry * Math.cos(0.6) - (Math.random() - 0.5) * 2;
-            oZ = ry * Math.sin(0.6);
+            oY = ry * Math.cos(0.68) + (Math.random() - 0.5) * 1.5;
+            oZ = ry * Math.sin(0.68);
         } else {
-            // Second Counter-tilted Ring
-            const rAng = Math.random() * Math.PI * 2;
-            const rRad = 28 + Math.random() * 6;
-            const rx = Math.cos(rAng) * rRad;
-            const ry = Math.sin(rAng) * rRad;
-            oX = rx * Math.cos(-0.7) - (Math.random() - 0.5) * 2;
+            // Secondary Transverse Ring
+            const ringAng = Math.random() * Math.PI * 2;
+            const ringR = 27 + Math.random() * 4;
+            const rx = Math.cos(ringAng) * ringR;
+            const ry = Math.sin(ringAng) * ringR;
+            oX = rx * Math.cos(-0.75);
             oY = ry;
-            oZ = rx * Math.sin(-0.7);
+            oZ = rx * Math.sin(-0.75) + (Math.random() - 0.5) * 1.5;
         }
         shapes[2].push(oX + 6, oY, oZ);
 
-        // --- SHAPE 3: ASTRONAUT (COSMIC GREETING) ---
+        // =====================================================================
+        // SHAPE 3: HIGH-DEFINITION ASTRONAUT (Clear Helmet, Visor, Backpack & Greeting Arm)
+        // =====================================================================
         let aX, aY, aZ;
-        const astroPart = i / PARTICLE_COUNT;
-
-        if (astroPart < 0.25) {
-            // Helmet (Sphere with bright visor)
-            const p = rndSphere(7);
-            aX = p.x;
-            aY = p.y + 16;
-            aZ = p.z;
-        } else if (astroPart < 0.55) {
-            // Torso & Life-Support Backpack
-            aX = (Math.random() - 0.5) * 11;
-            aY = 2 + (Math.random() - 0.5) * 14;
-            aZ = (Math.random() - 0.5) * 8;
-        } else if (astroPart < 0.75) {
-            // Right Arm Waving Hello!
+        if (ratio < 0.20) {
+            // Curved Gold Visor (Distinct dense curved arc on the front of helmet)
+            const vAngH = (Math.random() - 0.5) * Math.PI * 0.75; // Front arc -67° to +67°
+            const vAngV = (Math.random() - 0.5) * Math.PI * 0.55;
+            const vR = 6.4 + (Math.random() - 0.5) * 0.5;
+            aX = Math.sin(vAngH) * vR * Math.cos(vAngV);
+            aY = 17 + Math.sin(vAngV) * vR;
+            aZ = Math.cos(vAngH) * vR * Math.cos(vAngV) + 1.2; // Protrudes forward
+        } else if (ratio < 0.38) {
+            // Helmet Outer Dome (Back & Sides)
+            const hPt = sphereShell(7.2, 0.9);
+            aX = hPt.x;
+            aY = hPt.y + 17;
+            aZ = hPt.z - 0.4;
+        } else if (ratio < 0.56) {
+            // Torso & Shoulders
+            const tCyl = cylinderShell(6.2, 12);
+            aX = tCyl.x * 1.05;
+            aY = 4 + tCyl.y;
+            aZ = tCyl.z * 0.85;
+        } else if (ratio < 0.68) {
+            // Rectangular Life Support Backpack (Clear box on the back)
+            aX = (Math.random() - 0.5) * 9.5;
+            aY = 3.5 + (Math.random() - 0.5) * 13;
+            aZ = -5.8 - Math.random() * 4.2;
+        } else if (ratio < 0.82) {
+            // Right Arm: Raised & Waving (Greeting!)
             const armT = Math.random();
-            aX = 6 + armT * 12 + Math.sin(armT * 3) * 2;
-            aY = 8 + armT * 14 + (Math.random() - 0.5) * 3;
-            aZ = 3 + (Math.random() - 0.5) * 4;
+            // Shoulder (x: 6.5, y: 9) -> Elbow (x: 13, y: 15) -> Waving Hand (x: 15, y: 22)
+            let curX, curY, curZ;
+            if (armT < 0.55) {
+                // Upper arm
+                const s = armT / 0.55;
+                curX = 6.5 + s * 6.5;
+                curY = 9 + s * 6.0;
+                curZ = 0.5 + s * 2.0;
+            } else {
+                // Forearm & Hand waving
+                const s = (armT - 0.55) / 0.45;
+                curX = 13 + Math.sin(s * Math.PI) * 2.5;
+                curY = 15 + s * 7.5;
+                curZ = 2.5 + Math.cos(s * Math.PI * 2) * 1.5;
+            }
+            aX = curX + (Math.random() - 0.5) * 1.2;
+            aY = curY + (Math.random() - 0.5) * 1.2;
+            aZ = curZ + (Math.random() - 0.5) * 1.2;
         } else {
-            // Legs in zero-gravity float
-            const legSide = (i % 2 === 0) ? 1 : -1;
-            const legT = Math.random();
-            aX = legSide * (4 + legT * 3);
-            aY = -6 - legT * 16;
-            aZ = (Math.random() - 0.5) * 6 + legT * 4;
+            // Left Arm & Floating Zero-G Legs
+            const partIdx = i % 3;
+            if (partIdx === 0) {
+                // Left arm relaxed at side
+                const aT = Math.random();
+                aX = -6.5 - aT * 3.5 + (Math.random() - 0.5) * 1.0;
+                aY = 9 - aT * 10 + (Math.random() - 0.5) * 1.0;
+                aZ = 0.5 + aT * 1.5;
+            } else if (partIdx === 1) {
+                // Right Leg (gently bent backward in float)
+                const lT = Math.random();
+                aX = 3.2 + lT * 2.2 + (Math.random() - 0.5) * 1.0;
+                aY = -2 - lT * 16 + (Math.random() - 0.5) * 1.0;
+                aZ = lT * 4.5 + (Math.random() - 0.5) * 1.0;
+            } else {
+                // Left Leg (extended forward in float)
+                const lT = Math.random();
+                aX = -3.2 - lT * 2.8 + (Math.random() - 0.5) * 1.0;
+                aY = -2 - lT * 17 + (Math.random() - 0.5) * 1.0;
+                aZ = -lT * 3.5 + (Math.random() - 0.5) * 1.0;
+            }
         }
         shapes[3].push(aX, aY, aZ);
 
-        // --- Vertex Colors Assignment ---
-        // Mixture of Golden Amber and Electric Cyan / Ice
+        // =====================================================================
+        // Dynamic Vertex Coloring (Gold Visor / Cyan Body / Electric Ice highlights)
+        // =====================================================================
         const c3 = i * 3;
         let c;
-        if (i % 3 === 0) {
-            c = COLOR_GOLD.clone().lerp(COLOR_AMBER, Math.random());
-        } else if (i % 3 === 1) {
-            c = COLOR_CYAN.clone().lerp(COLOR_WHITE, Math.random() * 0.6);
+        if (ratio < 0.20) {
+            // Front visor / energy core is bright golden amber
+            c = COLOR_GOLD.clone().lerp(COLOR_WHITE, Math.random() * 0.4);
+        } else if (ratio < 0.60) {
+            // Body / panels are electric cyan & white
+            c = COLOR_CYAN.clone().lerp(COLOR_WHITE, Math.random() * 0.35);
+        } else if (ratio < 0.85) {
+            // Wings / thrusters / arms
+            c = COLOR_ICE.clone().lerp(COLOR_AMBER, (i % 2 === 0) ? 0.6 : 0.1);
         } else {
-            c = COLOR_ICE.clone().lerp(COLOR_GOLD, Math.random() * 0.3);
+            // Trails & stars
+            c = COLOR_AMBER.clone().lerp(COLOR_GOLD, Math.random());
         }
 
         particleColors[c3] = c.r;
@@ -293,25 +371,25 @@ document.addEventListener('DOMContentLoaded', () => {
     particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
 
     const particleMaterial = new THREE.PointsMaterial({
-        size: 1.85,
+        size: 1.95,
         map: particleTexture,
         transparent: true,
         blending: THREE.AdditiveBlending,
         vertexColors: true,
         depthWrite: false,
-        opacity: 0.92
+        opacity: 0.94
     });
 
     const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
     scene.add(particleSystem);
 
     // -------------------------------------------------------------------------
-    // Morphing Engine & Scroll Tracking
+    // Morphing Engine & Scroll Tracking with Matter Dissolution
     // -------------------------------------------------------------------------
     let currentShapeIndex = 0;
     let targetShapeIndex = 0;
     let morphFactor = 0; // 0 to 1 between current and target
-    let scrollProgress = 0; // 0 to 3
+    let dissolutionIntensity = 0; // Peaks at 0.5 of transition (matter vortex)
 
     const shapeNames = [
         'COHETE / DESPEGUE',
@@ -336,12 +414,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const nextIdx = Math.min(currentIdx + 1, 3);
         const fraction = scaled - currentIdx;
 
-        // Smooth cubic ease for morph transition
+        // Cubic ease for smooth shape positioning
         const easeFraction = fraction * fraction * (3 - 2 * fraction);
 
         currentShapeIndex = currentIdx;
         targetShapeIndex = nextIdx;
         morphFactor = easeFraction;
+
+        // Dissolution peaks halfway through the scroll (when fraction is ~0.5)
+        // sin(fraction * PI) = 0 at start, 1.0 at midpoint, 0 at arrival!
+        dissolutionIntensity = Math.sin(fraction * Math.PI);
 
         // Update HUD indicators
         const activeIdx = Math.round(scaled);
@@ -371,23 +453,27 @@ document.addEventListener('DOMContentLoaded', () => {
     updateScrollState();
 
     // -------------------------------------------------------------------------
-    // Mouse Interaction & Parallax
+    // Mouse Interaction & Magnetic Gravitational Field
     // -------------------------------------------------------------------------
     let mouseX = 0;
     let mouseY = 0;
     let targetRotX = 0;
     let targetRotY = 0;
+    let mouse3D = new THREE.Vector3(0, 0, 0);
 
     window.addEventListener('mousemove', (e) => {
         mouseX = (e.clientX / window.innerWidth) * 2 - 1;
         mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
 
-        targetRotY = mouseX * 0.35;
-        targetRotX = -mouseY * 0.25;
+        targetRotY = mouseX * 0.40;
+        targetRotX = -mouseY * 0.30;
+
+        // Unproject mouse to 3D space for particle repulsion / attraction
+        mouse3D.set(mouseX * 45, mouseY * 35, 10);
     });
 
     // -------------------------------------------------------------------------
-    // Render Loop with Dynamic Particle Waves
+    // Render Loop: Matter Formation, Cosmic Dissolution & Magnetic Flutter
     // -------------------------------------------------------------------------
     let clock = new THREE.Clock();
 
@@ -401,34 +487,67 @@ document.addEventListener('DOMContentLoaded', () => {
         particleSystem.rotation.y += (targetRotY - particleSystem.rotation.y) * 0.05;
         particleSystem.rotation.x += (targetRotX - particleSystem.rotation.x) * 0.05;
 
+        // Gentle cosmic idle breathing
+        particleSystem.rotation.z = Math.sin(time * 0.4) * 0.05;
+
         // Starfield gentle rotation
         starField.rotation.y = time * 0.015;
         starField.rotation.x = time * 0.008;
 
-        // Morph particles between shapes
+        // Morph particles with dissolution swirl
         const positions = particleGeometry.attributes.position.array;
         const s1 = shapes[currentShapeIndex];
         const s2 = shapes[targetShapeIndex];
 
+        // Swirl vortex angle during dissolution
+        const swirlAngle = time * 2.5;
+        const sinSwirl = Math.sin(swirlAngle);
+        const cosSwirl = Math.cos(swirlAngle);
+
         for (let i = 0; i < PARTICLE_COUNT; i++) {
             const i3 = i * 3;
 
-            // Base interpolated target position
+            // Base interpolated target position between the two shapes
             const x1 = s1[i3], y1 = s1[i3 + 1], z1 = s1[i3 + 2];
             const x2 = s2[i3], y2 = s2[i3 + 1], z2 = s2[i3 + 2];
 
-            const tx = x1 + (x2 - x1) * morphFactor;
-            const ty = y1 + (y2 - y1) * morphFactor;
-            const tz = z1 + (z2 - z1) * morphFactor;
+            let tx = x1 + (x2 - x1) * morphFactor;
+            let ty = y1 + (y2 - y1) * morphFactor;
+            let tz = z1 + (z2 - z1) * morphFactor;
 
-            // Cosmic plasma fluid turbulence (Brownian micro-drift)
-            const wave = Math.sin(time * 2.2 + i * 0.12) * 0.45;
-            const waveCos = Math.cos(time * 1.8 + i * 0.15) * 0.45;
+            // When scrolling, matter disassembles into swirling cosmic molecules!
+            if (dissolutionIntensity > 0.01) {
+                const dispX = particleDispersions[i3];
+                const dispY = particleDispersions[i3 + 1];
+                const dispZ = particleDispersions[i3 + 2];
 
-            // Smooth spring lerp to target
-            positions[i3] += (tx + wave - positions[i3]) * 0.08;
-            positions[i3 + 1] += (ty + waveCos - positions[i3 + 1]) * 0.08;
-            positions[i3 + 2] += (tz - positions[i3 + 2]) * 0.08;
+                // Swirl rotational displacement around center
+                const vortexX = dispX * cosSwirl - dispZ * sinSwirl;
+                const vortexZ = dispX * sinSwirl + dispZ * cosSwirl;
+
+                tx += vortexX * dissolutionIntensity;
+                ty += (dispY + Math.sin(time * 4 + i * 0.05) * 15) * dissolutionIntensity;
+                tz += vortexZ * dissolutionIntensity;
+            }
+
+            // Mouse magnetic ripple if close to particle
+            const dx = positions[i3] - mouse3D.x;
+            const dy = positions[i3 + 1] - mouse3D.y;
+            const distSq = dx * dx + dy * dy;
+            if (distSq < 250 && distSq > 1) {
+                const force = (1 - distSq / 250) * 4.5;
+                tx += (dx / Math.sqrt(distSq)) * force;
+                ty += (dy / Math.sqrt(distSq)) * force;
+            }
+
+            // Micro Brownian vibration (alive matter effect)
+            const microWave = Math.sin(time * 2.5 + i * 0.15) * 0.35;
+            const microWaveCos = Math.cos(time * 2.1 + i * 0.18) * 0.35;
+
+            // Responsive spring lerp
+            positions[i3] += (tx + microWave - positions[i3]) * 0.09;
+            positions[i3 + 1] += (ty + microWaveCos - positions[i3 + 1]) * 0.09;
+            positions[i3 + 2] += (tz - positions[i3 + 2]) * 0.09;
         }
 
         particleGeometry.attributes.position.needsUpdate = true;
@@ -448,6 +567,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. MODALS & CASE STUDIES INTERACTIVITY
     // =========================================================================
     const serviceData = {
+        'tefi': {
+            title: 'Tefi.app: Microcrédito Barrial en Solana',
+            desc: `Tefi.app es un sistema pionero de microcrédito barrial ("fiado digital") descentralizado sobre la blockchain de Solana. Diseñado para comunidades y comercios de cercanía, digitaliza la confianza cotidiana sin intermediarios bancarios ni requerir que los vecinos posean criptomonedas.<br><br>
+            <strong>💎 Arquitectura Técnica & Web3</strong><br>
+            • <b>Co-Firma P2P Offline por QR:</b> Transacciones construidas por el almacén (fee payer) y co-firmadas de forma criptográfica por el celular del vecino escaneando un código QR dinámico ultracompacto.<br>
+            • <b>Smart Contracts en Anchor / Rust:</b> Programa desplegado en Solana Devnet con libreta contable inmutable, límites de crédito dinámicos y scoring algorítmico on-chain.<br>
+            • <b>Zero Cost para el Vecino:</b> El comercio financia el rent y los gas fees de cada transacción, democratizando el acceso a usuarios sin SOL ni conocimientos técnicos.<br>
+            • <b>PWA Multiplataforma Bilingüe:</b> Experiencia 100% web instalable en iOS y Android, con soporte offline, escaneo nativo por hardware de cámara y modo demo.<br>
+            • <b>Auditoría y Testing Robusto:</b> Suite automatizada con más de 100 pruebas unitarias y validaciones E2E en dos teléfonos simultáneos.`,
+            icon: '⚡',
+            images: [
+                'assets/tefi_preview.png'
+            ],
+            link: 'https://tef-iapp.vercel.app/'
+        },
         'digitalizacion': {
             title: 'Podal Fix: Gestión Podológica',
             desc: `Podal Fix es la herramienta definitiva para la gestión de salud podal bovina y bienestar animal. Diseñada para transformar el trabajo de campo en una experiencia digital fluida, permite un seguimiento quirúrgico de cada animal, centralizando la información técnica y administrativa en un solo lugar.<br><br>

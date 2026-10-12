@@ -1031,65 +1031,72 @@ p,
     overflow: visible;
 }
 
-.sun-core-pulse {
-    transform-origin: 50% 30%;
-    animation: solar-pulse 5s ease-in-out infinite;
+/* NEBULOSA CÓSMICA EN SECCIÓN VISIÓN IA */
+.nebula-core-glow {
+    transform-origin: 50% 40%;
+    animation: neb-breathe 7s ease-in-out infinite alternate;
     will-change: transform;
 }
 
-.solar-orbit-1 {
-    transform-origin: 50% 30%;
-    animation: solar-spin 30s linear infinite;
+.nebula-gas-lobe-1 {
+    transform-origin: 48% 40%;
+    animation: neb-drift-1 20s ease-in-out infinite alternate;
     will-change: transform;
 }
 
-.solar-orbit-2 {
-    transform-origin: 50% 30%;
-    animation: solar-spin-rev 42s linear infinite;
+.nebula-gas-lobe-2 {
+    transform-origin: 52% 40%;
+    animation: neb-drift-2 26s ease-in-out infinite alternate;
     will-change: transform;
 }
 
-.solar-orbit-3 {
-    transform-origin: 50% 30%;
-    animation: solar-spin 55s linear infinite;
+.nebula-filaments {
+    transform-origin: 50% 40%;
+    animation: neb-filament-drift 16s ease-in-out infinite alternate;
     will-change: transform;
 }
 
-.solar-flare-ring {
-    transform-origin: 50% 30%;
-    animation: solar-flare 3.5s ease-in-out infinite;
+.nebula-stars {
+    animation: neb-twinkle 4s ease-in-out infinite alternate;
 }
 
-@keyframes solar-pulse {
-    0% { transform: scale(0.92); opacity: 0.65; }
-    50% { transform: scale(1.08); opacity: 0.95; }
-    100% { transform: scale(0.92); opacity: 0.65; }
+@keyframes neb-breathe {
+    0% { transform: scale(0.94); opacity: 0.8; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(0.94); opacity: 0.8; }
 }
 
-@keyframes solar-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+@keyframes neb-drift-1 {
+    0% { transform: rotate(0deg) scale(0.96); }
+    50% { transform: rotate(3.5deg) scale(1.03); }
+    100% { transform: rotate(-2.5deg) scale(0.98); }
 }
 
-@keyframes solar-spin-rev {
-    from { transform: rotate(360deg); }
-    to { transform: rotate(0deg); }
+@keyframes neb-drift-2 {
+    0% { transform: rotate(0deg) scale(1.02); }
+    50% { transform: rotate(-4deg) scale(0.97); }
+    100% { transform: rotate(2.5deg) scale(1.04); }
 }
 
-@keyframes solar-flare {
-    0%, 100% { opacity: 0.45; stroke-width: 1.1; }
-    50% { opacity: 0.95; stroke-width: 1.8; }
+@keyframes neb-filament-drift {
+    0% { transform: scale(0.98) rotate(-1.5deg); opacity: 0.75; }
+    50% { transform: scale(1.02) rotate(1.5deg); opacity: 0.95; }
+    100% { transform: scale(0.98) rotate(-1.5deg); opacity: 0.75; }
 }
 
-/* En reposo: el header con la badge y el título queda en el centro del sistema solar */
+@keyframes neb-twinkle {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+/* En reposo: el header con la badge y el título queda en el centro exacto de la nebulosa */
 .vision-box-header {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: 0.8rem;
-    margin-top: 1.8rem;
-    margin-bottom: 1.8rem;
+    margin: auto 0;
     position: relative;
     z-index: 2;
     transition: all 0.4s var(--ease-out-expo);
@@ -1131,10 +1138,12 @@ p,
     color: var(--text-muted);
     font-size: 1.05rem;
     line-height: 1.6;
-    margin-bottom: 2rem;
+    margin-bottom: 0;
+    max-height: 0;
+    overflow: hidden;
     opacity: 0;
     transform: translateY(8px);
-    transition: opacity 0.35s ease, transform 0.35s ease;
+    transition: opacity 0.35s ease, transform 0.35s ease, max-height 0.4s ease, margin-bottom 0.4s ease;
     pointer-events: none;
     position: relative;
     z-index: 2;
@@ -1146,8 +1155,10 @@ p,
     gap: 1.2rem;
     flex-wrap: wrap;
     opacity: 0;
+    max-height: 0;
+    overflow: hidden;
     transform: translateY(8px);
-    transition: opacity 0.35s ease, transform 0.35s ease;
+    transition: opacity 0.35s ease, transform 0.35s ease, max-height 0.4s ease;
     pointer-events: none;
     position: relative;
     z-index: 2;
@@ -1176,8 +1187,7 @@ p,
     flex-direction: row;
     align-items: center;
     text-align: left;
-    margin-top: 0;
-    margin-bottom: 1.2rem;
+    margin: 0 0 1.2rem 0;
     gap: 1rem;
 }
 
@@ -1186,6 +1196,8 @@ p,
 .vision-highlight-box.active .vision-box-desc,
 .vision-highlight-box.active .vision-actions {
     opacity: 1;
+    max-height: 200px;
+    margin-bottom: 1.5rem;
     transform: translateY(0);
     pointer-events: auto;
 }
@@ -1630,10 +1642,9 @@ p,
     }
     .orbit-spin-slow,
     .orbit-spin-rev,
-    .solar-orbit-1,
-    .solar-orbit-2,
-    .solar-orbit-3 {
-        animation-duration: 55s;
+    .nebula-gas-lobe-1,
+    .nebula-gas-lobe-2 {
+        animation-duration: 40s;
     }
 
     /* Refuerzo de contraste de tipografías en mobile (sobre todo letras blancas grandes) */

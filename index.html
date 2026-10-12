@@ -55,7 +55,7 @@
     <!-- Three.js CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-    <link rel="stylesheet" href="style.css?v=9">
+    <link rel="stylesheet" href="style.css?v=10">
 </head>
 
 <body>
@@ -496,71 +496,151 @@
 
                 <div class="vision-highlight-box" data-key="vision">
                     <div class="vision-celestial-solar" aria-hidden="true">
-                        <svg viewBox="0 0 540 320">
+                        <svg viewBox="0 0 540 280" preserveAspectRatio="xMidYMid slice">
                             <defs>
-                                <radialGradient id="sun-core-glow" cx="50%" cy="44%" r="52%">
-                                    <stop offset="0%" stop-color="rgba(255, 255, 255, 0.95)" />
-                                    <stop offset="14%" stop-color="rgba(251, 191, 36, 0.88)" />
-                                    <stop offset="34%" stop-color="rgba(245, 158, 11, 0.5)" />
-                                    <stop offset="65%" stop-color="rgba(56, 189, 248, 0.22)" />
-                                    <stop offset="100%" stop-color="transparent" />
+                                <!-- Volumetric gas dispersion filters -->
+                                <filter id="neb-blur-deep" x="-30%" y="-30%" width="160%" height="160%">
+                                    <feGaussianBlur stdDeviation="22" />
+                                </filter>
+                                <filter id="neb-blur-mid" x="-25%" y="-25%" width="150%" height="150%">
+                                    <feGaussianBlur stdDeviation="12" />
+                                </filter>
+                                <filter id="neb-blur-fine" x="-20%" y="-20%" width="140%" height="140%">
+                                    <feGaussianBlur stdDeviation="5" />
+                                </filter>
+                                <filter id="neb-glow-core" x="-50%" y="-50%" width="200%" height="200%">
+                                    <feGaussianBlur stdDeviation="16" result="blur1" />
+                                    <feGaussianBlur stdDeviation="6" result="blur2" />
+                                    <feMerge>
+                                        <feMergeNode in="blur1" />
+                                        <feMergeNode in="blur2" />
+                                        <feMergeNode in="SourceGraphic" />
+                                    </feMerge>
+                                </filter>
+
+                                <!-- Radial gradients for gas ionization -->
+                                <!-- 1. Central Core: High-energy ionization -->
+                                <radialGradient id="neb-grad-core" cx="50%" cy="45%" r="50%">
+                                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98"/>
+                                    <stop offset="16%" stop-color="#38bdf8" stop-opacity="0.9"/>
+                                    <stop offset="38%" stop-color="#818cf8" stop-opacity="0.65"/>
+                                    <stop offset="65%" stop-color="#c084fc" stop-opacity="0.32"/>
+                                    <stop offset="85%" stop-color="#e879f9" stop-opacity="0.12"/>
+                                    <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
                                 </radialGradient>
-                                <radialGradient id="nebula-rich-cloud" cx="50%" cy="44%" r="68%">
-                                    <stop offset="0%" stop-color="rgba(56, 189, 248, 0.28)" />
-                                    <stop offset="42%" stop-color="rgba(168, 85, 247, 0.2)" />
-                                    <stop offset="72%" stop-color="rgba(239, 68, 68, 0.1)" />
-                                    <stop offset="100%" stop-color="transparent" />
+
+                                <!-- 2. Primary Lobe Cyan / Aqua Dust Cloud -->
+                                <radialGradient id="neb-grad-cyan" cx="44%" cy="46%" r="56%">
+                                    <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.6"/>
+                                    <stop offset="30%" stop-color="#0284c7" stop-opacity="0.45"/>
+                                    <stop offset="60%" stop-color="#38bdf8" stop-opacity="0.22"/>
+                                    <stop offset="85%" stop-color="#0369a1" stop-opacity="0.08"/>
+                                    <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
                                 </radialGradient>
+
+                                <!-- 3. Secondary Lobe Magenta / Orchid Cloud -->
+                                <radialGradient id="neb-grad-magenta" cx="56%" cy="42%" r="58%">
+                                    <stop offset="0%" stop-color="#f43f5e" stop-opacity="0.55"/>
+                                    <stop offset="30%" stop-color="#d946ef" stop-opacity="0.42"/>
+                                    <stop offset="62%" stop-color="#9333ea" stop-opacity="0.24"/>
+                                    <stop offset="85%" stop-color="#4c1d95" stop-opacity="0.08"/>
+                                    <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
+                                </radialGradient>
+
+                                <!-- 4. Deep Indigo Cosmic Dust Envelope -->
+                                <radialGradient id="neb-grad-indigo" cx="50%" cy="48%" r="65%">
+                                    <stop offset="0%" stop-color="#6366f1" stop-opacity="0.4"/>
+                                    <stop offset="40%" stop-color="#4338ca" stop-opacity="0.25"/>
+                                    <stop offset="75%" stop-color="#1e1b4b" stop-opacity="0.12"/>
+                                    <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
+                                </radialGradient>
+
+                                <!-- 5. Warm Amber / Gold Protostellar Cloud -->
+                                <radialGradient id="neb-grad-amber" cx="48%" cy="40%" r="50%">
+                                    <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.5"/>
+                                    <stop offset="35%" stop-color="#f59e0b" stop-opacity="0.28"/>
+                                    <stop offset="70%" stop-color="#ea580c" stop-opacity="0.1"/>
+                                    <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
+                                </radialGradient>
+
+                                <!-- Linear gradients for smooth gas filaments -->
+                                <linearGradient id="neb-filament-cyan" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#38bdf8" stop-opacity="0"/>
+                                    <stop offset="30%" stop-color="#38bdf8" stop-opacity="0.7"/>
+                                    <stop offset="70%" stop-color="#22d3ee" stop-opacity="0.8"/>
+                                    <stop offset="100%" stop-color="#818cf8" stop-opacity="0"/>
+                                </linearGradient>
+
+                                <linearGradient id="neb-filament-magenta" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#c084fc" stop-opacity="0"/>
+                                    <stop offset="35%" stop-color="#e879f9" stop-opacity="0.75"/>
+                                    <stop offset="70%" stop-color="#f43f5e" stop-opacity="0.7"/>
+                                    <stop offset="100%" stop-color="#fb7185" stop-opacity="0"/>
+                                </linearGradient>
                             </defs>
 
-                            <!-- Deep Radiant Nebula Body -->
-                            <ellipse cx="270" cy="95" rx="215" ry="85" fill="url(#nebula-rich-cloud)" />
-
-                            <!-- Pulsing Solar Core & Corona -->
-                            <g class="sun-core-pulse">
-                                <circle cx="270" cy="95" r="50" fill="url(#sun-core-glow)" />
-                                <circle cx="270" cy="95" r="28" fill="#ffffff" opacity="0.4" />
+                            <!-- LAYER 1: Deep Cosmic Gas Background Envelope -->
+                            <g class="nebula-gas-lobe-1" filter="url(#neb-blur-deep)">
+                                <!-- Expansive billowing cosmic cloud spanning the card width -->
+                                <path d="M 60,110 C 80,25 200,15 270,30 C 350,15 460,20 490,95 C 520,165 450,215 370,225 C 290,235 210,220 150,230 C 80,235 40,175 60,110 Z" fill="url(#neb-grad-indigo)" opacity="0.9" />
+                                <path d="M 80,125 C 120,40 220,30 280,45 C 370,30 460,45 490,115 C 515,185 430,220 340,215 C 260,220 170,205 120,195 C 60,180 60,145 80,125 Z" fill="url(#neb-grad-magenta)" opacity="0.85" />
+                                <path d="M 90,95 C 140,35 240,40 300,60 C 380,45 460,65 480,130 C 495,195 400,225 320,215 C 240,225 150,210 110,175 C 60,140 70,110 90,95 Z" fill="url(#neb-grad-cyan)" opacity="0.85" />
                             </g>
 
-                            <!-- Solar Corona Flares & Radiance Rings -->
-                            <g class="solar-flare-ring">
-                                <ellipse cx="270" cy="95" rx="76" ry="38" fill="none" stroke="rgba(251, 191, 36, 0.6)" stroke-width="1.3" stroke-dasharray="3 5" transform="rotate(-8 270 95)" />
-                                <ellipse cx="270" cy="95" rx="95" ry="46" fill="none" stroke="rgba(56, 189, 248, 0.5)" stroke-width="1.1" transform="rotate(22 270 95)" />
+                            <!-- LAYER 2: Intermediate Billowing Clouds & Swirling Lobes -->
+                            <g class="nebula-gas-lobe-2" filter="url(#neb-blur-mid)">
+                                <!-- Left billowing gas lobe (Cyan/Aqua wing) -->
+                                <path d="M 45,120 C 90,55 180,60 255,100 C 205,160 120,180 65,155 C 30,142 30,130 45,120 Z" fill="url(#neb-grad-cyan)" opacity="0.9" />
+                                <!-- Right billowing gas lobe (Magenta/Rose wing) -->
+                                <path d="M 285,100 C 360,55 450,60 495,120 C 515,145 480,180 430,175 C 350,175 300,145 285,100 Z" fill="url(#neb-grad-magenta)" opacity="0.9" />
+                                <!-- Top ambient gas cloud rising behind badge -->
+                                <ellipse cx="270" cy="65" rx="170" ry="55" fill="url(#neb-grad-amber)" opacity="0.65" transform="rotate(-3 270 65)" />
+                                <!-- Bottom ambient gas cloud supporting card -->
+                                <ellipse cx="270" cy="155" rx="180" ry="60" fill="url(#neb-grad-indigo)" opacity="0.75" transform="rotate(2 270 155)" />
                             </g>
 
-                            <!-- Orbit 1: Inner Solar Orbit with Planet -->
-                            <g class="solar-orbit-1">
-                                <ellipse cx="270" cy="95" rx="150" ry="58" fill="none" stroke="rgba(56, 189, 248, 0.6)" stroke-width="1.4" stroke-dasharray="6 8" transform="rotate(-18 270 95)" />
-                                <circle cx="130" cy="65" r="4.8" fill="#38bdf8" />
-                                <circle cx="130" cy="65" r="7.5" fill="none" stroke="rgba(56, 189, 248, 0.45)" stroke-width="0.8" />
-                                <circle cx="123" cy="58" r="1.6" fill="#ffffff" />
-                                <circle cx="410" cy="125" r="3.2" fill="#fbbf24" />
+                            <!-- LAYER 3: Ethereal Interstellar Gas Filaments (Fluid Wisps) -->
+                            <g class="nebula-filaments">
+                                <!-- Flowing organic gas streamers with soft blur -->
+                                <path d="M 55,110 C 140,65 220,75 270,92 C 340,110 410,90 485,125" fill="none" stroke="url(#neb-filament-cyan)" stroke-width="8" stroke-linecap="round" filter="url(#neb-blur-fine)" />
+                                <path d="M 75,145 C 160,175 240,150 290,125 C 350,100 430,135 480,95" fill="none" stroke="url(#neb-filament-magenta)" stroke-width="7" stroke-linecap="round" filter="url(#neb-blur-fine)" />
+                                <path d="M 120,80 C 200,40 300,45 410,80" fill="none" stroke="rgba(251, 191, 36, 0.45)" stroke-width="5" stroke-linecap="round" filter="url(#neb-blur-fine)" />
+                                <path d="M 140,165 C 220,195 320,185 405,150" fill="none" stroke="rgba(168, 85, 247, 0.45)" stroke-width="5" stroke-linecap="round" filter="url(#neb-blur-fine)" />
+
+                                <!-- Fine soft wisps of ionization plasma -->
+                                <path d="M 95,115 C 175,85 245,95 280,102 C 335,112 395,102 460,118" fill="none" stroke="rgba(224, 242, 254, 0.65)" stroke-width="2.2" stroke-linecap="round" filter="url(#neb-blur-fine)" />
+                                <path d="M 115,135 C 185,152 260,130 300,115 C 360,98 420,122 465,108" fill="none" stroke="rgba(244, 114, 182, 0.6)" stroke-width="2" stroke-linecap="round" filter="url(#neb-blur-fine)" />
                             </g>
 
-                            <!-- Orbit 2: Saturnian Ringed Gas Giant Orbit -->
-                            <g class="solar-orbit-2">
-                                <ellipse cx="270" cy="95" rx="185" ry="72" fill="none" stroke="rgba(251, 191, 36, 0.55)" stroke-width="1.3" transform="rotate(32 270 95)" />
-                                <circle cx="425" cy="165" r="5.8" fill="#f59e0b" />
-                                <ellipse cx="425" cy="165" rx="11" ry="3.8" fill="none" stroke="#fbbf24" stroke-width="1.2" transform="rotate(-25 425 165)" />
-                                <circle cx="112" cy="40" r="2.4" fill="#ffffff" />
+                            <!-- LAYER 4: Radiant Protostellar Core (Soft Volumetric Glow) -->
+                            <g class="nebula-core-glow" filter="url(#neb-glow-core)">
+                                <!-- Soft radiant ionization aura without hard borders -->
+                                <ellipse cx="270" cy="110" rx="120" ry="60" fill="url(#neb-grad-core)" opacity="0.85" />
                             </g>
 
-                            <!-- Orbit 3: Outer Horizon Orbit with Cosmic Beacons -->
-                            <g class="solar-orbit-3">
-                                <ellipse cx="270" cy="95" rx="220" ry="86" fill="none" stroke="rgba(168, 85, 247, 0.4)" stroke-width="1.1" stroke-dasharray="4 8" transform="rotate(-5 270 95)" />
-                                <circle cx="68" cy="85" r="3.4" fill="#c084fc" />
-                                <circle cx="475" cy="115" r="3.0" fill="#38bdf8" />
+                            <!-- LAYER 5: Stellar Nursery / Micro-Stars & Diamond Starbursts -->
+                            <g class="nebula-stars">
+                                <!-- Central brilliant newborn stars with 4-point diamond flares -->
+                                <polygon points="270,72 272,77 277,77 273,80 275,85 270,82 265,85 267,80 263,77 268,77" fill="#ffffff" opacity="0.95" />
+                                <polygon points="215,130 216,134 220,134 217,136 218,140 215,138 212,140 213,136 210,134 214,134" fill="#38bdf8" opacity="0.9" />
+                                <polygon points="330,128 331,132 335,132 332,134 333,138 330,136 327,138 328,134 325,132 329,132" fill="#fbcfe8" opacity="0.9" />
+                                <polygon points="425,90 426,93 429,93 427,95 428,98 425,96 422,98 423,95 421,93 424,93" fill="#fbbf24" opacity="0.85" />
+                                <polygon points="115,90 116,93 119,93 117,95 118,98 115,96 112,98 113,95 111,93 114,93" fill="#ffffff" opacity="0.85" />
+
+                                <!-- Scattered stardust in the cloud -->
+                                <circle cx="130" cy="65" r="1.8" fill="#ffffff" opacity="0.85" />
+                                <circle cx="160" cy="148" r="2.0" fill="#38bdf8" opacity="0.8" />
+                                <circle cx="195" cy="52" r="1.4" fill="#e0f2fe" opacity="0.9" />
+                                <circle cx="355" cy="55" r="1.8" fill="#f472b6" opacity="0.9" />
+                                <circle cx="395" cy="140" r="2.2" fill="#ffffff" opacity="0.95" />
+                                <circle cx="450" cy="65" r="1.5" fill="#38bdf8" opacity="0.75" />
+                                <circle cx="465" cy="150" r="1.9" fill="#fbbf24" opacity="0.9" />
+                                <circle cx="80" cy="125" r="1.6" fill="#c084fc" opacity="0.8" />
+                                <circle cx="290" cy="40" r="1.8" fill="#ffffff" opacity="0.85" />
+                                <circle cx="240" cy="168" r="1.7" fill="#38bdf8" opacity="0.85" />
+                                <circle cx="370" cy="162" r="1.5" fill="#e879f9" opacity="0.8" />
+                                <circle cx="170" cy="95" r="1.3" fill="#ffffff" opacity="0.8" />
                             </g>
-
-                            <!-- Solar Flare Energy Beams -->
-                            <line x1="270" y1="45" x2="270" y2="28" stroke="rgba(251, 191, 36, 0.65)" stroke-width="1.5" />
-                            <line x1="270" y1="145" x2="270" y2="162" stroke="rgba(251, 191, 36, 0.65)" stroke-width="1.5" />
-                            <line x1="220" y1="95" x2="202" y2="95" stroke="rgba(56, 189, 248, 0.65)" stroke-width="1.5" />
-                            <line x1="320" y1="95" x2="338" y2="95" stroke="rgba(56, 189, 248, 0.65)" stroke-width="1.5" />
-
-                            <!-- Stellar Sparkles -->
-                            <polygon points="135,40 138,45 135,50 132,45" fill="#ffffff" opacity="0.9" />
-                            <polygon points="415,55 418,60 415,65 412,60" fill="#fbbf24" opacity="0.9" />
                         </svg>
                     </div>
 
@@ -690,7 +770,7 @@
     </div>
 
     <!-- Application Script -->
-    <script src="script.js?v=9"></script>
+    <script src="script.js?v=10"></script>
 </body>
 
 </html>

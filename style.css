@@ -469,6 +469,11 @@ body {
     padding-bottom: 4rem;
 }
 
+.solutions-scene .scene-content.wide {
+    max-width: 680px;
+    margin: 0;
+}
+
 .section-header-compact {
     margin-bottom: 2rem;
 }
@@ -482,26 +487,14 @@ body {
 
 .hud-showcase-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 1.4rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
     width: 100%;
+    max-width: 680px;
 }
 
-/* Fila Superior: 2 Proyectos Destacados (3 columnas cada uno en desktop) */
-.hud-showcase-grid .hud-card:nth-child(1),
-.hud-showcase-grid .hud-card:nth-child(2) {
-    grid-column: span 3;
-}
-
-/* Fila Inferior: 4 Proyectos (3 columnas / 2 columnas adaptativo) */
-.hud-showcase-grid .hud-card:nth-child(3),
-.hud-showcase-grid .hud-card:nth-child(4) {
-    grid-column: span 3;
-}
-
-.hud-showcase-grid .hud-card:nth-child(5),
-.hud-showcase-grid .hud-card:nth-child(6) {
-    grid-column: span 3;
+.hud-showcase-grid .hud-card {
+    grid-column: span 1;
 }
 
 .hud-card {

@@ -845,8 +845,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 L.op = 1.0;
             } else if (i === 1) {
                 // 2. SOLUCIONES (Satélite): Superior derecha, amplio y visible en el cielo abierto
-                L.scale = 0.96;
-                L.x = halfW * 0.38;
+                L.scale = 0.94;
+                L.x = halfW * 0.40;
                 L.y = halfH * 0.24;
                 L.z = 0;
                 L.op = 1.0;

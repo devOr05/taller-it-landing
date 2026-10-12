@@ -850,10 +850,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 L.z = 0;
                 L.op = 1.0;
             } else if (i === 1) {
-                // 2. SOLUCIONES (Satélite): Derecha, posicionado bien abajo para despejar holgadamente el header
+                // 2. SOLUCIONES (Satélite): Derecha, centrado perfectamente (equidistante entre header y borde inferior)
                 L.scale = 0.88;
                 L.x = halfW * 0.40;
-                L.y = -halfH * 0.22;
+                L.y = -halfH * 0.15;
                 L.z = 0;
                 L.op = 1.0;
             } else if (i === 2) {

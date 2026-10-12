@@ -47,6 +47,21 @@ body {
     min-height: 100vh;
 }
 
+/* ==========================================================================
+   TIPOGRAFIA GLOBAL: TEXTOS JUSTIFICADOS
+   ========================================================================== */
+p,
+.hero-statement,
+.section-subtext,
+.card-desc,
+.vision-box-desc,
+.modal-service-desc,
+.modal-body p,
+.contact-modal-content p {
+    text-align: justify;
+    text-justify: inter-word;
+}
+
 /* 3D WebGL Canvas */
 #webgl-canvas {
     position: fixed;

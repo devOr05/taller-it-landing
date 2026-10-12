@@ -1113,9 +1113,6 @@ document.addEventListener('DOMContentLoaded', () => {
             • <b>PWA Multiplataforma Bilingüe:</b> Experiencia 100% web instalable en iOS y Android, con soporte offline, escaneo nativo por hardware de cámara y modo demo.<br>
             • <b>Auditoría y Testing Robusto:</b> Suite automatizada con más de 100 pruebas unitarias y validaciones E2E en dos teléfonos simultáneos.`,
             icon: '⚡',
-            images: [
-                'assets/tefi_preview.png'
-            ],
             link: 'https://tef-iapp.vercel.app/'
         },
         'digitalizacion': {
@@ -1132,13 +1129,6 @@ document.addEventListener('DOMContentLoaded', () => {
             • Reportes Automáticos exportables para dueños de establecimientos.<br>
             • Galería de Imágenes Clínicas integrada en cada ficha de animal.`,
             icon: '📋',
-            images: [
-                'assets/podal_1.jpg',
-                'assets/podal_2.jpg',
-                'assets/podal_3.jpg',
-                'assets/podal_4.jpg',
-                'assets/podal_5.jpg'
-            ],
             link: 'https://podalfix.vercel.app/'
         },
         'pilates': {
@@ -1164,11 +1154,6 @@ document.addEventListener('DOMContentLoaded', () => {
             • <b>Consola Administrativa Central:</b> Gestión completa de reservas, leads comerciales, postulaciones de instructores y catálogo de actividades.<br>
             • <b>Rendimiento Ultra Veloz:</b> Construido sobre stack moderno (React + Vite), optimizado para carga inmediata y máxima conversión en dispositivos móviles.`,
             icon: '🗿',
-            images: [
-                'assets/moai_1.jpg',
-                'assets/moai_2.jpg',
-                'assets/moai_3.jpg'
-            ],
             link: 'https://moai-eco-adventure.vercel.app/'
         },
         'gestion': {
@@ -1207,9 +1192,6 @@ document.addEventListener('DOMContentLoaded', () => {
             • <b>Comunicados y Calendario Institucional:</b> Canal oficial de notificaciones, fechas de exámenes y eventos escolares sin depender de grupos informales.<br>
             • <b>PWA Offline-Ready:</b> Diseñada para operar fluidamente tanto en computadoras de secretaría como en teléfonos celulares de preceptores y docentes.`,
             icon: '🎓',
-            images: [
-                'assets/educacion_preview.png'
-            ],
             link: 'https://gestion-educativa-digital.vercel.app/'
         }
     };
@@ -1281,22 +1263,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span style="font-size: 3.5rem; display: block; filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.4));">${data.icon}</span>
                 <h2 style="margin-top: 0.8rem; font-family: var(--font-display); font-size: 1.8rem; color: #fff;">${data.title}</h2>
             </div>
-        `;
-
-        if (data.images && data.images.length > 0) {
-            content += `
-                <div style="position: relative; margin: 1.8rem 0; width: 100%; border-radius: 18px; overflow: hidden; background: #060911; border: 1px solid rgba(56, 189, 248, 0.25);">
-                    <button class="carousel-btn prev-btn" onclick="javascript:this.nextElementSibling.scrollBy({left: -320, behavior: 'smooth'})">❮</button>
-                    <div class="carousel-container" style="display: flex; gap: 0; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none;">
-                        ${data.images.map(img => `<img src="${img}" alt="${data.title}" style="scroll-snap-align: center; flex: 0 0 100%; width: 100%; object-fit: contain; max-height: 400px; display: block;">`).join('')}
-                    </div>
-                    <button class="carousel-btn next-btn" onclick="javascript:this.previousElementSibling.scrollBy({left: 320, behavior: 'smooth'})">❯</button>
-                </div>
-            `;
-        }
-
-        content += `
-            <div style="color: rgba(226, 232, 240, 0.85); font-size: 1rem; line-height: 1.7; margin-bottom: 1.5rem;">
+            <div class="modal-service-desc" style="color: rgba(226, 232, 240, 0.85); font-size: 1rem; line-height: 1.7; margin-bottom: 1.5rem; text-align: justify; text-justify: inter-word;">
                 ${data.desc}
             </div>
         `;
@@ -1316,6 +1283,8 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
+
+
 
     const closeModal = () => {
         modal.classList.remove('active');

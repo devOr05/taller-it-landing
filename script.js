@@ -852,8 +852,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 L.op = 1.0;
             } else if (i === 2) {
                 // 3. VISIÓN IA (Ojo cibernético): Derecha, imponente y frontal
-                L.scale = 1.05;
-                L.x = halfW * 0.36;
+                L.scale = 1.02;
+                L.x = halfW * 0.40;
                 L.y = 0;
                 L.z = 0;
                 L.op = 1.0;

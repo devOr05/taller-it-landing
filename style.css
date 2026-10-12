@@ -3,8 +3,8 @@
    ========================================================================== */
 
 :root {
-    --bg-void: #020204;
-    --bg-dark: #07090e;
+    --bg-void: #050814;
+    --bg-dark: #090e1c;
     --card-surface: rgba(12, 17, 26, 0.65);
     --card-border: rgba(255, 255, 255, 0.08);
     --card-border-hover: rgba(56, 189, 248, 0.35);
@@ -73,14 +73,14 @@ p,
     pointer-events: none;
 }
 
-/* Subtle Vignette Overlay */
+/* Ambient Cosmic Glow Overlay (+10% Luminosidad & Resplandor Celestial) */
 .cosmos-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: radial-gradient(circle at center, transparent 40%, rgba(2, 2, 4, 0.75) 100%);
+    background: radial-gradient(circle at 50% 25%, rgba(56, 189, 248, 0.12) 0%, rgba(30, 58, 138, 0.08) 50%, rgba(2, 3, 7, 0.58) 100%);
     pointer-events: none;
     z-index: 2;
 }
@@ -219,18 +219,122 @@ p,
 .menu-toggle {
     display: none;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     gap: 6px;
-    background: transparent;
-    border: none;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 10px;
     cursor: pointer;
-    padding: 0.4rem;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    transition: all 0.3s var(--ease-out-expo);
+    z-index: 120;
+    backdrop-filter: blur(10px);
+}
+
+.menu-toggle:hover {
+    background: rgba(56, 189, 248, 0.15);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.35);
 }
 
 .menu-toggle span {
-    width: 24px;
+    width: 20px;
     height: 2px;
     background: var(--text-white);
     border-radius: 2px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: center;
+}
+
+.menu-toggle.active {
+    background: rgba(56, 189, 248, 0.2);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+}
+
+.menu-toggle.active span:nth-child(1) {
+    transform: translateY(4px) rotate(45deg);
+    background: var(--accent-cyan);
+}
+
+.menu-toggle.active span:nth-child(2) {
+    transform: translateY(-4px) rotate(-45deg);
+    background: var(--accent-cyan);
+}
+
+/* Mobile Navigation Drawer */
+.mobile-nav-drawer {
+    position: fixed;
+    top: 68px;
+    left: 0;
+    width: 100%;
+    background: rgba(5, 9, 20, 0.96);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.85), 0 0 35px rgba(56, 189, 248, 0.15);
+    padding: 1.8rem 6vw 2.2rem;
+    z-index: 99;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    opacity: 0;
+    transform: translateY(-16px);
+    pointer-events: none;
+    transition: opacity 0.32s ease, transform 0.32s var(--ease-out-expo);
+}
+
+.mobile-nav-drawer.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.mobile-nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.mobile-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: rgba(226, 232, 240, 0.85);
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 0.65rem 0.8rem;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    transition: all 0.25s ease;
+}
+
+.mobile-nav-item:hover,
+.mobile-nav-item.active {
+    color: var(--text-white);
+    background: rgba(56, 189, 248, 0.12);
+    border-color: rgba(56, 189, 248, 0.3);
+    box-shadow: inset 0 0 15px rgba(56, 189, 248, 0.1);
+}
+
+.mobile-nav-num {
+    font-size: 0.8rem;
+    color: var(--accent-cyan);
+    font-weight: 700;
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: rgba(56, 189, 248, 0.12);
+}
+
+.mobile-nav-label {
+    flex-grow: 1;
 }
 
 /* ==========================================================================

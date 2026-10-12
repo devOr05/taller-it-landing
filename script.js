@@ -39,8 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
         gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-        gradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.85)');
-        gradient.addColorStop(0.5, 'rgba(120, 200, 255, 0.35)');
+        gradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.90)');
+        gradient.addColorStop(0.5, 'rgba(140, 215, 255, 0.45)');
         gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
         ctx.fillStyle = gradient;
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // -------------------------------------------------------------------------
     // Background Starfield (Deep Ambient Cosmos)
     // -------------------------------------------------------------------------
-    const starCount = 1224; // +2% de estrellas para mayor riqueza cósmica sutil
+    const starCount = 1249; // +2% adicional de estrellas (1224 * 1.02 = 1249)
     const starGeometry = new THREE.BufferGeometry();
     const starPositions = new Float32Array(starCount * 3);
     const starColors = new Float32Array(starCount * 3);
@@ -78,13 +78,13 @@ document.addEventListener('DOMContentLoaded', () => {
     starGeometry.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
 
     const starMaterial = new THREE.PointsMaterial({
-        size: 1.2,
+        size: 1.3,
         map: particleTexture,
         transparent: true,
         blending: THREE.AdditiveBlending,
         vertexColors: true,
         depthWrite: false,
-        opacity: 0.721 // +3% de brillo para destello cósmico refinado
+        opacity: 0.743 // +3% adicional de brillo (0.721 * 1.03 = 0.743)
     });
 
     const starField = new THREE.Points(starGeometry, starMaterial);
@@ -837,14 +837,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 L.x = 0;
                 L.op = 0.85;
                 if (i === 0) {
-                    // En mobile: cohete invertido hacia la izquierda, fuego a la derecha, posicionado arriba a la derecha para no tapar texto blanco
-                    L.scale = Math.min(0.72, (2 * halfW * 0.68) / s.w, (2 * halfH * 0.28) / s.h);
+                    // En mobile: cohete 10% más grande, invertido hacia la izquierda, fuego a la derecha, posicionado arriba a la derecha para no tapar texto blanco
+                    L.scale = Math.min(0.80, (2 * halfW * 0.75) / s.w, (2 * halfH * 0.31) / s.h);
                     L.y = halfH * 0.48;
                     L.x = halfW * 0.26;
                 }
             } else if (i === 0) {
-                // 1. HERO (Cohete): Dominante y enérgico a la derecha, posicionado más abajo para no cortarse
-                L.scale = 0.95;
+                // 1. HERO (Cohete): 10% más grande, dominante y enérgico a la derecha, posicionado más abajo para no cortarse
+                L.scale = 1.05;
                 L.x = halfW * 0.38;
                 L.y = -halfH * 0.15;
                 L.z = 0;
@@ -947,6 +947,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (shapeNameEl && shapeNames[activeIdx]) shapeNameEl.innerText = shapeNames[activeIdx];
         navItems.forEach((item, idx) => item.classList.toggle('active', idx === activeIdx));
         railMarkers.forEach((m, idx) => m.classList.toggle('active', idx === activeIdx));
+        const mobileNavItemsList = document.querySelectorAll('.mobile-nav-item');
+        mobileNavItemsList.forEach((m, idx) => m.classList.toggle('active', idx === activeIdx));
         if (scrollBar) scrollBar.style.height = `${overallRatio * 100}%`;
     }
 
@@ -1369,6 +1371,50 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // -------------------------------------------------------------------------
+    // Mobile Menu Toggle & Navigation (Las dos rayitas del header)
+    // -------------------------------------------------------------------------
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileNavDrawer = document.getElementById('mobile-nav-drawer');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-item');
+
+    if (menuToggle && mobileNavDrawer) {
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = mobileNavDrawer.classList.contains('active');
+            if (isOpen) {
+                menuToggle.classList.remove('active');
+                mobileNavDrawer.classList.remove('active');
+            } else {
+                menuToggle.classList.add('active');
+                mobileNavDrawer.classList.add('active');
+            }
+        });
+
+        mobileNavLinks.forEach(item => {
+            item.addEventListener('click', (e) => {
+                const targetHref = item.getAttribute('href');
+                if (targetHref && targetHref.startsWith('#')) {
+                    const targetEl = document.querySelector(targetHref);
+                    if (targetEl) {
+                        e.preventDefault();
+                        targetEl.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+                menuToggle.classList.remove('active');
+                mobileNavDrawer.classList.remove('active');
+            });
+        });
+
+        // Cerrar al tocar fuera del menú
+        document.addEventListener('click', (e) => {
+            if (!mobileNavDrawer.contains(e.target) && !menuToggle.contains(e.target)) {
+                menuToggle.classList.remove('active');
+                mobileNavDrawer.classList.remove('active');
+            }
+        });
+    }
 
     // =========================================================================
     // 3. CURSOR CON EFECTO LUPA Y DISPERSIÓN ATÓMICA EN PALABRAS (SOLO DESKTOP)

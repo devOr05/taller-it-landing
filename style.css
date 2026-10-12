@@ -1465,11 +1465,20 @@ p,
     z-index: 5;
 }
 
-/* Hide custom cursor on touch devices to ensure flawless native feel */
-@media (pointer: coarse) {
+/* Ocultar y deshabilitar completamente cursor personalizado en celulares y tablets */
+@media (max-width: 1024px), (pointer: coarse) {
     #atom-cursor-canvas,
     .custom-cursor,
     .cursor-trail {
         display: none !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        visibility: hidden !important;
+    }
+
+    .atom-word {
+        transform: none !important;
+        text-shadow: none !important;
+        display: inline !important;
     }
 }

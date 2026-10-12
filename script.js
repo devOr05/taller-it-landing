@@ -1371,14 +1371,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =========================================================================
-    // 3. CURSOR CON EFECTO LUPA Y DISPERSIÓN ATÓMICA EN PALABRAS
-    //    (EXCLUYE TARJETAS, BOTONES E INTERACCIONES)
+    // 3. CURSOR CON EFECTO LUPA Y DISPERSIÓN ATÓMICA EN PALABRAS (SOLO DESKTOP)
+    //    (EXCLUYE TARJETAS, BOTONES E INTERACCIONES; DESACTIVADO EN CELULARES)
     // =========================================================================
     const cursorEl = document.getElementById('cursor');
     const cursorTrailEl = document.getElementById('cursor-trail');
     const atomCanvas = document.getElementById('atom-cursor-canvas');
 
-    if (cursorEl && atomCanvas) {
+    const isMobileDevice = window.innerWidth < 1024 ||
+                           window.matchMedia('(pointer: coarse)').matches ||
+                           ('ontouchstart' in window) ||
+                           (navigator.maxTouchPoints > 0);
+
+    if (cursorEl && atomCanvas && !isMobileDevice) {
         const ctx = atomCanvas.getContext('2d');
         let dpr = window.devicePixelRatio || 1;
 

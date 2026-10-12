@@ -837,10 +837,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 L.x = 0;
                 L.op = 0.85;
                 if (i === 0) {
-                    // En mobile: cohete 10% más grande, invertido hacia la izquierda, fuego a la derecha, posicionado arriba a la derecha para no tapar texto blanco
-                    L.scale = Math.min(0.80, (2 * halfW * 0.75) / s.w, (2 * halfH * 0.31) / s.h);
-                    L.y = halfH * 0.48;
-                    L.x = halfW * 0.26;
+                    // En mobile: cohete invertido hacia la izquierda, fuego a la derecha, posicionado más abajo para no ser tapado por el header
+                    L.scale = Math.min(0.75, (2 * halfW * 0.72) / s.w, (2 * halfH * 0.29) / s.h);
+                    L.y = halfH * 0.28;
+                    L.x = halfW * 0.28;
                 }
             } else if (i === 0) {
                 // 1. HERO (Cohete): Dominante y enérgico a la derecha, posicionado más abajo para no tocar el header

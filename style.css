@@ -1386,7 +1386,19 @@ p,
         display: flex;
     }
     .scene-section {
-        padding: 6rem 5vw 4rem;
+        padding: 6.5rem 5vw 4rem;
+        scroll-margin-top: 75px;
+    }
+    .scene-section.contact-scene {
+        padding-top: 8.5rem;
+        scroll-margin-top: 85px;
+    }
+    .contact-hero-wrap {
+        padding-top: 0.5rem;
+    }
+    .scroll-hint {
+        bottom: 5.5rem;
+        left: 5vw;
     }
     .hud-status-badge {
         display: none;

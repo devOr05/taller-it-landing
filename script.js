@@ -1184,14 +1184,20 @@ document.addEventListener('DOMContentLoaded', () => {
             icon: '👁️',
             link: 'https://vision-it-six.vercel.app/'
         },
-        'chatbot': {
-            title: 'Chatbots & Automatización con IA',
-            desc: `Automatización integral de canales de comunicación mediante agentes conversacionales potenciados por modelos de lenguaje (LLMs).<br><br>
-            <strong>💎 Qué Resolvemos</strong><br>
-            • Atención 24/7 sin tiempos de espera en WhatsApp e Instagram.<br>
-            • Calificación automática de prospectos y agenda de reuniones sincronizada con Google Calendar.<br>
-            • Conexión con tus bases de datos internas para consultar stock o estados de pedidos al instante.`,
-            icon: '🤖'
+        'educativa': {
+            title: 'Gestión Educativa: Sistema Académico 360°',
+            desc: `Plataforma integral de transformación digital y gestión académica escolar (Colegio Cruz del Sur). Diseñada para eliminar el papeleo administrativo y unificar la comunicación y el seguimiento pedagógico en tiempo real.<br><br>
+            <strong>💎 Funcionalidades Clave</strong><br>
+            • <b>Boletines y Calificaciones Digitales:</b> Carga ágil por trimestres, cálculo automático de promedios ponderados y emisión instantánea de informes.<br>
+            • <b>Control de Asistencia y Legajos 360°:</b> Registro diario de presentismo, alertas tempranas de ausentismo e historial pedagógico unificado por alumno.<br>
+            • <b>Portal Multi-Rol (Docentes / Familias):</b> Accesos seguros y diferenciados para gestión de materias, avisos y seguimiento del rendimiento escolar.<br>
+            • <b>Comunicados y Calendario Institucional:</b> Canal oficial de notificaciones, fechas de exámenes y eventos escolares sin depender de grupos informales.<br>
+            • <b>PWA Offline-Ready:</b> Diseñada para operar fluidamente tanto en computadoras de secretaría como en teléfonos celulares de preceptores y docentes.`,
+            icon: '🎓',
+            images: [
+                'assets/educacion_preview.png'
+            ],
+            link: 'https://gestion-educativa-digital.vercel.app/'
         }
     };
 

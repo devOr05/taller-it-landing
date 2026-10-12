@@ -504,28 +504,22 @@ body {
     grid-column: span 3;
 }
 
-.hud-card.web3-glow {
-    border-color: rgba(56, 189, 248, 0.35);
-    background: linear-gradient(135deg, rgba(6, 11, 26, 0.75) 0%, rgba(13, 27, 42, 0.65) 100%);
-    box-shadow: 0 8px 32px rgba(56, 189, 248, 0.12);
-}
-
-.hud-card.web3-glow:hover {
-    border-color: #38bdf8;
-    box-shadow: 0 16px 40px rgba(56, 189, 248, 0.28);
-}
-
 .hud-card {
-    background: var(--card-surface);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--card-border);
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: 1px solid transparent;
     border-radius: 18px;
     padding: 1.6rem 1.6rem;
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.4s var(--ease-out-expo);
+    transition: background 0.4s var(--ease-out-expo),
+                border-color 0.4s var(--ease-out-expo),
+                box-shadow 0.4s var(--ease-out-expo),
+                backdrop-filter 0.4s var(--ease-out-expo),
+                -webkit-backdrop-filter 0.4s var(--ease-out-expo),
+                transform 0.4s var(--ease-out-expo);
     display: flex;
     flex-direction: column;
 }
@@ -542,7 +536,21 @@ body {
     transition: opacity 0.4s ease;
 }
 
+.hud-card.featured {
+    border-color: transparent;
+}
+
+.hud-card.web3-glow {
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+}
+
+/* Cards: Estado Hover (aparece la tarjeta con vidrio, resplandor y contenido) */
 .hud-card:hover {
+    background: var(--card-surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-color: var(--card-border-hover);
     transform: translateY(-4px);
     box-shadow: 0 12px 30px -10px rgba(56, 189, 248, 0.2), 0 0 1px rgba(255, 255, 255, 0.2);
@@ -552,13 +560,33 @@ body {
     opacity: 1;
 }
 
-.hud-card.featured {
-    border-color: rgba(251, 191, 36, 0.25);
-}
-
 .hud-card.featured:hover {
     border-color: var(--accent-gold);
     box-shadow: 0 15px 35px -10px rgba(251, 191, 36, 0.25);
+}
+
+.hud-card.web3-glow:hover {
+    border-color: #38bdf8;
+    background: linear-gradient(135deg, rgba(6, 11, 26, 0.75) 0%, rgba(13, 27, 42, 0.65) 100%);
+    box-shadow: 0 16px 40px rgba(56, 189, 248, 0.28);
+}
+
+/* Elementos internos secundarios: ocultos en reposo, revelados al pasar el mouse */
+.hud-card .card-meta,
+.hud-card .card-desc,
+.hud-card .card-footer {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    pointer-events: none;
+}
+
+.hud-card:hover .card-meta,
+.hud-card:hover .card-desc,
+.hud-card:hover .card-footer {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
 .card-meta {
@@ -586,6 +614,12 @@ body {
     margin-bottom: 0.8rem;
     display: inline-block;
     filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.2));
+    transition: transform 0.35s ease, filter 0.35s ease;
+}
+
+.hud-card:hover .card-icon-wrap {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.45));
 }
 
 .card-title {
@@ -595,6 +629,11 @@ body {
     color: var(--text-white);
     margin-bottom: 0.5rem;
     letter-spacing: -0.01em;
+    transition: text-shadow 0.3s ease;
+}
+
+.hud-card:hover .card-title {
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.35);
 }
 
 .card-desc {

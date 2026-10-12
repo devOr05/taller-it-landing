@@ -93,7 +93,7 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    padding: 1.5rem 4vw;
+    padding: 1.5rem 6vw;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -103,6 +103,11 @@ body {
     background: rgba(4, 6, 12, 0.45);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     transition: all 0.3s var(--ease-out-expo);
+}
+
+.hud-brand {
+    margin-left: 12vw;
+    transition: margin-left 0.3s ease;
 }
 
 .hud-brand .logo-link {
@@ -128,6 +133,7 @@ body {
 }
 
 .hud-nav {
+    margin-left: auto;
     display: flex;
     align-items: center;
     gap: 2.2rem;
@@ -1142,6 +1148,9 @@ body {
 @media (max-width: 768px) {
     .hud-header {
         padding: 1.2rem 5vw;
+    }
+    .hud-brand {
+        margin-left: 0;
     }
     .hud-nav {
         display: none; /* Can be toggled */

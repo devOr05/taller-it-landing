@@ -777,10 +777,10 @@ body {
     padding-top: 2rem;
 }
 
-@media (min-width: 1025px) {
+@media (min-width: 900px) {
     .contact-hero-wrap {
         text-align: left;
-        max-width: 680px;
+        max-width: 580px;
         margin-left: 0;
         margin-right: auto;
     }

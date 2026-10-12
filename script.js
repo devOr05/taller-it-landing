@@ -858,10 +858,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 L.z = 0;
                 L.op = 1.0;
             } else if (i === 3) {
-                // 4. CONTACTO (Astronauta): Grande, visible y saludando a la derecha de la tarjeta
-                L.scale = 1.05;
-                L.x = halfW * 0.36;
-                L.y = halfH * 0.02;
+                // 4. CONTACTO (Astronauta): Posicionado más abajo para no taparse con el header
+                L.scale = 0.86;
+                L.x = halfW * 0.40;
+                L.y = -halfH * 0.14;
                 L.z = 0;
                 L.op = 1.0;
             }

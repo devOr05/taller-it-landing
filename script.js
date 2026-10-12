@@ -850,10 +850,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 L.z = 0;
                 L.op = 1.0;
             } else if (i === 1) {
-                // 2. SOLUCIONES (Satélite): Superior derecha, amplio y visible en el cielo abierto
+                // 2. SOLUCIONES (Satélite): Derecha, centrado verticalmente para despejar el header
                 L.scale = 0.94;
                 L.x = halfW * 0.40;
-                L.y = halfH * 0.24;
+                L.y = -halfH * 0.02;
                 L.z = 0;
                 L.op = 1.0;
             } else if (i === 2) {

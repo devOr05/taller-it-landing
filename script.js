@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // -------------------------------------------------------------------------
     // Background Starfield (Deep Ambient Cosmos)
     // -------------------------------------------------------------------------
-    const starCount = 1200;
+    const starCount = 1224; // +2% de estrellas para mayor riqueza cósmica sutil
     const starGeometry = new THREE.BufferGeometry();
     const starPositions = new Float32Array(starCount * 3);
     const starColors = new Float32Array(starCount * 3);
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         blending: THREE.AdditiveBlending,
         vertexColors: true,
         depthWrite: false,
-        opacity: 0.7
+        opacity: 0.721 // +3% de brillo para destello cósmico refinado
     });
 
     const starField = new THREE.Points(starGeometry, starMaterial);
@@ -836,6 +836,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 L.y = halfH * 0.22;
                 L.x = 0;
                 L.op = 0.85;
+                if (i === 0) {
+                    // En mobile: cohete invertido hacia la izquierda, fuego a la derecha, posicionado arriba a la derecha para no tapar texto blanco
+                    L.scale = Math.min(0.72, (2 * halfW * 0.68) / s.w, (2 * halfH * 0.28) / s.h);
+                    L.y = halfH * 0.48;
+                    L.x = halfW * 0.26;
+                }
             } else if (i === 0) {
                 // 1. HERO (Cohete): Dominante y enérgico a la derecha, posicionado más abajo para no cortarse
                 L.scale = 0.95;
@@ -1033,12 +1039,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const i3 = i * 3;
 
             let ax = A.pos[i3], ay = A.pos[i3 + 1], az = A.pos[i3 + 2];
+            if (cur === 0 && window.innerWidth < 768) {
+                ax = -ax; // Invertir cohete en mobile: punta a la izquierda, fuego a la derecha
+            }
             if (pvA && A.tag[i] === 1) {
                 const dx = ax - pvA[0], dy = ay - pvA[1];
                 ax = pvA[0] + dx * cw - dy * sw;
                 ay = pvA[1] + dx * sw + dy * cw;
             }
             let bx = B.pos[i3], by = B.pos[i3 + 1], bz = B.pos[i3 + 2];
+            if (nxt === 0 && window.innerWidth < 768) {
+                bx = -bx;
+            }
             if (pvB && B.tag[i] === 1) {
                 const dx = bx - pvB[0], dy = by - pvB[1];
                 bx = pvB[0] + dx * cw - dy * sw;
@@ -1206,24 +1218,59 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalBody = document.getElementById('modal-body');
     const closeModalBtn = document.getElementById('close-modal');
 
-    // Cards click triggers
-    document.querySelectorAll('.hud-card').forEach(card => {
+    // Cards click triggers (Soporte mobile tap + botón "Ver más")
+    const allHudCards = document.querySelectorAll('.hud-card');
+    const visionBox = document.querySelector('.vision-highlight-box');
+
+    allHudCards.forEach(card => {
         const key = card.getAttribute('data-key');
         if (!key) return;
 
-        card.addEventListener('click', () => {
+        card.addEventListener('click', (e) => {
+            const isTouch = window.innerWidth < 1024 || window.matchMedia('(pointer: coarse)').matches;
+            if (isTouch) {
+                const isCardActive = card.classList.contains('active');
+                const clickedBtn = e.target.closest('.card-action-btn');
+
+                if (!isCardActive && !clickedBtn) {
+                    allHudCards.forEach(c => c.classList.remove('active'));
+                    if (visionBox) visionBox.classList.remove('active');
+                    card.classList.add('active');
+                    e.stopPropagation();
+                    return;
+                }
+            }
             openServiceModal(key);
         });
     });
 
     // Vision box trigger (clicking box or button opens modal)
-    const visionBox = document.querySelector('.vision-highlight-box');
     if (visionBox) {
         visionBox.addEventListener('click', (e) => {
             if (e.target.closest('a')) return; // Allow clicking external demo link
+            const isTouch = window.innerWidth < 1024 || window.matchMedia('(pointer: coarse)').matches;
+            if (isTouch) {
+                const isBoxActive = visionBox.classList.contains('active');
+                const clickedBtn = e.target.closest('#open-vision-case');
+
+                if (!isBoxActive && !clickedBtn) {
+                    allHudCards.forEach(c => c.classList.remove('active'));
+                    visionBox.classList.add('active');
+                    e.stopPropagation();
+                    return;
+                }
+            }
             openServiceModal('vision');
         });
     }
+
+    // Tocar fuera desactiva las tarjetas activas en móvil
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.hud-card') && !e.target.closest('.vision-highlight-box')) {
+            allHudCards.forEach(c => c.classList.remove('active'));
+            if (visionBox) visionBox.classList.remove('active');
+        }
+    });
 
     function openServiceModal(key) {
         const data = serviceData[key];

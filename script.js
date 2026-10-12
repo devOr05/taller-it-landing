@@ -91,477 +91,1001 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.add(starField);
 
     // -------------------------------------------------------------------------
-    // Advanced 3D Morphing Particle Engine: Continuous Cosmic Matter
-    // Shapes: 0 = Rocket, 1 = Satellite, 2 = Neural Eye, 3 = Astronaut
+    // HD PARTICLE ENGINE v4: DEFINICIÓN ULTRA-NÍTIDA Y TRANSICIONES CENTRADAS
+    // Figuras: 0 = Cohete, 1 = Satélite, 2 = Ojo Cibernético, 3 = Astronauta
     // -------------------------------------------------------------------------
-    const PARTICLE_COUNT = 4500;
-    const shapes = [[], [], [], []];
-    const particleColors = new Float32Array(PARTICLE_COUNT * 3);
-    const particleDispersions = new Float32Array(PARTICLE_COUNT * 3); // Vortex dispersion trajectory per particle
+    const isMobile = window.innerWidth < 768;
+    const PARTICLE_COUNT = isMobile ? 6500 : 10000;
+    const TAU = Math.PI * 2;
 
-    // Color Palettes
-    const COLOR_GOLD = new THREE.Color('#fbbf24');
-    const COLOR_AMBER = new THREE.Color('#f59e0b');
-    const COLOR_CYAN = new THREE.Color('#38bdf8');
-    const COLOR_WHITE = new THREE.Color('#ffffff');
-    const COLOR_ICE = new THREE.Color('#bae6fd');
-    const COLOR_DEEP_CYAN = new THREE.Color('#0284c7');
+    const C = {
+        white: new THREE.Color('#ffffff'),
+        pureIce: new THREE.Color('#e0f2fe'),
+        ice: new THREE.Color('#bae6fd'),
+        cyan: new THREE.Color('#38bdf8'),
+        deepCyan: new THREE.Color('#0284c7'),
+        electricBlue: new THREE.Color('#2563eb'),
+        gold: new THREE.Color('#fbbf24'),
+        amber: new THREE.Color('#f59e0b'),
+        orange: new THREE.Color('#f97316'),
+        crimson: new THREE.Color('#ef4444'),
+        lime: new THREE.Color('#22c55e')
+    };
 
-    // Helper: Surface point on a cylinder
-    function cylinderShell(radius, height) {
-        const theta = Math.random() * Math.PI * 2;
-        const h = (Math.random() - 0.5) * height;
+    // --- Vector & Geometry Helpers ---
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    const lerp = (a, b, t) => a + (b - a) * t;
+    function randDir() {
+        const z = rnd(-1, 1), t = rnd(0, TAU), r = Math.sqrt(Math.max(0, 1 - z * z));
+        return [r * Math.cos(t), r * Math.sin(t), z];
+    }
+    const lerp3 = (a, b, t) => [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)];
+    const sub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+    const add = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+    const mul = (a, s) => [a[0] * s, a[1] * s, a[2] * s];
+    const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+    const len = a => Math.hypot(a[0], a[1], a[2]);
+    const norm = a => mul(a, 1 / (len(a) || 1));
+    function basis(axis) {
+        const n = norm(axis);
+        const ref = Math.abs(n[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0];
+        const u = norm(cross(n, ref));
+        return [n, u, cross(n, u)];
+    }
+    const jit = (p, j) => [p[0] + rnd(-j, j), p[1] + rnd(-j, j), p[2] + rnd(-j, j)];
+
+    // --- High-Precision Primitive Samplers ---
+    const P = {
+        ellipsoid: (c, r) => () => { const d = randDir(); return [c[0] + d[0] * r[0], c[1] + d[1] * r[1], c[2] + d[2] * r[2]]; },
+        tube: (a, b, ra, rb = ra) => {
+            const [, u, v] = basis(sub(b, a));
+            return () => {
+                const t = Math.random(), ang = rnd(0, TAU), r = lerp(ra, rb, t);
+                return add(lerp3(a, b, t), add(mul(u, Math.cos(ang) * r), mul(v, Math.sin(ang) * r)));
+            };
+        },
+        ring: (c, axis, R, thick = 0.1) => {
+            const [, u, v] = basis(axis);
+            return () => {
+                const ang = rnd(0, TAU), r = R + rnd(-thick, thick);
+                return add(c, add(mul(u, Math.cos(ang) * r), mul(v, Math.sin(ang) * r)));
+            };
+        },
+        disk: (c, axis, R) => {
+            const [, u, v] = basis(axis);
+            return () => {
+                const ang = rnd(0, TAU), r = R * Math.sqrt(Math.random());
+                return add(c, add(mul(u, Math.cos(ang) * r), mul(v, Math.sin(ang) * r)));
+            };
+        },
+        rect: (c, w, h) => () => [c[0] + rnd(-w / 2, w / 2), c[1] + rnd(-h / 2, h / 2), c[2] + rnd(-0.06, 0.06)],
+        segs: (list, j = 0.05) => {
+            const lens = list.map(s => len(sub(s[1], s[0])));
+            const total = lens.reduce((a, b) => a + b, 0);
+            return () => {
+                let r = Math.random() * total, k = 0;
+                while (k < list.length - 1 && r > lens[k]) { r -= lens[k]; k++; }
+                return jit(lerp3(list[k][0], list[k][1], Math.random()), j);
+            };
+        },
+        box: (c, s) => {
+            const [w, h, d] = s;
+            const areas = [h * d, h * d, w * d, w * d, w * h, w * h];
+            const total = areas.reduce((a, b) => a + b, 0);
+            return () => {
+                let r = Math.random() * total, f = 0;
+                while (f < 5 && r > areas[f]) { r -= areas[f]; f++; }
+                const p = [rnd(-w / 2, w / 2), rnd(-h / 2, h / 2), rnd(-d / 2, d / 2)];
+                const axis = f >> 1, sign = (f & 1) ? -1 : 1;
+                p[axis] = sign * s[axis] / 2;
+                return add(c, p);
+            };
+        },
+        boxEdges: (c, s, j = 0.04) => {
+            const corners = [];
+            for (const sx of [-1, 1]) for (const sy of [-1, 1]) for (const sz of [-1, 1]) {
+                corners.push([c[0] + sx * s[0] / 2, c[1] + sy * s[1] / 2, c[2] + sz * s[2] / 2]);
+            }
+            const edges = [];
+            for (let i = 0; i < 8; i++) for (let k = i + 1; k < 8; k++) {
+                const same = [0, 1, 2].filter(a => corners[i][a] === corners[k][a]).length;
+                if (same === 2) edges.push([corners[i], corners[k]]);
+            }
+            return P.segs(edges, j);
+        },
+        lathe: (profile, rMax) => () => {
+            let y, r, guard = 0;
+            do { [y, r] = profile(Math.random()); guard++; } while (Math.random() * rMax > r && guard < 40);
+            const ang = rnd(0, TAU);
+            return [Math.cos(ang) * r, y, Math.sin(ang) * r];
+        },
+        tris: (list, j = 0.1) => {
+            const areas = list.map(([a, b, c]) => len(cross(sub(b, a), sub(c, a))) / 2);
+            const total = areas.reduce((x, y) => x + y, 0);
+            return () => {
+                let r = Math.random() * total, k = 0;
+                while (k < list.length - 1 && r > areas[k]) { r -= areas[k]; k++; }
+                let u = Math.random(), v = Math.random();
+                if (u + v > 1) { u = 1 - u; v = 1 - v; }
+                const [a, b, c] = list[k];
+                return jit(add(a, add(mul(sub(b, a), u), mul(sub(c, a), v))), j);
+            };
+        },
+        curve: (fn, j = 0.05, dash = 0) => () => {
+            let t;
+            do { t = Math.random(); } while (dash && ((t * dash) % 1) > 0.55);
+            return jit(fn(t), j);
+        }
+    };
+
+    const rotZ = a => p => [p[0] * Math.cos(a) - p[1] * Math.sin(a), p[0] * Math.sin(a) + p[1] * Math.cos(a), p[2]];
+    const rotX = a => p => [p[0], p[1] * Math.cos(a) - p[2] * Math.sin(a), p[1] * Math.sin(a) + p[2] * Math.cos(a)];
+    const rotY = a => p => [p[0] * Math.cos(a) + p[2] * Math.sin(a), p[1], -p[0] * Math.sin(a) + p[2] * Math.cos(a)];
+    const compose = (...fs) => p => fs.reduce((q, f) => f(q), p);
+
+    function buildShape(parts, { size, transform = null, pivot = null }) {
+        const pos = new Float32Array(PARTICLE_COUNT * 3);
+        const col = new Float32Array(PARTICLE_COUNT * 3);
+        const agit = new Float32Array(PARTICLE_COUNT);
+        const tag = new Uint8Array(PARTICLE_COUNT);
+
+        const total = parts.reduce((s, p) => s + p.w, 0);
+        const order = [];
+        let acc = 0;
+        parts.forEach((p, k) => {
+            acc += p.w;
+            const end = Math.round(acc / total * PARTICLE_COUNT);
+            while (order.length < end) order.push(k);
+        });
+        while (order.length < PARTICLE_COUNT) order.push(parts.length - 1);
+        for (let i = order.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [order[i], order[j]] = [order[j], order[i]];
+        }
+
+        const tmp = new THREE.Color();
+        const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            const part = parts[order[i]];
+            let p = part.fn();
+            if (transform) p = transform(p);
+            for (let a = 0; a < 3; a++) { min[a] = Math.min(min[a], p[a]); max[a] = Math.max(max[a], p[a]); }
+            pos[i * 3] = p[0]; pos[i * 3 + 1] = p[1]; pos[i * 3 + 2] = p[2];
+            tmp.copy(part.c);
+            if (part.c2) tmp.lerp(part.c2, Math.random());
+            const b = (part.b || 1) * rnd(0.9, 1.15);
+            col[i * 3] = tmp.r * b; col[i * 3 + 1] = tmp.g * b; col[i * 3 + 2] = tmp.b * b;
+            agit[i] = part.agit || 0;
+            tag[i] = part.tag || 0;
+        }
+
+        const center = [(min[0] + max[0]) / 2, (min[1] + max[1]) / 2, (min[2] + max[2]) / 2];
+        const factor = size / Math.max(max[0] - min[0], max[1] - min[1]);
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            for (let a = 0; a < 3; a++) pos[i * 3 + a] = (pos[i * 3 + a] - center[a]) * factor;
+        }
+        let pv = null;
+        if (pivot) {
+            const tp = transform ? transform(pivot) : pivot;
+            pv = [(tp[0] - center[0]) * factor, (tp[1] - center[1]) * factor, (tp[2] - center[2]) * factor];
+        }
         return {
-            x: Math.cos(theta) * radius,
-            y: h,
-            z: Math.sin(theta) * radius
+            pos, col, agit, tag, pivot: pv,
+            w: (max[0] - min[0]) * factor,
+            h: (max[1] - min[1]) * factor,
+            layout: { x: 0, y: 0, z: 0, scale: 1, op: 1 }
         };
     }
 
-    // Helper: Point on sphere shell
-    function sphereShell(radius, thickness = 0.8) {
-        const u = Math.random();
-        const v = Math.random();
-        const theta = u * 2.0 * Math.PI;
-        const phi = Math.acos(2.0 * v - 1.0);
-        const r = radius - Math.random() * thickness;
-        return {
-            x: r * Math.sin(phi) * Math.cos(theta),
-            y: r * Math.sin(phi) * Math.sin(theta),
-            z: r * Math.cos(phi)
+    // =========================================================================
+    // SHAPE 0: COHETE (Rocket Launch)
+    // =========================================================================
+    function makeRocket() {
+        const rocketR = y => {
+            if (y < 6) return 5.4 - Math.max(0, -10 - y) * 0.08;
+            const k = (y - 6) / 16;
+            return 5.4 * Math.pow(Math.max(0, 1 - k * k), 0.55);
         };
-    }
-
-    // Generate random swirling dispersion vectors for matter transitions
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-        const i3 = i * 3;
-        const ang = Math.random() * Math.PI * 2;
-        const dist = 30 + Math.random() * 60;
-        particleDispersions[i3] = Math.cos(ang) * dist + (Math.random() - 0.5) * 20;
-        particleDispersions[i3 + 1] = (Math.random() - 0.5) * 80;
-        particleDispersions[i3 + 2] = Math.sin(ang) * dist + (Math.random() - 0.5) * 35;
-    }
-
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-        const ratio = i / PARTICLE_COUNT;
-
-        // =====================================================================
-        // SHAPE 0: HIGH-DEFINITION ROCKET (Aligned 45° launch angle)
-        // =====================================================================
-        let rX, rY, rZ;
-        if (ratio < 0.35) {
-            // Main Fuselage (Tapered Shell)
-            const t = Math.random();
-            const rad = 6.8 * Math.sin(t * Math.PI * 0.9) * (1 - t * 0.45);
-            const ang = Math.random() * Math.PI * 2;
-            const len = (t - 0.45) * 38;
-            rX = len;
-            rY = Math.cos(ang) * rad;
-            rZ = Math.sin(ang) * rad;
-        } else if (ratio < 0.50) {
-            // Cabin Glass / Visor Ring
-            const ringAng = Math.random() * Math.PI * 2;
-            const ringR = 5.2 + Math.random() * 0.8;
-            rX = 6 + (Math.random() - 0.5) * 2;
-            rY = Math.cos(ringAng) * ringR;
-            rZ = Math.sin(ringAng) * ringR;
-        } else if (ratio < 0.70) {
-            // 3 Triangular Wings / Fins
-            const finIdx = i % 3;
-            const finBaseAng = (finIdx * Math.PI * 2) / 3;
-            const finT = Math.random();
-            const finSpan = 6 + finT * 12;
-            const finLen = -10 - finT * 8 + (Math.random() - 0.5) * 2;
-            rX = finLen;
-            rY = Math.cos(finBaseAng) * finSpan + (Math.random() - 0.5) * 0.8;
-            rZ = Math.sin(finBaseAng) * finSpan + (Math.random() - 0.5) * 0.8;
-        } else {
-            // Thruster Exhaust Cone & High-Energy Plasma Trail
-            const tFlame = Math.random();
-            const flameLen = -14 - Math.pow(tFlame, 1.4) * 36;
-            const spread = 2.5 + tFlame * 10;
-            const fAng = Math.random() * Math.PI * 2;
-            rX = flameLen;
-            rY = Math.cos(fAng) * (Math.random() * spread);
-            rZ = Math.sin(fAng) * (Math.random() * spread);
-        }
-        // Rotate 45 deg to point upwards-right
-        const rRot = 0.72;
-        const rxRot = rX * Math.cos(rRot) - rY * Math.sin(rRot) + 8;
-        const ryRot = rX * Math.sin(rRot) + rY * Math.cos(rRot) + 2;
-        shapes[0].push(rxRot, ryRot, rZ);
-
-        // =====================================================================
-        // SHAPE 1: HIGH-DEFINITION SATELLITE (Central Core + Solar Wings + Dish)
-        // =====================================================================
-        let sX, sY, sZ;
-        if (ratio < 0.28) {
-            // Cubical / Cylindrical Main Body
-            const cyl = cylinderShell(7.5, 12);
-            sX = cyl.x;
-            sY = cyl.y;
-            sZ = cyl.z;
-        } else if (ratio < 0.68) {
-            // Solar Panel Arrays (Left & Right Grids)
-            const side = (i % 2 === 0) ? 1 : -1;
-            const panelW = 12 + Math.random() * 22; // Extended wing span
-            const panelH = (Math.random() - 0.5) * 11;
-            const panelThick = (Math.random() - 0.5) * 0.8;
-            sX = side * panelW;
-            sY = panelH;
-            sZ = panelThick;
-        } else if (ratio < 0.82) {
-            // Parabolic High-Gain Dish Antenna
-            const dishAng = Math.random() * Math.PI * 2;
-            const dishRad = Math.random() * 8.5;
-            const dishCurve = Math.pow(dishRad / 8.5, 2) * 4;
-            sX = Math.cos(dishAng) * dishRad;
-            sY = 9 + dishCurve + (Math.random() - 0.5) * 0.8;
-            sZ = Math.sin(dishAng) * dishRad;
-        } else {
-            // Communication Beacon Rings
-            const bAng = Math.random() * Math.PI * 2;
-            const bRad = 24 + Math.random() * 5;
-            sX = Math.cos(bAng) * bRad;
-            sY = Math.sin(bAng) * (bRad * 0.35);
-            sZ = (Math.random() - 0.5) * 3;
-        }
-        shapes[1].push(sX + 8, sY, sZ);
-
-        // =====================================================================
-        // SHAPE 2: HIGH-DEFINITION CYBER EYE / NEURAL ORB
-        // =====================================================================
-        let oX, oY, oZ;
-        if (ratio < 0.35) {
-            // Concentric Iris & Dense Pupil
-            const irisAng = Math.random() * Math.PI * 2;
-            const irisRad = Math.random() * 9.5;
-            oX = Math.cos(irisAng) * irisRad;
-            oY = Math.sin(irisAng) * irisRad;
-            oZ = Math.sqrt(Math.max(0, 100 - (oX * oX + oY * oY))) * 0.45;
-        } else if (ratio < 0.70) {
-            // Primary Orbital Sensor Ring
-            const ringAng = Math.random() * Math.PI * 2;
-            const ringR = 21 + Math.random() * 3.5;
-            const rx = Math.cos(ringAng) * ringR;
-            const ry = Math.sin(ringAng) * ringR;
-            // 40° inclination
-            oX = rx;
-            oY = ry * Math.cos(0.68) + (Math.random() - 0.5) * 1.5;
-            oZ = ry * Math.sin(0.68);
-        } else {
-            // Secondary Transverse Ring
-            const ringAng = Math.random() * Math.PI * 2;
-            const ringR = 27 + Math.random() * 4;
-            const rx = Math.cos(ringAng) * ringR;
-            const ry = Math.sin(ringAng) * ringR;
-            oX = rx * Math.cos(-0.75);
-            oY = ry;
-            oZ = rx * Math.sin(-0.75) + (Math.random() - 0.5) * 1.5;
-        }
-        shapes[2].push(oX + 6, oY, oZ);
-
-        // =====================================================================
-        // SHAPE 3: HIGH-DEFINITION ASTRONAUT (Clear Helmet, Visor, Backpack & Greeting Arm)
-        // =====================================================================
-        let aX, aY, aZ;
-        if (ratio < 0.20) {
-            // Curved Gold Visor (Distinct dense curved arc on the front of helmet)
-            const vAngH = (Math.random() - 0.5) * Math.PI * 0.75; // Front arc -67° to +67°
-            const vAngV = (Math.random() - 0.5) * Math.PI * 0.55;
-            const vR = 6.4 + (Math.random() - 0.5) * 0.5;
-            aX = Math.sin(vAngH) * vR * Math.cos(vAngV);
-            aY = 17 + Math.sin(vAngV) * vR;
-            aZ = Math.cos(vAngH) * vR * Math.cos(vAngV) + 1.2; // Protrudes forward
-        } else if (ratio < 0.38) {
-            // Helmet Outer Dome (Back & Sides)
-            const hPt = sphereShell(7.2, 0.9);
-            aX = hPt.x;
-            aY = hPt.y + 17;
-            aZ = hPt.z - 0.4;
-        } else if (ratio < 0.56) {
-            // Torso & Shoulders
-            const tCyl = cylinderShell(6.2, 12);
-            aX = tCyl.x * 1.05;
-            aY = 4 + tCyl.y;
-            aZ = tCyl.z * 0.85;
-        } else if (ratio < 0.68) {
-            // Rectangular Life Support Backpack (Clear box on the back)
-            aX = (Math.random() - 0.5) * 9.5;
-            aY = 3.5 + (Math.random() - 0.5) * 13;
-            aZ = -5.8 - Math.random() * 4.2;
-        } else if (ratio < 0.82) {
-            // Right Arm: Raised & Waving (Greeting!)
-            const armT = Math.random();
-            // Shoulder (x: 6.5, y: 9) -> Elbow (x: 13, y: 15) -> Waving Hand (x: 15, y: 22)
-            let curX, curY, curZ;
-            if (armT < 0.55) {
-                // Upper arm
-                const s = armT / 0.55;
-                curX = 6.5 + s * 6.5;
-                curY = 9 + s * 6.0;
-                curZ = 0.5 + s * 2.0;
-            } else {
-                // Forearm & Hand waving
-                const s = (armT - 0.55) / 0.45;
-                curX = 13 + Math.sin(s * Math.PI) * 2.5;
-                curY = 15 + s * 7.5;
-                curZ = 2.5 + Math.cos(s * Math.PI * 2) * 1.5;
+        const parts = [
+            { w: 28, fn: P.lathe(t => { const y = -15 + t * 29; return [y, rocketR(y)]; }, 5.5), c: C.white, c2: C.pureIce },
+            { w: 9, fn: P.lathe(t => { const y = 14 + t * 8; return [y, rocketR(y)]; }, 5.5), c: C.gold, c2: C.amber, b: 1.2 },
+            { w: 2.5, fn: P.ring([0, 14, 0], [0, 1, 0], rocketR(14) + 0.15), c: C.amber, b: 1.35 },
+            { w: 2.5, fn: P.ring([0, -8, 0], [0, 1, 0], 5.55), c: C.amber, b: 1.35 },
+            { w: 3.0, fn: P.ring([0, 5, 5.5], [0, 0, 1], 2.4, 0.12), c: C.white, b: 1.4 },
+            { w: 2.5, fn: P.disk([0, 5, 5.55], [0, 0, 1], 2.0), c: C.cyan, c2: C.deepCyan },
+            { w: 5, fn: P.lathe(t => [-19 + t * 4, 4.4 - 1.3 * t], 4.5), c: C.ice, c2: C.cyan, b: 0.95 }
+        ];
+        // 4 aletas
+        [0, Math.PI / 2, Math.PI, Math.PI * 1.5].forEach(th => {
+            const to3 = (r, y) => [Math.cos(th) * r, y, Math.sin(th) * r];
+            const A = to3(5.2, -3), B = to3(5.2, -15), Cc = to3(11.5, -19.5), D = to3(11.5, -14);
+            parts.push({ w: 3.5, fn: P.tris([[A, B, D], [B, Cc, D]], 0.1), c: C.ice, c2: C.cyan, b: 0.9 });
+            parts.push({ w: 2.0, fn: P.segs([[A, D], [D, Cc], [Cc, B]]), c: C.white, b: 1.4 });
+        });
+        // Llama hiper-vibrante
+        parts.push({
+            w: 8, agit: 0.35, c: C.white, c2: C.gold, b: 1.3,
+            fn: () => {
+                const t = Math.pow(Math.random(), 1.3), y = -19.5 - t * 9;
+                const r = 2.6 * (1 - t) * Math.sqrt(Math.random()), a = rnd(0, TAU);
+                return [Math.cos(a) * r, y, Math.sin(a) * r];
             }
-            aX = curX + (Math.random() - 0.5) * 1.2;
-            aY = curY + (Math.random() - 0.5) * 1.2;
-            aZ = curZ + (Math.random() - 0.5) * 1.2;
-        } else {
-            // Left Arm & Floating Zero-G Legs
-            const partIdx = i % 3;
-            if (partIdx === 0) {
-                // Left arm relaxed at side
-                const aT = Math.random();
-                aX = -6.5 - aT * 3.5 + (Math.random() - 0.5) * 1.0;
-                aY = 9 - aT * 10 + (Math.random() - 0.5) * 1.0;
-                aZ = 0.5 + aT * 1.5;
-            } else if (partIdx === 1) {
-                // Right Leg (gently bent backward in float)
-                const lT = Math.random();
-                aX = 3.2 + lT * 2.2 + (Math.random() - 0.5) * 1.0;
-                aY = -2 - lT * 16 + (Math.random() - 0.5) * 1.0;
-                aZ = lT * 4.5 + (Math.random() - 0.5) * 1.0;
-            } else {
-                // Left Leg (extended forward in float)
-                const lT = Math.random();
-                aX = -3.2 - lT * 2.8 + (Math.random() - 0.5) * 1.0;
-                aY = -2 - lT * 17 + (Math.random() - 0.5) * 1.0;
-                aZ = -lT * 3.5 + (Math.random() - 0.5) * 1.0;
+        });
+        parts.push({
+            w: 12, agit: 0.6, c: C.gold, c2: C.orange, b: 1.15,
+            fn: () => {
+                const t = Math.random(), y = -19.5 - t * 18;
+                const R = 4.4 * (1 - t) * (0.75 + 0.6 * Math.sin(Math.PI * t * 0.9));
+                const r = R * (0.65 + 0.35 * Math.random()), a = rnd(0, TAU);
+                return [Math.cos(a) * r, y, Math.sin(a) * r];
+            }
+        });
+        parts.push({
+            w: 3.0, agit: 1.2, c: C.amber, c2: C.orange, b: 1.0,
+            fn: () => {
+                const t = Math.random(), y = -34 - t * 11, r = 1 + t * 4 * Math.random(), a = rnd(0, TAU);
+                return [Math.cos(a) * r, y, Math.sin(a) * r];
+            }
+        });
+        return buildShape(parts, { size: 52, transform: compose(rotZ(-0.55), rotX(0.15)) });
+    }
+
+    // =========================================================================
+    // SHAPE 1: SATÉLITE (Satellite Orbiter HD) - Ángulo frontal nítido
+    // =========================================================================
+    function makeSatellite() {
+        const parts = [];
+
+        // 1. Chasis Central (Cuerpo cúbico estructural en oro y blanco)
+        // Aristas nítidas del cuerpo principal
+        parts.push({ w: 8, fn: P.boxEdges([0, 0, 0], [10, 13, 9]), c: C.white, c2: C.pureIce, b: 1.5 });
+        // Fajas estructurales horizontales alrededor del cuerpo
+        parts.push({ w: 3, fn: P.boxEdges([0, -3.5, 0], [10.2, 0.4, 9.2]), c: C.gold, b: 1.4 });
+        parts.push({ w: 3, fn: P.boxEdges([0, 3.5, 0], [10.2, 0.4, 9.2]), c: C.gold, b: 1.4 });
+        // Manto térmico dorado con leve brillo superficial (reducido para no saturar)
+        parts.push({ w: 4, fn: P.box([0, 0, 0], [9.6, 12.6, 8.6]), c: C.gold, c2: C.amber, b: 0.95 });
+
+        // 2. Bahía de Sensores y Lente Óptico Frontal
+        parts.push({ w: 3.5, fn: P.ring([0, 0, 4.6], [0, 0, 1], 3.2, 0.08), c: C.white, b: 1.55 });
+        parts.push({ w: 2.5, fn: P.ring([0, 0, 4.6], [0, 0, 1], 2.0, 0.06), c: C.cyan, b: 1.45 });
+        parts.push({ w: 1.5, fn: P.disk([0, 0, 4.6], [0, 0, 1], 1.2), c: C.pureIce, b: 1.6 });
+
+        // 3. Toberas de Propulsión RCS en las 4 esquinas inferiores
+        for (const sx of [-1, 1]) {
+            for (const sz of [-1, 1]) {
+                const bPos = [sx * 4.6, -6.6, sz * 4.2];
+                parts.push({ w: 0.8, fn: P.ring(bPos, [0, -1, 0], 1.1, 0.06), c: C.amber, b: 1.4 });
             }
         }
-        shapes[3].push(aX, aY, aZ);
 
-        // =====================================================================
-        // Dynamic Vertex Coloring (Gold Visor / Cyan Body / Electric Ice highlights)
-        // =====================================================================
-        const c3 = i * 3;
-        let c;
-        if (ratio < 0.20) {
-            // Front visor / energy core is bright golden amber
-            c = COLOR_GOLD.clone().lerp(COLOR_WHITE, Math.random() * 0.4);
-        } else if (ratio < 0.60) {
-            // Body / panels are electric cyan & white
-            c = COLOR_CYAN.clone().lerp(COLOR_WHITE, Math.random() * 0.35);
-        } else if (ratio < 0.85) {
-            // Wings / thrusters / arms
-            c = COLOR_ICE.clone().lerp(COLOR_AMBER, (i % 2 === 0) ? 0.6 : 0.1);
-        } else {
-            // Trails & stars
-            c = COLOR_AMBER.clone().lerp(COLOR_GOLD, Math.random());
+        // 4. Paneles Solares Gigantes (Solar Array Wings)
+        [-1, 1].forEach(s => {
+            const x0 = s * 7.5, x1 = s * 34, hh = 6.2;
+
+            // Brazos de celosía / pivote de soporte hacia el satélite
+            parts.push({
+                w: 2.2, c: C.white, b: 1.4,
+                fn: P.segs([
+                    [[s * 5.0, 0, 0], [s * 7.5, 0, 0]],
+                    [[s * 5.0, 2.5, 0], [s * 7.5, 0, 0]],
+                    [[s * 5.0, -2.5, 0], [s * 7.5, 0, 0]]
+                ], 0.03)
+            });
+
+            // Marco perimetral ultra-nítido del ala solar
+            parts.push({
+                w: 8.5, c: C.white, c2: C.pureIce, b: 1.5,
+                fn: P.segs([
+                    [[x0, -hh, 0], [x1, -hh, 0]],
+                    [[x1, -hh, 0], [x1, hh, 0]],
+                    [[x1, hh, 0], [x0, hh, 0]],
+                    [[x0, hh, 0], [x0, -hh, 0]]
+                ], 0.03)
+            });
+
+            // Grilla ortogonal de celdas fotovoltaicas (líneas divisorias nítidas)
+            const grid = [];
+            for (let k = 1; k <= 7; k++) {
+                const x = lerp(x0, x1, k / 8);
+                grid.push([[x, -hh, 0], [x, hh, 0]]);
+            }
+            [-hh * 0.5, 0, hh * 0.5].forEach(y => {
+                grid.push([[x0, y, 0], [x1, y, 0]]);
+            });
+            parts.push({ w: 10, fn: P.segs(grid, 0.03), c: C.cyan, c2: C.pureIce, b: 1.4 });
+
+            // Células de silicio activas (resplandor azul eléctrico sutil en celdas)
+            parts.push({
+                w: 6, c: C.electricBlue, c2: C.deepCyan, b: 0.9,
+                fn: () => {
+                    const col = Math.floor(Math.random() * 8);
+                    const row = Math.floor(Math.random() * 4);
+                    const xa = lerp(x0, x1, col / 8) + rnd(0.4, (x1 - x0) / 8 - 0.4);
+                    const ya = -hh + (row + 0.5) * (hh * 2 / 4) + rnd(-0.6, 0.6);
+                    return [xa, ya, rnd(-0.04, 0.04)];
+                }
+            });
+        });
+
+        // 5. Gran Antena Parabólica de Comunicaciones (High-Gain Dish Antenna)
+        const dc = [0, 14.2, 1.2], dn = norm([0, 0.72, 0.68]);
+        const [n, u, v] = basis(dn);
+
+        // Mástil de anclaje de la antena
+        parts.push({ w: 1.8, fn: P.segs([[[0, 6.5, 0], dc]], 0.03), c: C.white, b: 1.4 });
+
+        // Aro exterior nítido de la parábola
+        parts.push({ w: 6.5, fn: P.ring(add(dc, mul(n, 8.4 * 8.4 / 18)), dn, 8.4, 0.08), c: C.white, c2: C.pureIce, b: 1.6 });
+        // Aro interior concéntrico
+        parts.push({ w: 4.0, fn: P.ring(add(dc, mul(n, 4.5 * 4.5 / 18)), dn, 4.5, 0.08), c: C.pureIce, b: 1.4 });
+        // Centro / buje
+        parts.push({ w: 2.0, fn: P.ring(dc, dn, 1.5, 0.06), c: C.cyan, b: 1.4 });
+
+        // 8 Radios estructurales de la parábola (nervaduras parabólicas en alambre)
+        const ribs = [];
+        for (let i = 0; i < 8; i++) {
+            const ang = i * TAU / 8;
+            const ca = Math.cos(ang), sa = Math.sin(ang);
+            for (let s = 0; s < 6; s++) {
+                const rA = lerp(1.5, 8.4, s / 6), rB = lerp(1.5, 8.4, (s + 1) / 6);
+                const hA = rA * rA / 18, hB = rB * rB / 18;
+                const pA = add(dc, add(add(mul(u, ca * rA), mul(v, sa * rA)), mul(n, hA)));
+                const pB = add(dc, add(add(mul(u, ca * rB), mul(v, sa * rB)), mul(n, hB)));
+                ribs.push([pA, pB]);
+            }
         }
+        parts.push({ w: 6.0, fn: P.segs(ribs, 0.03), c: C.pureIce, c2: C.cyan, b: 1.35 });
 
-        particleColors[c3] = c.r;
-        particleColors[c3 + 1] = c.g;
-        particleColors[c3 + 2] = c.b;
+        // Trípode del alimentador focal y subreflector dorado
+        const focalPt = add(dc, mul(n, 5.8));
+        const tripod = [0, 1, 2].map(k => {
+            const ang = k * TAU / 3 + 0.5;
+            const pt = add(dc, add(add(mul(u, Math.cos(ang) * 6.0), mul(v, Math.sin(ang) * 6.0)), mul(n, 2.0)));
+            return [pt, focalPt];
+        });
+        parts.push({ w: 2.2, fn: P.segs(tripod, 0.03), c: C.white, b: 1.45 });
+        parts.push({ w: 1.2, fn: P.ring(focalPt, dn, 0.9, 0.05), c: C.gold, b: 1.6 });
+
+        // 6. Mástil de Instrumentación / Magnetómetro Desplegado (Hacia abajo)
+        const mastSegs = [
+            [[0, -6.5, 0], [0, -18.5, 0]],
+            [[0, -10.0, -1.0], [0, -10.0, 1.0]],
+            [[0, -14.0, -1.0], [0, -14.0, 1.0]]
+        ];
+        parts.push({ w: 2.0, fn: P.segs(mastSegs, 0.03), c: C.white, b: 1.35 });
+        parts.push({ w: 1.0, fn: P.ring([0, -18.5, 0], [0, 1, 0], 1.0, 0.05), c: C.gold, b: 1.6 });
+
+        return buildShape(parts, { size: 58, transform: compose(rotZ(-0.12), rotY(-0.28), rotX(0.20)) });
     }
 
-    // Dynamic Positions Array
+    // =========================================================================
+    // SHAPE 2: OJO CIBERNÉTICO & RETÍCULA NEURAL HD (Cyber AI Vision HUD)
+    // =========================================================================
+    function makeEye() {
+        const W = 34, H = 15.0;
+        const circle = (R, z) => t => [Math.cos(t * TAU) * R, Math.sin(t * TAU) * R, z];
+        const parts = [];
+
+        // 1. Párpados Almendrados Principales (Curvas dobles estilizadas con amplio espacio negativo)
+        // Párpado superior primario (blanco puro brillante)
+        parts.push({
+            w: 9.0, c: C.white, c2: C.pureIce, b: 1.6,
+            fn: P.curve(t => { const x = -W + 2 * W * t; return [x, H * (1 - (x / W) ** 2), 0.6]; }, 0.02)
+        });
+        // Párpado superior secundario (arco orbital cian)
+        parts.push({
+            w: 5.5, c: C.cyan, b: 1.35,
+            fn: P.curve(t => { const x = -W * 0.88 + 1.76 * W * t; return [x, (H + 3.2) * (1 - (x / (W * 0.88)) ** 2), 0.3]; }, 0.02)
+        });
+        // Párpado inferior primario (blanco puro)
+        parts.push({
+            w: 8.5, c: C.white, c2: C.pureIce, b: 1.6,
+            fn: P.curve(t => { const x = -W + 2 * W * t; return [x, -H * 0.82 * (1 - (x / W) ** 2), 0.6]; }, 0.02)
+        });
+        // Párpado inferior secundario (cian)
+        parts.push({
+            w: 5.0, c: C.cyan, b: 1.35,
+            fn: P.curve(t => { const x = -W * 0.88 + 1.76 * W * t; return [x, -(H + 2.6) * 0.82 * (1 - (x / (W * 0.88)) ** 2), 0.3]; }, 0.02)
+        });
+        // Ticks angulares en los vértices del ojo
+        parts.push({
+            w: 2.2, c: C.white, b: 1.5,
+            fn: P.segs([[[-W - 2.0, 0, 0.4], [-W, 0, 0.4]], [[W, 0, 0.4], [W + 2.0, 0, 0.4]]], 0.02)
+        });
+
+        // 2. Iris Holográfico de Triple Anillo Concéntrico (Diámetro equilibrado)
+        // Anillo exterior del iris (cian brillante)
+        parts.push({ w: 8.5, fn: P.curve(circle(7.6, 0.5), 0.02), c: C.cyan, c2: C.pureIce, b: 1.6 });
+        // Anillo medio del iris (azul eléctrico profundo)
+        parts.push({ w: 6.0, fn: P.curve(circle(5.6, 0.55), 0.02), c: C.electricBlue, c2: C.cyan, b: 1.45 });
+        // Anillo interior del iris (dorado tecnológico)
+        parts.push({ w: 5.5, fn: P.curve(circle(3.8, 0.6), 0.02), c: C.gold, c2: C.amber, b: 1.55 });
+
+        // 8 Aspas geométricas de apertura óptica de alta precisión
+        const blades = [];
+        for (let i = 0; i < 8; i++) {
+            const a1 = i * TAU / 8, a2 = (i + 0.35) * TAU / 8;
+            const p1 = [Math.cos(a1) * 3.8, Math.sin(a1) * 3.8, 0.55];
+            const p2 = [Math.cos(a2) * 7.6, Math.sin(a2) * 7.6, 0.5];
+            blades.push([p1, p2]);
+        }
+        parts.push({ w: 5.5, fn: P.segs(blades, 0.02), c: C.pureIce, c2: C.cyan, b: 1.35 });
+
+        // 3. Pupila y Foco Cuántico Central
+        parts.push({ w: 4.0, fn: P.curve(circle(2.2, 0.65), 0.02), c: C.white, b: 1.7 });
+        parts.push({ w: 2.0, fn: P.ring([0, 0, 0.7], [0, 0, 1], 0.9, 0.03), c: C.gold, b: 1.8 });
+        // Destello especular de lente
+        parts.push({ w: 1.5, fn: P.segs([[[-1.4, 1.4, 0.75], [-0.5, 2.3, 0.75]]], 0.02), c: C.white, b: 1.8 });
+
+        // 4. Mirilla Táctica HUD y Retícula de Escaneo
+        // 4 Esquinas L de Bounding Box [   ] bien separadas del ojo
+        const bx = 36, by = 18, blen = 8.0;
+        const boxCorners = [
+            [[bx - blen, by, 0.2], [bx, by, 0.2]], [[bx, by, 0.2], [bx, by - blen, 0.2]],
+            [[-bx + blen, by, 0.2], [-bx, by, 0.2]], [[-bx, by, 0.2], [-bx, by - blen, 0.2]],
+            [[bx - blen, -by, 0.2], [bx, -by, 0.2]], [[bx, -by, 0.2], [bx, -by + blen, 0.2]],
+            [[-bx + blen, -by, 0.2], [-bx, -by, 0.2]], [[-bx, -by, 0.2], [-bx, -by + blen, 0.2]]
+        ];
+        parts.push({ w: 8.0, fn: P.segs(boxCorners, 0.02), c: C.cyan, c2: C.pureIce, b: 1.6 });
+
+        // Mirilla en Cruz (+ Precision Crosshair ticks) exteriores al iris
+        const crossTicks = [
+            [[0, 9.5, 0.2], [0, 15.0, 0.2]],
+            [[0, -9.5, 0.2], [0, -15.0, 0.2]],
+            [[10.5, 0, 0.2], [17.5, 0, 0.2]],
+            [[-10.5, 0, 0.2], [-17.5, 0, 0.2]]
+        ];
+        parts.push({ w: 4.5, fn: P.segs(crossTicks, 0.02), c: C.gold, b: 1.5 });
+
+        // Arcos de Medición HUD en grados (Dashed peripheral telemetry)
+        parts.push({
+            w: 4.5, c: C.gold, c2: C.amber, b: 1.35,
+            fn: P.curve(t => {
+                const a = t < 0.5 ? lerp(-0.6, 0.6, t * 2) : lerp(Math.PI - 0.6, Math.PI + 0.6, (t - 0.5) * 2);
+                return [Math.cos(a) * 14.5, Math.sin(a) * 14.5, 0.1];
+            }, 0.02, 24)
+        });
+
+        // Línea de Escaneo Láser Horizontal con Marcadores de Tracking
+        parts.push({
+            w: 4.0, c: C.cyan, b: 1.3,
+            fn: P.segs([
+                [[-33, 0, 0.35], [33, 0, 0.35]],
+                [[-16, -1.4, 0.35], [-16, 1.4, 0.35]],
+                [[16, -1.4, 0.35], [16, 1.4, 0.35]]
+            ], 0.02)
+        });
+
+        // 5. Trazas de Circuitos Neuronales (Neural PCB Traces laterales)
+        const circuitTraces = [
+            [[-W, 0, 0.2], [-W - 5, 0, 0.2]],
+            [[-W - 5, 0, 0.2], [-W - 10, 6, 0.2]],
+            [[-W - 10, 6, 0.2], [-W - 17, 6, 0.2]],
+            [[-W - 5, 0, 0.2], [-W - 9, -6, 0.2]],
+            [[-W - 9, -6, 0.2], [-W - 15, -6, 0.2]],
+            [[W, 0, 0.2], [W + 5, 0, 0.2]],
+            [[W + 5, 0, 0.2], [W + 10, 6, 0.2]],
+            [[W + 10, 6, 0.2], [W + 17, 6, 0.2]],
+            [[W + 5, 0, 0.2], [W + 9, -6, 0.2]],
+            [[W + 9, -6, 0.2], [W + 15, -6, 0.2]]
+        ];
+        parts.push({ w: 4.5, fn: P.segs(circuitTraces, 0.02), c: C.cyan, c2: C.pureIce, b: 1.4 });
+        [[-W - 17, 6], [-W - 15, -6], [W + 17, 6], [W + 15, -6]].forEach(pt => {
+            parts.push({ w: 0.6, fn: P.ring([pt[0], pt[1], 0.2], [0, 0, 1], 0.9, 0.03), c: C.gold, b: 1.6 });
+        });
+
+        return buildShape(parts, { size: 58, transform: compose(rotY(-0.04), rotX(0.02)) });
+    }
+
+    // =========================================================================
+    // SHAPE 3: ASTRONAUTA HD (Spaceman Greeting)
+    // =========================================================================
+    function makeAstronaut() {
+        const parts = [];
+        const HC = [0, 15.0, 0], HR = 6.8;
+        const elbowR = [11.0, 11.0, 1.5];
+
+        // 1. Casco Espacial Holográfico (Estructura de domo en aros de alambre nítidos)
+        // Aros de latitud horizontal del casco
+        [11.5, 14.0, 16.5, 19.2].forEach(y => {
+            const dy = y - HC[1];
+            const r = Math.sqrt(Math.max(0.1, HR * HR - dy * dy));
+            parts.push({ w: 2.2, fn: P.ring([0, y, 0], [0, 1, 0], r, 0.06), c: C.white, c2: C.pureIce, b: 1.3 });
+        });
+        // Aros de meridiano vertical del casco (perfil frontal y lateral)
+        parts.push({
+            w: 2.5, c: C.white, b: 1.3,
+            fn: P.curve(t => {
+                const a = t * Math.PI;
+                return [0, HC[1] + Math.sin(a) * HR, -Math.cos(a) * HR];
+            }, 0.04)
+        });
+        parts.push({
+            w: 2.5, c: C.white, b: 1.3,
+            fn: P.curve(t => {
+                const a = t * Math.PI;
+                return [-Math.cos(a) * HR, HC[1] + Math.sin(a) * HR, 0];
+            }, 0.04)
+        });
+
+        // 2. Visor Dorado Frontal Apolo (El elemento más distintivo e icónico)
+        // Borde exterior denso y brillante del visor
+        const visorRim = (scale = 1.0, zOff = 0) => t => {
+            const a = t * TAU;
+            const rx = 4.8 * scale, ry = 3.6 * scale;
+            return [rx * Math.cos(a), HC[1] + ry * Math.sin(a), 3.2 + (scale * 2.2) * Math.cos(a * 0.5) + zOff];
+        };
+        parts.push({ w: 7.0, fn: P.curve(visorRim(1.0, 0), 0.04), c: C.gold, c2: C.amber, b: 1.7 });
+        parts.push({ w: 4.5, fn: P.curve(visorRim(0.85, 0.1), 0.04), c: C.gold, b: 1.5 });
+        parts.push({ w: 3.5, fn: P.curve(visorRim(0.65, 0.2), 0.04), c: C.amber, b: 1.4 });
+        parts.push({ w: 2.5, fn: P.curve(visorRim(0.40, 0.25), 0.04), c: C.gold, b: 1.4 });
+        // Destello especular de reflejo de cristal cósmico en el visor
+        parts.push({
+            w: 2.0, c: C.white, b: 1.8,
+            fn: P.segs([[[-2.8, 16.5, 5.0], [-1.0, 17.8, 4.8]], [[-1.2, 16.0, 5.2], [-0.2, 17.0, 5.0]]], 0.03)
+        });
+
+        // 3. Cápsulas de Comunicación en Orejas (Comm Pods) y Antena
+        [-1, 1].forEach(s => {
+            parts.push({ w: 1.5, fn: P.ring([s * 6.8, 15.0, 0], [1, 0, 0], 2.0, 0.05), c: C.pureIce, b: 1.4 });
+            parts.push({ w: 1.0, fn: P.disk([s * 6.8, 15.0, 0], [1, 0, 0], 1.4), c: C.cyan, b: 1.3 });
+        });
+        // Antena de telemetría en cápsula izquierda
+        parts.push({ w: 1.5, fn: P.segs([[[-6.8, 16.5, 0], [-8.0, 23.0, 0]]], 0.03), c: C.white, b: 1.4 });
+        parts.push({ w: 0.8, fn: P.ring([-8.0, 23.0, 0], [0, 1, 0], 0.8, 0.04), c: C.gold, b: 1.7 });
+
+        // 4. Cuello y Anillo de Presión (Neck Seal)
+        parts.push({ w: 3.0, fn: P.ring([0, 8.8, 0], [0, 1, 0], 4.6, 0.06), c: C.white, b: 1.5 });
+        parts.push({ w: 2.0, fn: P.ring([0, 8.3, 0], [0, 1, 0], 4.8, 0.06), c: C.cyan, b: 1.4 });
+
+        // 5. Torso: Silueta con Costillas y Placas de Presión (NO volumen ciego)
+        // Aros de contorno del traje en el torso
+        [6.5, 3.8, 1.2, -1.4].forEach((y, idx) => {
+            const rx = 6.0 - idx * 0.2, rz = 4.8 - idx * 0.15;
+            parts.push({
+                w: 2.5, c: C.white, c2: C.pureIce, b: 1.3,
+                fn: P.curve(t => [rx * Math.cos(t * TAU), y, rz * Math.sin(t * TAU)], 0.04)
+            });
+        });
+        // Costuras laterales del torso
+        [-1, 1].forEach(s => {
+            parts.push({
+                w: 2.0, c: C.white, b: 1.3,
+                fn: P.segs([[[s * 5.8, 7.5, 0], [s * 5.2, -4.0, 0]]], 0.04)
+            });
+        });
+
+        // 6. Cinturón de Herramientas y Hebilla Dorada
+        parts.push({ w: 3.0, fn: P.ring([0, -4.2, 0], [0, 1, 0], 5.2, 0.06), c: C.gold, b: 1.4 });
+        parts.push({ w: 1.5, fn: P.boxEdges([0, -4.2, 5.2], [2.8, 1.8, 0.6]), c: C.gold, b: 1.6 });
+
+        // 7. Panel de Control del Pecho (Chest Pack) con LEDs
+        parts.push({ w: 4.0, fn: P.boxEdges([0, 2.6, 4.8], [5.2, 3.8, 1.2]), c: C.cyan, b: 1.55 });
+        // LEDs indicadores del soporte vital
+        parts.push({ w: 0.8, fn: P.ring([-1.5, 2.8, 5.5], [0, 0, 1], 0.45, 0.03), c: C.crimson, b: 1.8 });
+        parts.push({ w: 0.8, fn: P.ring([0, 2.8, 5.5], [0, 0, 1], 0.45, 0.03), c: C.lime, b: 1.8 });
+        parts.push({ w: 0.8, fn: P.ring([1.5, 2.8, 5.5], [0, 0, 1], 0.45, 0.03), c: C.cyan, b: 1.8 });
+
+        // 8. Mochila de Soporte Vital PLSS (Primary Life Support System)
+        parts.push({ w: 6.0, fn: P.boxEdges([0, 3.0, -5.6], [9.4, 12.5, 3.8]), c: C.white, c2: C.pureIce, b: 1.45 });
+        // Cilindros dobles de oxígeno en la mochila
+        [-1, 1].forEach(s => {
+            parts.push({ w: 1.8, fn: P.tube([s * 3.0, 8.5, -5.6], [s * 3.0, -1.5, -5.6], 1.2), c: C.pureIce, b: 1.2 });
+            parts.push({ w: 0.8, fn: P.ring([s * 3.0, 9.2, -5.6], [0, 1, 0], 1.2, 0.04), c: C.amber, b: 1.5 });
+        });
+
+        // 9. Brazo Derecho en Alto Saludando (Tag 1 para animación de onda de saludo)
+        // Hombro derecho
+        parts.push({ w: 1.5, fn: P.ring([5.8, 6.8, 0], [1, 0.3, 0], 2.6, 0.06), c: C.white, b: 1.35 });
+        // Brazo superior (bíceps)
+        parts.push({ w: 4.5, fn: P.tube([5.8, 6.8, 0], elbowR, 2.3), c: C.white, c2: C.pureIce, b: 1.3 });
+        // Articulación del codo corrugada
+        parts.push({ w: 1.8, fn: P.ring(elbowR, [0.3, 1, 0.2], 2.4, 0.06), c: C.gold, b: 1.45 });
+
+        // Antebrazo animado (Tag 1)
+        const wristR = [13.8, 18.5, 2.2];
+        parts.push({ w: 4.5, tag: 1, fn: P.tube(elbowR, wristR, 2.1), c: C.white, c2: C.pureIce, b: 1.35 });
+        // Muñeca y puño corrugado (Tag 1)
+        parts.push({ w: 2.0, tag: 1, fn: P.ring(wristR, [0.2, 1, 0.1], 2.2, 0.06), c: C.gold, b: 1.5 });
+        // Mano y Guante Abierto Saludando (Tag 1: Palma + 5 dedos individuales nítidos)
+        parts.push({ w: 2.5, tag: 1, fn: P.ring([14.5, 20.2, 2.5], [0.2, 1, 0.1], 1.8, 0.06), c: C.white, b: 1.4 });
+        const fingerRays = [
+            [[13.2, 19.8, 3.0], [11.8, 20.8, 3.4]], // Pulgar abierto
+            [[13.8, 20.8, 2.7], [13.8, 23.8, 2.8]], // Índice
+            [[14.6, 21.0, 2.6], [14.8, 24.5, 2.7]], // Mayor
+            [[15.4, 20.8, 2.5], [15.7, 23.8, 2.6]], // Anular
+            [[16.1, 20.3, 2.4], [16.6, 22.8, 2.5]]  // Meñique
+        ];
+        parts.push({ w: 3.5, tag: 1, fn: P.segs(fingerRays, 0.03), c: C.white, c2: C.pureIce, b: 1.5 });
+
+        // 10. Brazo Izquierdo Flotando Relajado
+        const elbowL = [-11.5, 1.8, 1.2], wristL = [-13.8, -4.5, 2.2];
+        parts.push({ w: 1.5, fn: P.ring([-5.8, 6.8, 0], [-1, 0.3, 0], 2.6, 0.06), c: C.white, b: 1.35 });
+        parts.push({ w: 4.5, fn: P.tube([-5.8, 6.8, 0], elbowL, 2.3), c: C.white, c2: C.pureIce, b: 1.3 });
+        parts.push({ w: 1.8, fn: P.ring(elbowL, [-0.3, -1, 0.2], 2.4, 0.06), c: C.gold, b: 1.45 });
+        parts.push({ w: 4.0, fn: P.tube(elbowL, wristL, 2.1), c: C.white, c2: C.pureIce, b: 1.3 });
+        parts.push({ w: 1.8, fn: P.ring(wristL, [-0.2, -1, 0.1], 2.2, 0.06), c: C.gold, b: 1.45 });
+        parts.push({ w: 2.0, fn: P.ellipsoid([-14.2, -6.2, 2.5], [1.5, 1.8, 1.2]), c: C.white, b: 1.35 });
+
+        // 11. Piernas en Gravedad Cero Abiertas (Wide Zero-G Stance - Espacio Negativo Limpio)
+        const kneeR = [8.8, -13.5, 1.8], ankleR = [11.8, -22.5, 0.5];
+        const kneeL = [-8.8, -13.0, -1.2], ankleL = [-12.2, -22.0, 0.8];
+
+        // Anillos de articulación de cadera
+        parts.push({ w: 1.8, fn: P.ring([3.8, -4.8, 0], [0.4, -1, 0.2], 2.9, 0.06), c: C.white, b: 1.35 });
+        parts.push({ w: 1.8, fn: P.ring([-3.8, -4.8, 0], [-0.4, -1, -0.2], 2.9, 0.06), c: C.white, b: 1.35 });
+
+        // Pierna Derecha: Muslo -> Rodilla corrugada -> Pantorrilla -> Tobillo -> Bota
+        parts.push({ w: 5.5, fn: P.tube([3.8, -4.8, 0], kneeR, 2.7), c: C.white, c2: C.pureIce, b: 1.3 });
+        parts.push({ w: 2.0, fn: P.ring(kneeR, [0.3, -1, 0.2], 2.8, 0.06), c: C.gold, b: 1.45 });
+        parts.push({ w: 5.0, fn: P.tube(kneeR, ankleR, 2.4), c: C.white, c2: C.pureIce, b: 1.3 });
+        parts.push({ w: 2.0, fn: P.ring(ankleR, [0.2, -1, 0.1], 2.5, 0.06), c: C.gold, b: 1.5 });
+        // Suela de bota lunar rectangular con banda de tracción
+        parts.push({ w: 3.5, fn: P.boxEdges([12.2, -24.5, 2.0], [3.4, 1.5, 6.2]), c: C.white, c2: C.pureIce, b: 1.5 });
+
+        // Pierna Izquierda: Muslo -> Rodilla corrugada -> Pantorrilla -> Tobillo -> Bota
+        parts.push({ w: 5.5, fn: P.tube([-3.8, -4.8, 0], kneeL, 2.7), c: C.white, c2: C.pureIce, b: 1.3 });
+        parts.push({ w: 2.0, fn: P.ring(kneeL, [-0.3, -1, -0.2], 2.8, 0.06), c: C.gold, b: 1.45 });
+        parts.push({ w: 5.0, fn: P.tube(kneeL, ankleL, 2.4), c: C.white, c2: C.pureIce, b: 1.3 });
+        parts.push({ w: 2.0, fn: P.ring(ankleL, [-0.2, -1, 0.1], 2.5, 0.06), c: C.gold, b: 1.5 });
+        // Suela de bota lunar rectangular izquierda
+        parts.push({ w: 3.5, fn: P.boxEdges([-12.6, -24.0, 2.4], [3.4, 1.5, 6.2]), c: C.white, c2: C.pureIce, b: 1.5 });
+
+        // 12. Cable Cósmico Umbilical de Seguridad Flotante
+        parts.push({
+            w: 3.0, c: C.gold, c2: C.amber, b: 1.35,
+            fn: P.curve(t => {
+                const a = [-4.5, -2, -6.5], b = [-16, -12, -5], c = [-24, 0, -2];
+                const s = 1 - t;
+                return [
+                    s * s * a[0] + 2 * s * t * b[0] + t * t * c[0],
+                    s * s * a[1] + 2 * s * t * b[1] + t * t * c[1],
+                    s * s * a[2] + 2 * s * t * b[2] + t * t * c[2]
+                ];
+            }, 0.04, 32)
+        });
+
+        return buildShape(parts, { size: 56, transform: compose(rotY(-0.35), rotX(0.08)), pivot: elbowR });
+    }
+
+    const shapes = [makeRocket(), makeSatellite(), makeEye(), makeAstronaut()];
+
+    // Trayectorias de dispersión cósmica
+    const particleDispersions = new Float32Array(PARTICLE_COUNT * 3);
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const ang = rnd(0, TAU), dist = rnd(20, 52);
+        particleDispersions[i * 3] = Math.cos(ang) * dist;
+        particleDispersions[i * 3 + 1] = rnd(-28, 28);
+        particleDispersions[i * 3 + 2] = Math.sin(ang) * dist * 0.7;
+    }
+
+    // Geometría y atributos
     const currentPositions = new Float32Array(PARTICLE_COUNT * 3);
-    for (let i = 0; i < PARTICLE_COUNT * 3; i++) {
-        currentPositions[i] = shapes[0][i];
+    const currentColors = new Float32Array(PARTICLE_COUNT * 3);
+    const sizes = new Float32Array(PARTICLE_COUNT);
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+        currentPositions[i * 3] = shapes[0].pos[i * 3];
+        currentPositions[i * 3 + 1] = shapes[0].pos[i * 3 + 1];
+        currentPositions[i * 3 + 2] = shapes[0].pos[i * 3 + 2];
+        currentColors.set(shapes[0].col.subarray(i * 3, i * 3 + 3), i * 3);
+        sizes[i] = Math.random() < 0.05 ? rnd(1.8, 2.4) : rnd(0.9, 1.35);
     }
 
     const particleGeometry = new THREE.BufferGeometry();
     particleGeometry.setAttribute('position', new THREE.BufferAttribute(currentPositions, 3));
-    particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+    particleGeometry.setAttribute('aColor', new THREE.BufferAttribute(currentColors, 3));
+    particleGeometry.setAttribute('aSize', new THREE.BufferAttribute(sizes, 1));
 
-    const particleMaterial = new THREE.PointsMaterial({
-        size: 1.95,
-        map: particleTexture,
+    // Shader ultra-nítido con renderizado de disco perfecto y halo
+    const particleMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+            uSize: { value: isMobile ? 3.0 : 2.75 },
+            uPixelRatio: { value: renderer.getPixelRatio() },
+            uOpacity: { value: 1.0 }
+        },
+        vertexShader: `
+            attribute vec3 aColor;
+            attribute float aSize;
+            uniform float uSize;
+            uniform float uPixelRatio;
+            varying vec3 vColor;
+            varying float vAlpha;
+            void main() {
+                vec4 mv = modelViewMatrix * vec4(position, 1.0);
+                gl_Position = projectionMatrix * mv;
+                float dist = -mv.z;
+                gl_PointSize = uSize * aSize * uPixelRatio * (70.0 / max(dist, 10.0));
+                vColor = aColor;
+                vAlpha = clamp(1.3 - (dist - 50.0) / 70.0, 0.4, 1.0);
+            }
+        `,
+        fragmentShader: `
+            uniform float uOpacity;
+            varying vec3 vColor;
+            varying float vAlpha;
+            void main() {
+                vec2 c = gl_PointCoord - 0.5;
+                float d = length(c);
+                if (d > 0.5) discard;
+                float a = smoothstep(0.5, 0.08, d);
+                gl_FragColor = vec4(vColor, a * vAlpha * uOpacity);
+            }
+        `,
         transparent: true,
-        blending: THREE.AdditiveBlending,
-        vertexColors: true,
         depthWrite: false,
-        opacity: 0.94
+        blending: THREE.AdditiveBlending
     });
 
     const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
     scene.add(particleSystem);
 
     // -------------------------------------------------------------------------
-    // Morphing Engine & Scroll Tracking with Matter Dissolution
+    // Layout Equilibrado y Centrado para Cada Momento
     // -------------------------------------------------------------------------
-    let currentShapeIndex = 0;
-    let targetShapeIndex = 0;
-    let morphFactor = 0; // 0 to 1 between current and target
-    let dissolutionIntensity = 0; // Peaks at 0.5 of transition (matter vortex)
+    let halfW = 1, halfH = 1;
+    function layoutShapes() {
+        const Wpx = window.innerWidth;
+        halfH = camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+        halfW = halfH * camera.aspect;
+        const narrow = Wpx < 960;
 
+        shapes.forEach((s, i) => {
+            const L = { x: 0, y: 0, z: 0, scale: 1, op: 1 };
+            if (narrow) {
+                L.scale = Math.min(0.9, (2 * halfW * 0.85) / s.w, (2 * halfH * 0.42) / s.h);
+                L.y = halfH * 0.22;
+                L.x = 0;
+                L.op = 0.85;
+            } else if (i === 0) {
+                // 1. HERO (Cohete): Dominante y enérgico a la derecha del texto
+                L.scale = 1.02;
+                L.x = halfW * 0.38;
+                L.y = -halfH * 0.02;
+                L.z = 0;
+                L.op = 1.0;
+            } else if (i === 1) {
+                // 2. SOLUCIONES (Satélite): Superior derecha, amplio y visible en el cielo abierto
+                L.scale = 0.96;
+                L.x = halfW * 0.38;
+                L.y = halfH * 0.24;
+                L.z = 0;
+                L.op = 1.0;
+            } else if (i === 2) {
+                // 3. VISIÓN IA (Ojo cibernético): Derecha, imponente y frontal
+                L.scale = 1.05;
+                L.x = halfW * 0.36;
+                L.y = 0;
+                L.z = 0;
+                L.op = 1.0;
+            } else if (i === 3) {
+                // 4. CONTACTO (Astronauta): Grande, visible y saludando a la derecha de la tarjeta
+                L.scale = 1.05;
+                L.x = halfW * 0.36;
+                L.y = halfH * 0.02;
+                L.z = 0;
+                L.op = 1.0;
+            }
+            s.layout = L;
+        });
+        particleMaterial.uniforms.uPixelRatio.value = renderer.getPixelRatio();
+    }
+    layoutShapes();
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        layoutShapes();
+    });
+
+    // -------------------------------------------------------------------------
+    // Transiciones Centradas en Cada Momento con Mesetas Estables
+    // -------------------------------------------------------------------------
     const shapeNames = [
         'COHETE / DESPEGUE',
         'SATÉLITE / SOLUCIONES',
         'NEURAL ORB / VISIÓN IA',
         'ASTRONAUTA / HABLEMOS'
     ];
-
     const shapeNameEl = document.getElementById('current-shape-name');
     const navItems = document.querySelectorAll('.nav-item');
     const railMarkers = document.querySelectorAll('.rail-marker');
     const scrollBar = document.getElementById('scroll-bar');
+    const sectionEls = Array.from(document.querySelectorAll('.scene-section')).slice(0, 4);
+
+    let targetProgress = 0;
+    let progress = 0;
+
+    function computeTargetProgress() {
+        const vh = window.innerHeight;
+        const scrollY = window.scrollY;
+        const viewCenter = scrollY + vh * 0.5;
+
+        // Centros verticales de cada una de las 4 escenas
+        const centers = sectionEls.map(el => {
+            const rect = el.getBoundingClientRect();
+            return scrollY + rect.top + rect.height * 0.5;
+        });
+
+        if (viewCenter <= centers[0]) return 0;
+        if (viewCenter >= centers[3]) return 3;
+
+        for (let k = 0; k < 3; k++) {
+            const c1 = centers[k];
+            const c2 = centers[k + 1];
+            if (viewCenter >= c1 && viewCenter <= c2) {
+                const t = (viewCenter - c1) / (c2 - c1);
+                // Meseta: en el 25% inicial y final de la sección, la figura está 100% armada y quieta
+                let morphT = 0;
+                if (t < 0.22) {
+                    morphT = 0;
+                } else if (t > 0.78) {
+                    morphT = 1;
+                } else {
+                    const normT = (t - 0.22) / (0.78 - 0.22);
+                    morphT = normT * normT * (3 - 2 * normT); // Smooth cubic ease
+                }
+                return k + morphT;
+            }
+        }
+        return 0;
+    }
 
     function updateScrollState() {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        targetProgress = computeTargetProgress();
+
+        const scrollTop = window.scrollY;
         const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
         const overallRatio = scrollHeight > 0 ? Math.min(Math.max(scrollTop / scrollHeight, 0), 1) : 0;
 
-        // 4 scenes -> 3 intervals between them: [0..1], [1..2], [2..3]
-        const scaled = overallRatio * 3;
-        const currentIdx = Math.floor(scaled);
-        const nextIdx = Math.min(currentIdx + 1, 3);
-        const fraction = scaled - currentIdx;
-
-        // Cubic ease for smooth shape positioning
-        const easeFraction = fraction * fraction * (3 - 2 * fraction);
-
-        currentShapeIndex = currentIdx;
-        targetShapeIndex = nextIdx;
-        morphFactor = easeFraction;
-
-        // Dissolution peaks halfway through the scroll (when fraction is ~0.5)
-        // sin(fraction * PI) = 0 at start, 1.0 at midpoint, 0 at arrival!
-        dissolutionIntensity = Math.sin(fraction * Math.PI);
-
-        // Update HUD indicators
-        const activeIdx = Math.round(scaled);
-        if (shapeNameEl && shapeNames[activeIdx]) {
-            shapeNameEl.innerText = shapeNames[activeIdx];
-        }
-
-        // Active Nav links
-        navItems.forEach((item, idx) => {
-            if (idx === activeIdx) item.classList.add('active');
-            else item.classList.remove('active');
-        });
-
-        // Active Rail Markers
-        railMarkers.forEach((m, idx) => {
-            if (idx === activeIdx) m.classList.add('active');
-            else m.classList.remove('active');
-        });
-
-        // Scroll Bar height
-        if (scrollBar) {
-            scrollBar.style.height = `${overallRatio * 100}%`;
-        }
+        const activeIdx = Math.round(targetProgress);
+        if (shapeNameEl && shapeNames[activeIdx]) shapeNameEl.innerText = shapeNames[activeIdx];
+        navItems.forEach((item, idx) => item.classList.toggle('active', idx === activeIdx));
+        railMarkers.forEach((m, idx) => m.classList.toggle('active', idx === activeIdx));
+        if (scrollBar) scrollBar.style.height = `${overallRatio * 100}%`;
     }
 
     window.addEventListener('scroll', updateScrollState, { passive: true });
+    window.addEventListener('load', updateScrollState);
     updateScrollState();
 
-    // -------------------------------------------------------------------------
-    // Mouse Interaction & Magnetic Gravitational Field
-    // -------------------------------------------------------------------------
-    let mouseX = 0;
-    let mouseY = 0;
-    let targetRotX = 0;
-    let targetRotY = 0;
-    let mouse3D = new THREE.Vector3(0, 0, 0);
+    window.__debugEngine = {
+        setShape: (idx) => {
+            targetProgress = idx;
+            progress = idx;
+        },
+        getProgress: () => progress,
+        shapes: shapes
+    };
 
+    // -------------------------------------------------------------------------
+    // Mouse: Parallax e Interacción de Campo
+    // -------------------------------------------------------------------------
+    let mouseX = 0, mouseY = 0, mouseActive = false;
     window.addEventListener('mousemove', (e) => {
         mouseX = (e.clientX / window.innerWidth) * 2 - 1;
         mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
-
-        targetRotY = mouseX * 0.40;
-        targetRotX = -mouseY * 0.30;
-
-        // Unproject mouse to 3D space for particle repulsion / attraction
-        mouse3D.set(mouseX * 45, mouseY * 35, 10);
+        mouseActive = true;
     });
 
     // -------------------------------------------------------------------------
-    // Render Loop: Matter Formation, Cosmic Dissolution & Magnetic Flutter
+    // Bucle de Render Principal
     // -------------------------------------------------------------------------
-    let clock = new THREE.Clock();
+    const clock = new THREE.Clock();
 
     function animate() {
         requestAnimationFrame(animate);
-
-        const delta = clock.getDelta();
+        const dt = Math.min(clock.getDelta(), 0.1);
         const time = clock.getElapsedTime();
 
-        // Smooth camera / scene tilt from mouse parallax
+        // Progreso fluido entre mesetas (frame-rate independent con delta time)
+        const lerpFactor = 1.0 - Math.exp(-12.0 * dt);
+        progress += (targetProgress - progress) * lerpFactor;
+        if (Math.abs(targetProgress - progress) < 0.001) progress = targetProgress;
+
+        const cur = Math.min(Math.floor(progress), 3);
+        const nxt = Math.min(cur + 1, 3);
+        const f = progress - cur;
+        const m = f * f * (3 - 2 * f);
+        const diss = Math.sin(f * Math.PI); // Pico de dispersión a mitad de camino
+
+        // Posición, escala y opacidad interpoladas
+        const L1 = shapes[cur].layout, L2 = shapes[nxt].layout;
+        const sc = lerp(L1.scale, L2.scale, m);
+        particleSystem.position.set(
+            lerp(L1.x, L2.x, m),
+            lerp(L1.y, L2.y, m) + Math.sin(time * 0.8) * 0.5,
+            lerp(L1.z, L2.z, m)
+        );
+        particleSystem.scale.setScalar(sc);
+        particleMaterial.uniforms.uOpacity.value = lerp(L1.op, L2.op, m);
+
+        // Rotación con parallax de mouse suave
+        const targetRotY = (mouseActive ? mouseX * 0.28 : 0) + Math.sin(time * 0.2) * 0.12;
+        const targetRotX = (mouseActive ? -mouseY * 0.16 : 0);
         particleSystem.rotation.y += (targetRotY - particleSystem.rotation.y) * 0.05;
         particleSystem.rotation.x += (targetRotX - particleSystem.rotation.x) * 0.05;
 
-        // Gentle cosmic idle breathing
-        particleSystem.rotation.z = Math.sin(time * 0.4) * 0.05;
-
-        // Starfield gentle rotation
         starField.rotation.y = time * 0.015;
         starField.rotation.x = time * 0.008;
 
-        // Morph particles with dissolution swirl
-        const positions = particleGeometry.attributes.position.array;
-        const s1 = shapes[currentShapeIndex];
-        const s2 = shapes[targetShapeIndex];
+        const A = shapes[cur], B = shapes[nxt];
+        const pos = particleGeometry.attributes.position.array;
+        const col = particleGeometry.attributes.aColor.array;
 
-        // Swirl vortex angle during dissolution
-        const swirlAngle = time * 2.5;
-        const sinSwirl = Math.sin(swirlAngle);
-        const cosSwirl = Math.cos(swirlAngle);
+        // Saludo del astronauta: rotación del antebrazo sobre el codo
+        const wave = Math.sin(time * 3.4) * 0.45;
+        const cw = Math.cos(wave), sw = Math.sin(wave);
+        const pvA = cur === 3 ? A.pivot : null;
+        const pvB = nxt === 3 ? B.pivot : null;
+
+        // Vórtice de remolino durante la transición de materia
+        const swirl = time * 1.0 + f * 5.2;
+        const cs = Math.cos(swirl), ss = Math.sin(swirl);
+
+        // Coordenadas locales del mouse
+        const mlx = (mouseX * halfW - particleSystem.position.x) / sc;
+        const mly = (mouseY * halfH - particleSystem.position.y) / sc;
+        const R2 = 45;
+        const springSpeed = diss > 0.05 ? 12.0 : 20.0;
+        const spring = 1.0 - Math.exp(-springSpeed * dt);
 
         for (let i = 0; i < PARTICLE_COUNT; i++) {
             const i3 = i * 3;
 
-            // Base interpolated target position between the two shapes
-            const x1 = s1[i3], y1 = s1[i3 + 1], z1 = s1[i3 + 2];
-            const x2 = s2[i3], y2 = s2[i3 + 1], z2 = s2[i3 + 2];
-
-            let tx = x1 + (x2 - x1) * morphFactor;
-            let ty = y1 + (y2 - y1) * morphFactor;
-            let tz = z1 + (z2 - z1) * morphFactor;
-
-            // When scrolling, matter disassembles into swirling cosmic molecules!
-            if (dissolutionIntensity > 0.01) {
-                const dispX = particleDispersions[i3];
-                const dispY = particleDispersions[i3 + 1];
-                const dispZ = particleDispersions[i3 + 2];
-
-                // Swirl rotational displacement around center
-                const vortexX = dispX * cosSwirl - dispZ * sinSwirl;
-                const vortexZ = dispX * sinSwirl + dispZ * cosSwirl;
-
-                tx += vortexX * dissolutionIntensity;
-                ty += (dispY + Math.sin(time * 4 + i * 0.05) * 15) * dissolutionIntensity;
-                tz += vortexZ * dissolutionIntensity;
+            let ax = A.pos[i3], ay = A.pos[i3 + 1], az = A.pos[i3 + 2];
+            if (pvA && A.tag[i] === 1) {
+                const dx = ax - pvA[0], dy = ay - pvA[1];
+                ax = pvA[0] + dx * cw - dy * sw;
+                ay = pvA[1] + dx * sw + dy * cw;
+            }
+            let bx = B.pos[i3], by = B.pos[i3 + 1], bz = B.pos[i3 + 2];
+            if (pvB && B.tag[i] === 1) {
+                const dx = bx - pvB[0], dy = by - pvB[1];
+                bx = pvB[0] + dx * cw - dy * sw;
+                by = pvB[1] + dx * sw + dy * cw;
             }
 
-            // Mouse magnetic ripple if close to particle
-            const dx = positions[i3] - mouse3D.x;
-            const dy = positions[i3 + 1] - mouse3D.y;
-            const distSq = dx * dx + dy * dy;
-            if (distSq < 250 && distSq > 1) {
-                const force = (1 - distSq / 250) * 4.5;
-                tx += (dx / Math.sqrt(distSq)) * force;
-                ty += (dy / Math.sqrt(distSq)) * force;
+            let tx = ax + (bx - ax) * m;
+            let ty = ay + (by - ay) * m;
+            let tz = az + (bz - az) * m;
+
+            if (diss > 0.002) {
+                const dX = particleDispersions[i3], dY = particleDispersions[i3 + 1], dZ = particleDispersions[i3 + 2];
+                tx += (dX * cs - dZ * ss) * diss;
+                ty += dY * diss;
+                tz += (dX * ss + dZ * cs) * diss;
             }
 
-            // Micro Brownian vibration (alive matter effect)
-            const microWave = Math.sin(time * 2.5 + i * 0.15) * 0.35;
-            const microWaveCos = Math.cos(time * 2.1 + i * 0.18) * 0.35;
+            // Micromovimiento orgánico vivo (mayor en la llama del cohete)
+            const ag = 0.035 + A.agit[i] * (1 - m) + B.agit[i] * m;
+            tx += Math.sin(time * 2.2 + i * 1.5) * ag;
+            ty += Math.cos(time * 2.8 + i * 1.2) * ag;
 
-            // Responsive spring lerp
-            positions[i3] += (tx + microWave - positions[i3]) * 0.09;
-            positions[i3 + 1] += (ty + microWaveCos - positions[i3 + 1]) * 0.09;
-            positions[i3 + 2] += (tz - positions[i3 + 2]) * 0.09;
+            if (mouseActive) {
+                const dx = pos[i3] - mlx, dy = pos[i3 + 1] - mly;
+                const d2 = dx * dx + dy * dy;
+                if (d2 < R2 && d2 > 0.01) {
+                    const d = Math.sqrt(d2), force = (1 - d2 / R2) * 2.4;
+                    tx += (dx / d) * force;
+                    ty += (dy / d) * force;
+                }
+            }
+
+            pos[i3] += (tx - pos[i3]) * spring;
+            pos[i3 + 1] += (ty - pos[i3 + 1]) * spring;
+            pos[i3 + 2] += (tz - pos[i3 + 2]) * spring;
+
+            col[i3] = A.col[i3] + (B.col[i3] - A.col[i3]) * m;
+            col[i3 + 1] = A.col[i3 + 1] + (B.col[i3 + 1] - A.col[i3 + 1]) * m;
+            col[i3 + 2] = A.col[i3 + 2] + (B.col[i3 + 2] - A.col[i3 + 2]) * m;
         }
 
         particleGeometry.attributes.position.needsUpdate = true;
+        particleGeometry.attributes.aColor.needsUpdate = true;
         renderer.render(scene, camera);
     }
 
     animate();
-
-    // Window Resize Handler
-    window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    });
 
     // =========================================================================
     // 2. MODALS & CASE STUDIES INTERACTIVITY

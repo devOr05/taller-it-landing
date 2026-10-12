@@ -38,11 +38,16 @@ html {
     background-color: var(--bg-void);
     color: var(--text-high);
     font-family: var(--font-body);
+    overflow-x: hidden;
+    max-width: 100%;
+    width: 100%;
 }
 
 body {
     background-color: var(--bg-void);
     overflow-x: hidden;
+    max-width: 100%;
+    width: 100%;
     position: relative;
     min-height: 100vh;
 }
@@ -388,6 +393,8 @@ p,
     position: relative;
     z-index: 10;
     width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
 }
 
 .scene-section {
@@ -398,6 +405,8 @@ p,
     justify-content: center;
     position: relative;
     box-sizing: border-box;
+    max-width: 100vw;
+    overflow-x: hidden;
 }
 
 .scene-content {
@@ -1641,9 +1650,9 @@ p,
         opacity: 0.88;
     }
     .vision-celestial-solar {
-        inset: -45px -10vw;
+        inset: -35px -10px;
         opacity: 0.94;
-        transform: translateY(-8px) scale(1.18, 1.35);
+        transform: translateY(-8px) scale(1, 1.32);
     }
     .vision-highlight-box.active .vision-celestial-solar {
         opacity: 0.14;

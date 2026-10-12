@@ -1171,16 +1171,17 @@ document.addEventListener('DOMContentLoaded', () => {
             link: 'https://toca-tocar.vercel.app/'
         },
         'vision': {
-            title: 'Visión IT: Visión Artificial & Deep Learning',
-            desc: `Visión IT es un motor de inspección óptica inteligente que utiliza redes neuronales convolucionales para comprender transmisiones de video en vivo con tiempos de inferencia ultra-bajos.<br><br>
+            title: 'Visión IT: Detector Neuronal de Rostros',
+            desc: `Visión IT es un sistema de inspección biométrica y óptica inteligente desarrollado con redes neuronales convolucionales ultralivianas (BlazeFace sobre WebGL) para detectar rostros humanos en tiempo real con latencia sub-milisegundo.<br><br>
             <strong>💎 Capacidades Actuales</strong><br>
-            • <b>Detección Óptica en Tiempo Real:</b> Identificación de patrones y objetos en el navegador con aceleración GPU.<br>
-            • <b>Alertas Críticas Automatizadas:</b> Notificaciones directas a canales de Telegram o endpoints webhook ante eventos específicos.<br>
-            • <b>Consola de Sensibilidad Dinámica:</b> Calibración al vuelo de umbrales de confianza para distintos escenarios de iluminación.<br><br>
+            • <b>Detección de Rostros en Tiempo Real:</b> Localización instantánea de rostros y landmarks anatómicos directamente en el navegador con aceleración GPU.<br>
+            • <b>Alertas Críticas a Telegram:</b> Captura fotográfica automatizada y notificación instantánea con porcentaje de confianza biométrica.<br>
+            • <b>Consola de Sensibilidad Dinámica:</b> Calibración al vuelo de umbrales de precisión para adaptarse a cualquier iluminación ambiental.<br>
+            • <b>Historial y Auditoría:</b> Registro continuo de eventos y generación de reportes técnicos exportables a PDF.<br><br>
             <strong>🔮 Aplicaciones Industriales</strong><br>
-            • Conteo automático y auditoría en líneas de empaque.<br>
-            • Control de calidad y detección de anomalías en piezas de manufactura.<br>
-            • Seguridad e inspección perimetral sin intervención humana.`,
+            • Detección de presencia y control de accesos sin contacto.<br>
+            • Conteo inteligente y auditoría de flujo de personas en tiempo real.<br>
+            • Monitoreo automatizado para seguridad y supervisión de espacios.`,
             icon: '👁️',
             link: 'https://vision-it-six.vercel.app/'
         },
@@ -1215,10 +1216,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Vision box trigger
-    const visionBoxBtn = document.getElementById('open-vision-case');
-    if (visionBoxBtn) {
-        visionBoxBtn.addEventListener('click', () => {
+    // Vision box trigger (clicking box or button opens modal)
+    const visionBox = document.querySelector('.vision-highlight-box');
+    if (visionBox) {
+        visionBox.addEventListener('click', (e) => {
+            if (e.target.closest('a')) return; // Allow clicking external demo link
             openServiceModal('vision');
         });
     }

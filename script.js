@@ -1351,4 +1351,307 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // =========================================================================
+    // 3. CURSOR CON EFECTO LUPA Y DISPERSIÓN ATÓMICA EN PALABRAS
+    //    (EXCLUYE TARJETAS, BOTONES E INTERACCIONES)
+    // =========================================================================
+    const cursorEl = document.getElementById('cursor');
+    const cursorTrailEl = document.getElementById('cursor-trail');
+    const atomCanvas = document.getElementById('atom-cursor-canvas');
+
+    if (cursorEl && atomCanvas) {
+        const ctx = atomCanvas.getContext('2d');
+        let dpr = window.devicePixelRatio || 1;
+
+        function resizeAtomCanvas() {
+            dpr = window.devicePixelRatio || 1;
+            atomCanvas.width = window.innerWidth * dpr;
+            atomCanvas.height = window.innerHeight * dpr;
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.scale(dpr, dpr);
+        }
+        resizeAtomCanvas();
+        window.addEventListener('resize', resizeAtomCanvas);
+
+        // 1. Selector de textos fuera de tarjetas y botones
+        const candidateSelectors = [
+            '.main-headline',
+            '.section-headline',
+            '.contact-giant-title',
+            '.hero-statement',
+            '.section-subtext',
+            '.tag-title',
+            '.scroll-hint .hint-text',
+            '.footer-copy'
+        ];
+
+        function isInteractiveElement(node) {
+            if (!node || !(node instanceof Element)) return false;
+            return !!node.closest(
+                'button, a, input, textarea, select, ' +
+                '.hud-card, .vision-highlight-box, .hud-contact-card, ' +
+                '.hud-header, .hud-scroll-rail, .modal-content, .modal-overlay, ' +
+                '.menu-toggle, .btn-cosmic-primary, .btn-cosmic-ghost, [data-key]'
+            );
+        }
+
+        candidateSelectors.forEach(selector => {
+            document.querySelectorAll(selector).forEach(container => {
+                if (isInteractiveElement(container)) return;
+
+                const textNodes = [];
+                const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
+                    acceptNode: (n) => {
+                        if (n.parentElement && (
+                            n.parentElement.classList.contains('atom-word') ||
+                            n.parentElement.tagName === 'SCRIPT' ||
+                            n.parentElement.tagName === 'STYLE'
+                        )) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        if (n.nodeValue.trim().length > 0) {
+                            return NodeFilter.FILTER_ACCEPT;
+                        }
+                        return NodeFilter.FILTER_SKIP;
+                    }
+                });
+
+                while (walker.nextNode()) {
+                    textNodes.push(walker.currentNode);
+                }
+
+                textNodes.forEach(node => {
+                    const parent = node.parentNode;
+                    if (!parent) return;
+
+                    const text = node.nodeValue;
+                    const tokens = text.split(/(\s+)/);
+                    const frag = document.createDocumentFragment();
+
+                    tokens.forEach(tok => {
+                        if (/^\s+$/.test(tok)) {
+                            frag.appendChild(document.createTextNode(tok));
+                        } else if (tok.length > 0) {
+                            const span = document.createElement('span');
+                            span.className = 'atom-word';
+                            span.textContent = tok;
+                            frag.appendChild(span);
+                        }
+                    });
+
+                    parent.replaceChild(frag, node);
+                });
+            });
+        });
+
+        const atomWordElements = Array.from(document.querySelectorAll('.atom-word'));
+
+        // 2. Partículas atómicas cuánticas que se dispersan en el canvas
+        const atomParticles = [];
+        const ATOM_COLORS = ['#06b6d4', '#38bdf8', '#a855f7', '#fbbf24', '#ffffff'];
+
+        function spawnAtomParticles(x, y, vxBase, vyBase, count = 2) {
+            for (let i = 0; i < count; i++) {
+                if (atomParticles.length > 180) break;
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 1.6 + Math.random() * 4.0;
+                atomParticles.push({
+                    x: x + (Math.random() - 0.5) * 14,
+                    y: y + (Math.random() - 0.5) * 14,
+                    vx: vxBase * 0.35 + Math.cos(angle) * speed,
+                    vy: vyBase * 0.35 + Math.sin(angle) * speed,
+                    size: 1.2 + Math.random() * 2.2,
+                    color: ATOM_COLORS[Math.floor(Math.random() * ATOM_COLORS.length)],
+                    life: 1.0,
+                    decay: 0.032 + Math.random() * 0.03
+                });
+            }
+        }
+
+        // 3. Seguimiento de mouse e interacciones
+        let mouseClientX = -1000, mouseClientY = -1000;
+        let smoothCursorX = -1000, smoothCursorY = -1000;
+        let isCursorVisible = false;
+        let currentTarget = null;
+        let activeDisplacedWords = new Set();
+
+        window.addEventListener('mousemove', (e) => {
+            mouseClientX = e.clientX;
+            mouseClientY = e.clientY;
+            currentTarget = e.target;
+
+            if (!isCursorVisible) {
+                isCursorVisible = true;
+                cursorEl.classList.add('visible');
+                if (cursorTrailEl) cursorTrailEl.classList.add('visible');
+                smoothCursorX = mouseClientX;
+                smoothCursorY = mouseClientY;
+            }
+        });
+
+        window.addEventListener('mouseleave', () => {
+            isCursorVisible = false;
+            cursorEl.classList.remove('visible');
+            if (cursorTrailEl) cursorTrailEl.classList.remove('visible');
+            resetAllDisplacedWords();
+        });
+
+        function resetAllDisplacedWords() {
+            activeDisplacedWords.forEach(word => {
+                word.style.transform = '';
+                word.style.textShadow = '';
+                word.classList.remove('displaced');
+                word._currPushX = 0;
+                word._currPushY = 0;
+            });
+            activeDisplacedWords.clear();
+        }
+
+        // Bucle de renderizado para cursor, dispersión y lupa
+        const LENS_RADIUS = 95;
+        const MAX_PUSH_X = 22;
+        const MAX_PUSH_Y = 14;
+
+        function updateCursorAndAtoms() {
+            // Suavizado del cursor follower
+            if (isCursorVisible) {
+                smoothCursorX += (mouseClientX - smoothCursorX) * 0.35;
+                smoothCursorY += (mouseClientY - smoothCursorY) * 0.35;
+
+                cursorEl.style.transform = `translate3d(${smoothCursorX}px, ${smoothCursorY}px, 0) translate(-50%, -50%)`;
+                if (cursorTrailEl) {
+                    cursorTrailEl.style.transform = `translate3d(${mouseClientX}px, ${mouseClientY}px, 0) translate(-50%, -50%)`;
+                }
+
+                const overInteractive = isInteractiveElement(currentTarget);
+
+                if (overInteractive) {
+                    // Exclusión estricta de tarjetas, botones e interacciones
+                    cursorEl.classList.remove('lens-active');
+                    cursorEl.classList.add('pointer-active');
+                    resetAllDisplacedWords();
+                } else {
+                    cursorEl.classList.remove('pointer-active');
+
+                    let nearWordCount = 0;
+                    const nextActiveWords = new Set();
+
+                    // Evaluar palabras en pantalla
+                    for (let i = 0; i < atomWordElements.length; i++) {
+                        const word = atomWordElements[i];
+                        const rect = word.getBoundingClientRect();
+
+                        // Descartar si está fuera de viewport vertical
+                        if (rect.bottom < -40 || rect.top > window.innerHeight + 40) {
+                            if (activeDisplacedWords.has(word)) {
+                                word.style.transform = '';
+                                word.style.textShadow = '';
+                                word.classList.remove('displaced');
+                                word._currPushX = 0;
+                                word._currPushY = 0;
+                            }
+                            continue;
+                        }
+
+                        // Usar el centro sin desplazamiento para evitar oscilación
+                        const currentX = rect.left + rect.width * 0.5;
+                        const currentY = rect.top + rect.height * 0.5;
+                        const origCenterX = currentX - (word._currPushX || 0);
+                        const origCenterY = currentY - (word._currPushY || 0);
+
+                        const dx = origCenterX - mouseClientX;
+                        const dy = origCenterY - mouseClientY;
+                        const dist = Math.hypot(dx, dy);
+
+                        if (dist < LENS_RADIUS) {
+                            nearWordCount++;
+                            nextActiveWords.add(word);
+                            activeDisplacedWords.add(word);
+
+                            const force = 1 - (dist / LENS_RADIUS);
+                            const pushForce = Math.pow(force, 1.15);
+
+                            // Dispersión radial (empuje de átomos alejándose del mouse)
+                            const angle = Math.atan2(dy, dx);
+                            const pushX = Math.cos(angle) * pushForce * MAX_PUSH_X;
+                            const pushY = Math.sin(angle) * pushForce * MAX_PUSH_Y;
+
+                            word._currPushX = pushX;
+                            word._currPushY = pushY;
+
+                            // Efecto Lupa: magnificación de escala bajo el foco del cursor
+                            const scale = 1 + pushForce * 0.32;
+
+                            word.style.transform = `translate3d(${pushX}px, ${pushY}px, 0) scale(${scale})`;
+                            word.style.textShadow = `0 0 ${12 * force}px rgba(6, 182, 212, ${0.9 * force}), 0 0 ${24 * force}px rgba(59, 130, 246, ${0.65 * force})`;
+                            word.classList.add('displaced');
+
+                            // Dispersar átomos cuánticos flotantes desde la palabra
+                            if (Math.random() < 0.65) {
+                                spawnAtomParticles(
+                                    origCenterX + (Math.random() - 0.5) * rect.width,
+                                    origCenterY + (Math.random() - 0.5) * rect.height,
+                                    Math.cos(angle) * 3,
+                                    Math.sin(angle) * 3,
+                                    2
+                                );
+                            }
+                        }
+                    }
+
+                    // Resetear palabras que ya no están en rango
+                    activeDisplacedWords.forEach(word => {
+                        if (!nextActiveWords.has(word)) {
+                            word.style.transform = '';
+                            word.style.textShadow = '';
+                            word.classList.remove('displaced');
+                            word._currPushX = 0;
+                            word._currPushY = 0;
+                            activeDisplacedWords.delete(word);
+                        }
+                    });
+
+                    // Activar o desactivar efecto lupa en el cursor
+                    if (nearWordCount > 0) {
+                        cursorEl.classList.add('lens-active');
+                    } else {
+                        cursorEl.classList.remove('lens-active');
+                    }
+                }
+            }
+
+            // Renderizar partículas atómicas en el canvas 2D
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+            for (let i = atomParticles.length - 1; i >= 0; i--) {
+                const p = atomParticles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vx *= 0.94;
+                p.vy *= 0.94;
+                p.life -= p.decay;
+
+                if (p.life <= 0) {
+                    atomParticles.splice(i, 1);
+                    continue;
+                }
+
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, p.life);
+                ctx.fillStyle = p.color;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = p.color;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            requestAnimationFrame(updateCursorAndAtoms);
+        }
+
+        requestAnimationFrame(updateCursorAndAtoms);
+    }
 });

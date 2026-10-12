@@ -605,6 +605,10 @@ body {
     flex-grow: 1;
 }
 
+.hud-card .card-desc:last-child {
+    margin-bottom: 0.2rem;
+}
+
 .card-footer {
     display: flex;
     justify-content: space-between;

@@ -55,7 +55,7 @@
     <!-- Three.js CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=6">
 </head>
 
 <body>
@@ -198,13 +198,42 @@
                 <div class="hud-showcase-grid">
                     <!-- Tefi.app (Fintech / Web3 Solana) -->
                     <div class="hud-card featured web3-glow" data-key="tefi">
+                        <div class="card-celestial-orbit" aria-hidden="true">
+                            <svg viewBox="0 0 330 350">
+                                <defs>
+                                    <radialGradient id="neb-tefi" cx="50%" cy="38%" r="42%">
+                                        <stop offset="0%" stop-color="rgba(56, 189, 248, 0.15)"/>
+                                        <stop offset="60%" stop-color="rgba(99, 102, 241, 0.04)"/>
+                                        <stop offset="100%" stop-color="transparent"/>
+                                    </radialGradient>
+                                </defs>
+                                <circle cx="165" cy="132" r="80" fill="url(#neb-tefi)" />
+                                <g class="orbit-spin-slow">
+                                    <ellipse cx="165" cy="132" rx="105" ry="46" fill="none" stroke="rgba(56, 189, 248, 0.32)" stroke-width="1.2" stroke-dasharray="4 6" transform="rotate(-22 165 132)" />
+                                    <circle cx="68" cy="106" r="2.4" fill="#38bdf8" class="c-node-blink" />
+                                    <circle cx="260" cy="156" r="2.0" fill="#fbbf24" class="c-node-blink-delay" />
+                                </g>
+                                <g class="orbit-spin-rev">
+                                    <ellipse cx="165" cy="132" rx="86" ry="38" fill="none" stroke="rgba(251, 191, 36, 0.22)" stroke-width="1.0" transform="rotate(38 165 132)" />
+                                    <circle cx="118" cy="98" r="1.8" fill="#ffffff" />
+                                    <circle cx="212" cy="164" r="1.6" fill="#38bdf8" />
+                                </g>
+                                <ellipse cx="165" cy="132" rx="124" ry="56" fill="none" stroke="rgba(56, 189, 248, 0.12)" stroke-width="0.8" transform="rotate(-6 165 132)" />
+                                <line x1="55" y1="80" x2="95" y2="60" stroke="rgba(255, 255, 255, 0.18)" stroke-width="0.8" />
+                                <circle cx="55" cy="80" r="1.5" fill="#fff" />
+                                <circle cx="95" cy="60" r="2.0" fill="#38bdf8" />
+                                <path d="M 95 55 L 95 65 M 90 60 L 100 60" stroke="rgba(56, 189, 248, 0.45)" stroke-width="0.7" />
+                            </svg>
+                        </div>
                         <div class="card-glow"></div>
                         <div class="card-meta">
                             <span class="card-num">01</span>
                             <span class="card-category">Fintech & Web3 · Solana</span>
                         </div>
-                        <div class="card-icon-wrap">⚡</div>
-                        <h3 class="card-title">Tefi.app</h3>
+                        <div class="card-identity-cluster">
+                            <div class="card-icon-wrap">⚡</div>
+                            <h3 class="card-title">Tefi.app</h3>
+                        </div>
                         <p class="card-desc">
                             Microcrédito barrial y fiado digital descentralizado en Solana. Co-firma P2P offline mediante QR dinámico entre almacén y vecino, libreta on-chain y PWA multi-idioma.
                         </p>
@@ -215,13 +244,42 @@
 
                     <!-- Podal Fix -->
                     <div class="hud-card" data-key="digitalizacion">
+                        <div class="card-celestial-orbit" aria-hidden="true">
+                            <svg viewBox="0 0 330 350">
+                                <defs>
+                                    <radialGradient id="neb-podal" cx="50%" cy="38%" r="42%">
+                                        <stop offset="0%" stop-color="rgba(16, 185, 129, 0.14)"/>
+                                        <stop offset="60%" stop-color="rgba(56, 189, 248, 0.04)"/>
+                                        <stop offset="100%" stop-color="transparent"/>
+                                    </radialGradient>
+                                </defs>
+                                <circle cx="165" cy="132" r="80" fill="url(#neb-podal)" />
+                                <g class="orbit-spin-slow">
+                                    <ellipse cx="165" cy="132" rx="102" ry="42" fill="none" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1.1" transform="rotate(-14 165 132)" />
+                                    <circle cx="70" cy="116" r="2.2" fill="#38bdf8" class="c-node-blink" />
+                                    <circle cx="258" cy="148" r="2.2" fill="#34d399" class="c-node-blink-delay" />
+                                </g>
+                                <g class="orbit-spin-rev">
+                                    <ellipse cx="165" cy="132" rx="80" ry="34" fill="none" stroke="rgba(52, 211, 153, 0.24)" stroke-width="1.0" stroke-dasharray="3 5" transform="rotate(42 165 132)" />
+                                    <circle cx="126" cy="102" r="1.6" fill="#ffffff" />
+                                    <circle cx="204" cy="160" r="1.8" fill="#38bdf8" />
+                                </g>
+                                <ellipse cx="165" cy="132" rx="120" ry="52" fill="none" stroke="rgba(52, 211, 153, 0.12)" stroke-width="0.8" transform="rotate(6 165 132)" />
+                                <line x1="225" y1="75" x2="265" y2="95" stroke="rgba(255, 255, 255, 0.18)" stroke-width="0.8" />
+                                <circle cx="225" cy="75" r="1.8" fill="#fff" />
+                                <circle cx="265" cy="95" r="2.0" fill="#34d399" />
+                                <path d="M 265 90 L 265 100 M 260 95 L 270 95" stroke="rgba(52, 211, 153, 0.45)" stroke-width="0.7" />
+                            </svg>
+                        </div>
                         <div class="card-glow"></div>
                         <div class="card-meta">
                             <span class="card-num">02</span>
                             <span class="card-category">Salud Animal & Agro</span>
                         </div>
-                        <div class="card-icon-wrap">📋</div>
-                        <h3 class="card-title">Podal Fix</h3>
+                        <div class="card-identity-cluster">
+                            <div class="card-icon-wrap">📋</div>
+                            <h3 class="card-title">Podal Fix</h3>
+                        </div>
                         <p class="card-desc">
                             Gestión podológica y salud de precisión. Historias clínicas 360°, mapas patológicos por pezuña y analítica en tiempo real.
                         </p>
@@ -232,13 +290,44 @@
 
                     <!-- Moai Eco Adventure -->
                     <div class="hud-card featured" data-key="moai">
+                        <div class="card-celestial-orbit" aria-hidden="true">
+                            <svg viewBox="0 0 330 350">
+                                <defs>
+                                    <radialGradient id="neb-moai" cx="50%" cy="38%" r="42%">
+                                        <stop offset="0%" stop-color="rgba(251, 191, 36, 0.14)"/>
+                                        <stop offset="60%" stop-color="rgba(56, 189, 248, 0.04)"/>
+                                        <stop offset="100%" stop-color="transparent"/>
+                                    </radialGradient>
+                                </defs>
+                                <circle cx="165" cy="132" r="80" fill="url(#neb-moai)" />
+                                <g class="orbit-spin-slow">
+                                    <ellipse cx="165" cy="132" rx="108" ry="44" fill="none" stroke="rgba(251, 191, 36, 0.32)" stroke-width="1.2" transform="rotate(-30 165 132)" />
+                                    <ellipse cx="165" cy="132" rx="114" ry="46" fill="none" stroke="rgba(251, 191, 36, 0.15)" stroke-width="0.8" stroke-dasharray="3 6" transform="rotate(-30 165 132)" />
+                                    <circle cx="62" cy="92" r="2.4" fill="#fbbf24" class="c-node-blink" />
+                                    <circle cx="266" cy="170" r="2.0" fill="#38bdf8" />
+                                </g>
+                                <g class="orbit-spin-rev">
+                                    <ellipse cx="165" cy="132" rx="88" ry="38" fill="none" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1.0" transform="rotate(50 165 132)" />
+                                    <circle cx="122" cy="88" r="1.6" fill="#fff" />
+                                    <circle cx="206" cy="174" r="1.8" fill="#fbbf24" class="c-node-blink-delay" />
+                                </g>
+                                <circle cx="50" cy="140" r="1.4" fill="#fff" />
+                                <circle cx="280" cy="120" r="1.5" fill="#38bdf8" />
+                                <line x1="250" y1="65" x2="280" y2="85" stroke="rgba(255, 255, 255, 0.16)" stroke-width="0.8" />
+                                <circle cx="250" cy="65" r="1.8" fill="#fff" />
+                                <circle cx="280" cy="85" r="2.2" fill="#fbbf24" />
+                                <path d="M 280 80 L 280 90 M 275 85 L 285 85" stroke="rgba(251, 191, 36, 0.45)" stroke-width="0.7" />
+                            </svg>
+                        </div>
                         <div class="card-glow"></div>
                         <div class="card-meta">
                             <span class="card-num">03</span>
                             <span class="card-category">Turismo & Eventos B2B</span>
                         </div>
-                        <div class="card-icon-wrap">🗿</div>
-                        <h3 class="card-title">Moai Eco Adventure</h3>
+                        <div class="card-identity-cluster">
+                            <div class="card-icon-wrap">🗿</div>
+                            <h3 class="card-title">Moai Eco Adventure</h3>
+                        </div>
                         <p class="card-desc">
                             Marketplace de ecoturismo y eventos corporativos: catálogo vivencial, reservas inteligentes, cotizador B2B y panel administrativo.
                         </p>
@@ -249,13 +338,40 @@
 
                     <!-- Gestión Flex (Pilates) -->
                     <div class="hud-card" data-key="pilates">
+                        <div class="card-celestial-orbit" aria-hidden="true">
+                            <svg viewBox="0 0 330 350">
+                                <defs>
+                                    <radialGradient id="neb-flex" cx="50%" cy="38%" r="42%">
+                                        <stop offset="0%" stop-color="rgba(168, 85, 247, 0.13)"/>
+                                        <stop offset="60%" stop-color="rgba(56, 189, 248, 0.04)"/>
+                                        <stop offset="100%" stop-color="transparent"/>
+                                    </radialGradient>
+                                </defs>
+                                <circle cx="165" cy="132" r="80" fill="url(#neb-flex)" />
+                                <g class="orbit-spin-slow">
+                                    <ellipse cx="165" cy="132" rx="100" ry="46" fill="none" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1.2" transform="rotate(78 165 132)" />
+                                    <circle cx="152" cy="38" r="2.2" fill="#38bdf8" class="c-node-blink" />
+                                    <circle cx="178" cy="226" r="2.0" fill="#c084fc" />
+                                </g>
+                                <g class="orbit-spin-rev">
+                                    <ellipse cx="165" cy="132" rx="90" ry="40" fill="none" stroke="rgba(251, 191, 36, 0.25)" stroke-width="1.0" stroke-dasharray="3 5" transform="rotate(-34 165 132)" />
+                                    <circle cx="98" cy="94" r="1.8" fill="#fbbf24" class="c-node-blink-delay" />
+                                    <circle cx="232" cy="170" r="1.6" fill="#fff" />
+                                </g>
+                                <circle cx="70" cy="175" r="1.4" fill="#38bdf8" />
+                                <circle cx="260" cy="85" r="1.5" fill="#fff" />
+                                <path d="M 152 33 L 152 43 M 147 38 L 157 38" stroke="rgba(56, 189, 248, 0.45)" stroke-width="0.7" />
+                            </svg>
+                        </div>
                         <div class="card-glow"></div>
                         <div class="card-meta">
                             <span class="card-num">04</span>
                             <span class="card-category">Estudios & Bienestar</span>
                         </div>
-                        <div class="card-icon-wrap">🧘</div>
-                        <h3 class="card-title">Gestión Flex</h3>
+                        <div class="card-identity-cluster">
+                            <div class="card-icon-wrap">🧘</div>
+                            <h3 class="card-title">Gestión Flex</h3>
+                        </div>
                         <p class="card-desc">
                             Digitalización para centros de pilates y fitness: control integral de alumnos, turnos dinámicos, finanzas operativas y reportes en 1 click.
                         </p>
@@ -266,13 +382,42 @@
 
                     <!-- Toca Tocar -->
                     <div class="hud-card" data-key="gestion">
+                        <div class="card-celestial-orbit" aria-hidden="true">
+                            <svg viewBox="0 0 330 350">
+                                <defs>
+                                    <radialGradient id="neb-toca" cx="50%" cy="38%" r="42%">
+                                        <stop offset="0%" stop-color="rgba(14, 165, 233, 0.14)"/>
+                                        <stop offset="60%" stop-color="rgba(244, 63, 94, 0.04)"/>
+                                        <stop offset="100%" stop-color="transparent"/>
+                                    </radialGradient>
+                                </defs>
+                                <circle cx="165" cy="132" r="80" fill="url(#neb-toca)" />
+                                <g class="orbit-spin-slow">
+                                    <ellipse cx="165" cy="132" rx="104" ry="42" fill="none" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1.1" stroke-dasharray="4 6" transform="rotate(-16 165 132)" />
+                                    <circle cx="68" cy="112" r="2.2" fill="#38bdf8" class="c-node-blink" />
+                                    <circle cx="262" cy="152" r="2.0" fill="#38bdf8" class="c-node-blink-delay" />
+                                </g>
+                                <g class="orbit-spin-rev">
+                                    <ellipse cx="165" cy="132" rx="84" ry="36" fill="none" stroke="rgba(251, 191, 36, 0.22)" stroke-width="1.0" transform="rotate(32 165 132)" />
+                                    <circle cx="120" cy="98" r="1.6" fill="#fff" />
+                                    <circle cx="210" cy="166" r="1.8" fill="#fbbf24" />
+                                </g>
+                                <ellipse cx="165" cy="132" rx="122" ry="54" fill="none" stroke="rgba(56, 189, 248, 0.12)" stroke-width="0.8" transform="rotate(-4 165 132)" />
+                                <line x1="50" y1="170" x2="85" y2="190" stroke="rgba(255, 255, 255, 0.16)" stroke-width="0.8" />
+                                <circle cx="50" cy="170" r="1.6" fill="#fff" />
+                                <circle cx="85" cy="190" r="2.0" fill="#38bdf8" />
+                                <path d="M 68 107 L 68 117 M 63 112 L 73 112" stroke="rgba(56, 189, 248, 0.45)" stroke-width="0.7" />
+                            </svg>
+                        </div>
                         <div class="card-glow"></div>
                         <div class="card-meta">
                             <span class="card-num">05</span>
                             <span class="card-category">Eventos & Cultura</span>
                         </div>
-                        <div class="card-icon-wrap">⚙️</div>
-                        <h3 class="card-title">Toca Tocar</h3>
+                        <div class="card-identity-cluster">
+                            <div class="card-icon-wrap">⚙️</div>
+                            <h3 class="card-title">Toca Tocar</h3>
+                        </div>
                         <p class="card-desc">
                             Plataforma integral para Jam Sessions y eventos en vivo. Coordinación de repertorio, músicos e instrumentos en tiempo real.
                         </p>
@@ -283,13 +428,43 @@
 
                     <!-- Gestión Educativa -->
                     <div class="hud-card" data-key="educativa">
+                        <div class="card-celestial-orbit" aria-hidden="true">
+                            <svg viewBox="0 0 330 350">
+                                <defs>
+                                    <radialGradient id="neb-edu" cx="50%" cy="38%" r="42%">
+                                        <stop offset="0%" stop-color="rgba(56, 189, 248, 0.14)"/>
+                                        <stop offset="60%" stop-color="rgba(251, 191, 36, 0.05)"/>
+                                        <stop offset="100%" stop-color="transparent"/>
+                                    </radialGradient>
+                                </defs>
+                                <circle cx="165" cy="132" r="80" fill="url(#neb-edu)" />
+                                <g class="orbit-spin-slow">
+                                    <ellipse cx="165" cy="132" rx="106" ry="44" fill="none" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1.2" transform="rotate(30 165 132)" />
+                                    <circle cx="92" cy="78" r="2.2" fill="#38bdf8" class="c-node-blink" />
+                                    <circle cx="238" cy="186" r="2.0" fill="#fbbf24" class="c-node-blink-delay" />
+                                </g>
+                                <g class="orbit-spin-rev">
+                                    <ellipse cx="165" cy="132" rx="86" ry="38" fill="none" stroke="rgba(251, 191, 36, 0.24)" stroke-width="1.0" stroke-dasharray="3 5" transform="rotate(-26 165 132)" />
+                                    <circle cx="112" cy="154" r="1.6" fill="#fff" />
+                                    <circle cx="218" cy="110" r="1.8" fill="#38bdf8" />
+                                </g>
+                                <line x1="220" y1="65" x2="260" y2="55" stroke="rgba(255, 255, 255, 0.18)" stroke-width="0.8" />
+                                <line x1="260" y1="55" x2="285" y2="78" stroke="rgba(56, 189, 248, 0.2)" stroke-width="0.8" />
+                                <circle cx="220" cy="65" r="1.5" fill="#fff" />
+                                <circle cx="260" cy="55" r="2.4" fill="#fbbf24" />
+                                <circle cx="285" cy="78" r="1.8" fill="#38bdf8" />
+                                <path d="M 260 50 L 260 60 M 255 55 L 265 55" stroke="rgba(251, 191, 36, 0.45)" stroke-width="0.7" />
+                            </svg>
+                        </div>
                         <div class="card-glow"></div>
                         <div class="card-meta">
                             <span class="card-num">06</span>
                             <span class="card-category">EdTech & Gestión Escolar</span>
                         </div>
-                        <div class="card-icon-wrap">🎓</div>
-                        <h3 class="card-title">Gestión Educativa</h3>
+                        <div class="card-identity-cluster">
+                            <div class="card-icon-wrap">🎓</div>
+                            <h3 class="card-title">Gestión Educativa</h3>
+                        </div>
                         <p class="card-desc">
                             Plataforma integral para instituciones escolares. Boletines digitales, legajos 360°, control de asistencia y portal de comunicación familias-docentes.
                         </p>
@@ -446,7 +621,7 @@
     </div>
 
     <!-- Application Script -->
-    <script src="script.js?v=5"></script>
+    <script src="script.js?v=6"></script>
 </body>
 
 </html>

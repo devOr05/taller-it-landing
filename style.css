@@ -633,6 +633,7 @@ p,
     position: relative;
     overflow: hidden;
     cursor: pointer;
+    min-height: 340px;
     transition: background 0.4s var(--ease-out-expo),
                 border-color 0.4s var(--ease-out-expo),
                 box-shadow 0.4s var(--ease-out-expo),
@@ -665,8 +666,79 @@ p,
     box-shadow: none;
 }
 
-/* Cards: Estado Hover (aparece la tarjeta con vidrio, resplandor y contenido) */
-.hud-card:hover {
+/* ==========================================================================
+   CELESTIAL ORBITS & CONSTELLATIONS (SUTILEZAS ALREDEDOR DE CASOS DE ÉXITO)
+   ========================================================================== */
+.card-celestial-orbit {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.95;
+    transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.card-celestial-orbit svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.orbit-spin-slow {
+    transform-origin: 50% 38%;
+    animation: celestial-spin 38s linear infinite;
+    will-change: transform;
+}
+
+.orbit-spin-rev {
+    transform-origin: 50% 38%;
+    animation: celestial-spin-rev 48s linear infinite;
+    will-change: transform;
+}
+
+@keyframes celestial-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes celestial-spin-rev {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+}
+
+@keyframes celestial-pulse {
+    0%, 100% { opacity: 0.35; transform: scale(0.85); }
+    50% { opacity: 1; transform: scale(1.22); }
+}
+
+.c-node-blink {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: celestial-pulse 3.2s ease-in-out infinite;
+}
+
+.c-node-blink-delay {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: celestial-pulse 4.2s ease-in-out infinite 1.4s;
+}
+
+/* Núcleo focal centrado: Ícono y Título en el centro del sistema orbital */
+.card-identity-cluster {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 1.2rem;
+    margin-bottom: 1.2rem;
+    position: relative;
+    z-index: 2;
+    transition: all 0.4s var(--ease-out-expo);
+}
+
+/* Cards: Estado Hover y Mobile Activo (se forma la tarjeta completa que ya tenemos con todo igual) */
+.hud-card:hover,
+.hud-card.active {
     background: var(--card-surface);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -675,19 +747,38 @@ p,
     box-shadow: 0 12px 30px -10px rgba(56, 189, 248, 0.2), 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
-.hud-card:hover::before {
+.hud-card:hover::before,
+.hud-card.active::before {
     opacity: 1;
 }
 
-.hud-card.featured:hover {
+.hud-card.featured:hover,
+.hud-card.featured.active {
     border-color: var(--accent-gold);
     box-shadow: 0 15px 35px -10px rgba(251, 191, 36, 0.25);
 }
 
-.hud-card.web3-glow:hover {
+.hud-card.web3-glow:hover,
+.hud-card.web3-glow.active {
     border-color: #38bdf8;
     background: linear-gradient(135deg, rgba(6, 11, 26, 0.75) 0%, rgba(13, 27, 42, 0.65) 100%);
     box-shadow: 0 16px 40px rgba(56, 189, 248, 0.28);
+}
+
+/* Al activarse/hover, la órbita celeste se atenúa elegantemente a marca de agua */
+.hud-card:hover .card-celestial-orbit,
+.hud-card.active .card-celestial-orbit {
+    opacity: 0.12;
+    transform: scale(1.05);
+}
+
+/* El bloque de ícono y título vuelve a su posición original de tarjeta */
+.hud-card:hover .card-identity-cluster,
+.hud-card.active .card-identity-cluster {
+    align-items: flex-start;
+    text-align: left;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
 }
 
 /* Elementos internos secundarios: ocultos en reposo, revelados al pasar el mouse o tocar en mobile */
@@ -699,6 +790,8 @@ p,
     transform: translateY(6px);
     transition: opacity 0.35s ease, transform 0.35s ease;
     pointer-events: none;
+    position: relative;
+    z-index: 2;
 }
 
 .hud-card:hover .card-meta,
@@ -1411,9 +1504,28 @@ p,
     }
     .hud-showcase-grid {
         grid-template-columns: 1fr;
+        gap: 1.4rem;
     }
     .hud-showcase-grid .hud-card:nth-child(n) {
         grid-column: auto;
+    }
+    .hud-card {
+        min-height: 290px;
+        padding: 1.4rem 1.4rem;
+    }
+    .hud-card.active {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(8, 13, 26, 0.94);
+        border-color: rgba(56, 189, 248, 0.4);
+        box-shadow: 0 14px 35px -10px rgba(56, 189, 248, 0.3);
+    }
+    .card-celestial-orbit {
+        opacity: 0.88;
+    }
+    .orbit-spin-slow,
+    .orbit-spin-rev {
+        animation-duration: 55s;
     }
 
     /* Refuerzo de contraste de tipografías en mobile (sobre todo letras blancas grandes) */

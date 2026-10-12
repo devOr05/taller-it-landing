@@ -843,10 +843,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     L.x = halfW * 0.26;
                 }
             } else if (i === 0) {
-                // 1. HERO (Cohete): 10% más grande, dominante y enérgico a la derecha, posicionado más abajo para no cortarse
+                // 1. HERO (Cohete): Dominante y enérgico a la derecha, posicionado más abajo para no tocar el header
                 L.scale = 1.05;
                 L.x = halfW * 0.38;
-                L.y = -halfH * 0.15;
+                L.y = -halfH * 0.27;
                 L.z = 0;
                 L.op = 1.0;
             } else if (i === 1) {

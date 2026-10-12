@@ -1677,4 +1677,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         requestAnimationFrame(updateCursorAndAtoms);
     }
+
+    // =========================================================================
+    // 4. PWA SERVICE WORKER REGISTRATION (INSTALACION EN CELULAR)
+    // =========================================================================
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('Taller IT PWA registrado con éxito:', reg.scope))
+                .catch(err => console.log('Error registrando Service Worker:', err));
+        });
+    }
 });

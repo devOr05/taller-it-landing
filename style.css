@@ -3,8 +3,8 @@
    ========================================================================== */
 
 :root {
-    --bg-void: #050814;
-    --bg-dark: #090e1c;
+    --bg-void: #03050c;
+    --bg-dark: #080b15;
     --card-surface: rgba(12, 17, 26, 0.65);
     --card-border: rgba(255, 255, 255, 0.08);
     --card-border-hover: rgba(56, 189, 248, 0.35);
@@ -73,14 +73,14 @@ p,
     pointer-events: none;
 }
 
-/* Ambient Cosmic Glow Overlay (+10% Luminosidad & Resplandor Celestial) */
+/* Ambient Cosmic Glow Overlay (Luminosidad balanceada con reducción del 5%) */
 .cosmos-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: radial-gradient(circle at 50% 25%, rgba(56, 189, 248, 0.12) 0%, rgba(30, 58, 138, 0.08) 50%, rgba(2, 3, 7, 0.58) 100%);
+    background: radial-gradient(circle at 50% 25%, rgba(56, 189, 248, 0.07) 0%, rgba(30, 58, 138, 0.04) 50%, rgba(2, 3, 7, 0.66) 100%);
     pointer-events: none;
     z-index: 2;
 }
@@ -272,7 +272,7 @@ p,
     top: 68px;
     left: 0;
     width: 100%;
-    background: rgba(5, 9, 20, 0.96);
+    background: rgba(4, 7, 15, 0.96);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border-bottom: 1px solid rgba(56, 189, 248, 0.3);

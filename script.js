@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const scene = new THREE.Scene();
     // Deep cosmic fog for realistic depth
-    scene.fog = new THREE.FogExp2(0x020204, 0.012);
+    scene.fog = new THREE.FogExp2(0x03050c, 0.012);
 
     const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 70;

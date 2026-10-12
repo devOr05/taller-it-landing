@@ -149,6 +149,7 @@ p,
 
 .hud-nav {
     margin-left: auto;
+    margin-right: clamp(6.2rem, 7.5vw, 7.5rem);
     display: flex;
     align-items: center;
     gap: 2.2rem;

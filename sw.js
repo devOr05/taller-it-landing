@@ -1,4 +1,4 @@
-const CACHE_NAME = 'taller-it-v7';
+const CACHE_NAME = 'taller-it-v8';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
